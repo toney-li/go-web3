@@ -45,3 +45,14 @@ type TransactionResponse struct {
 	Gas              types.ComplexIntResponse `json:"gas,omitempty"`
 	Data             types.ComplexString      `json:"data,omitempty"`
 }
+
+type TransactionReceipt struct {
+	TransactionHash   string   `json:"transactionHash"`
+	TransactionIndex  int64    `json:"transactionIndex"`
+	BlockHash         string   `json:"blockHash"`
+	BlockNumber       int64    `json:"blockNumber"`
+	CumulativeGasUsed int64    `json:"cumulativeGasUsed"`
+	GasUsed           int64    `json:"gasUsed"`
+	ContractAddress   string   `json:"contractAddress"`
+	Logs              []string `json:"logs"`
+}

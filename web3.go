@@ -30,7 +30,9 @@ import (
 )
 
 // Coin - Ethereum value unity value
-const Coin int64 = 1000000000000000000
+const (
+	Coin float64 = 1000000000000000000
+)
 
 // Web3 - The Web3 Module
 type Web3 struct {

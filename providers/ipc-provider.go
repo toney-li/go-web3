@@ -27,6 +27,8 @@ import (
 	"net"
 	"path/filepath"
 
+	"log"
+
 	"github.com/regcostajr/go-web3/providers/util"
 )
 
@@ -45,21 +47,27 @@ func (provider IPCProvider) SendRequest(v interface{}, method string, params int
 	bodyString := util.JSONRPCObject{Version: "2.0", Method: method, Params: params, ID: rand.Intn(100)}
 
 	client, err := net.DialUnix("unix", nil, &net.UnixAddr{Name: provider.endpoint, Net: "unix"})
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
 	defer client.Close()
 
 	encoder := json.NewEncoder(client)
-	err = encoder.Encode(bodyString)
+	decoder := json.NewDecoder(client)
 
-	if err != nil {
+	if err := encoder.Encode(bodyString); err != nil {
+		log.Println(err)
 		return err
 	}
 
-	err = json.NewDecoder(client).Decode(v)
-
-	if err != nil {
+	if err := decoder.Decode(v); err != nil {
+		log.Println(err)
 		return err
 	}
 
-	return err
+	return nil
 
 }

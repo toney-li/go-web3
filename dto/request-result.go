@@ -26,6 +26,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/constants"
 
 	"encoding/json"
@@ -62,6 +63,18 @@ func (pointer *RequestResult) ToStringArray() ([]string, error) {
 
 }
 
+func (pointer *RequestResult) ToComplexString() (types.ComplexString, error) {
+
+	if pointer.Error != nil {
+		return "", errors.New(pointer.Error.Message)
+	}
+
+	result := (pointer).Result.(interface{})
+
+	return result.(types.ComplexString), nil
+
+}
+
 func (pointer *RequestResult) ToString() (string, error) {
 
 	if pointer.Error != nil {
@@ -84,11 +97,25 @@ func (pointer *RequestResult) ToInt() (int64, error) {
 
 	hex := result.(string)
 
-	cleaned := strings.Replace(hex, "0x", "", -1)
-
-	numericResult, err := strconv.ParseInt(cleaned, 16, 64)
+	numericResult, err := strconv.ParseInt(hex, 16, 64)
 
 	return numericResult, err
+
+}
+
+func (pointer *RequestResult) ToComplexIntResponse() (types.ComplexIntResponse, error) {
+
+	if pointer.Error != nil {
+		return types.ComplexIntResponse(0), errors.New(pointer.Error.Message)
+	}
+
+	result := (pointer).Result.(interface{})
+
+	hex := result.(string)
+
+	cleaned := strings.Replace(hex, "0x", "", -1)
+
+	return types.ComplexIntResponse(cleaned), nil
 
 }
 
@@ -113,7 +140,7 @@ func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, err
 	result := (pointer).Result.(map[string]interface{})
 
 	if len(result) == 0 {
-		return nil, errors.New(constants.NOTFOUND)
+		return nil, customerror.EMPTYRESPONSE
 	}
 
 	transactionResponse := &TransactionResponse{}
@@ -121,12 +148,38 @@ func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, err
 	marshal, err := json.Marshal(result)
 
 	if err != nil {
-		return nil, errors.New(constants.UNPARSEABLE)
+		return nil, customerror.UNPARSEABLEINTERFACE
 	}
 
 	json.Unmarshal([]byte(marshal), transactionResponse)
 
 	return transactionResponse, nil
+
+}
+
+func (pointer *RequestResult) ToTransactionReceipt() (*TransactionReceipt, error) {
+
+	if pointer.Error != nil {
+		return nil, errors.New(pointer.Error.Message)
+	}
+
+	result := (pointer).Result.(map[string]interface{})
+
+	if len(result) == 0 {
+		return nil, customerror.EMPTYRESPONSE
+	}
+
+	transactionReceipt := &TransactionReceipt{}
+
+	marshal, err := json.Marshal(result)
+
+	if err != nil {
+		return nil, customerror.UNPARSEABLEINTERFACE
+	}
+
+	json.Unmarshal([]byte(marshal), transactionReceipt)
+
+	return transactionReceipt, nil
 
 }
 
@@ -144,11 +197,11 @@ func (pointer *RequestResult) ToSyncingResponse() (*SyncingResponse, error) {
 	case map[string]interface{}:
 		result = (pointer).Result.(map[string]interface{})
 	default:
-		return nil, errors.New(constants.UNPARSEABLE)
+		return nil, customerror.UNPARSEABLEINTERFACE
 	}
 
 	if len(result) == 0 {
-		return nil, errors.New(constants.NOTFOUND)
+		return nil, customerror.EMPTYRESPONSE
 	}
 
 	syncingResponse := &SyncingResponse{}
@@ -156,7 +209,7 @@ func (pointer *RequestResult) ToSyncingResponse() (*SyncingResponse, error) {
 	marshal, err := json.Marshal(result)
 
 	if err != nil {
-		return nil, errors.New(constants.UNPARSEABLE)
+		return nil, customerror.UNPARSEABLEINTERFACE
 	}
 
 	json.Unmarshal([]byte(marshal), syncingResponse)

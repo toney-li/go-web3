@@ -13,19 +13,37 @@
 *********************************************************************************/
 
 /**
- * @file error-constants.go
+ * @file test-constants.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+package test
 
-package customerror
-
-import "errors"
-
-var (
-	// EMPTYRESPONSE - Server response is empty
-	EMPTYRESPONSE = errors.New("Empty response")
-	// UNPARSEABLEINTERFACE - the conversion failed
-	UNPARSEABLEINTERFACE = errors.New("Unparseable Interface")
+import (
+	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
+
+const (
+	// HTTP Ganache address
+	HTTP = "127.0.0.1:8545"
+	// TIMEOUT HTTP
+	TIMEOUT = 10
+	// IPC Geth address --dev
+	IPC = "/tmp/ethereum_dev_mode/geth.ipc"
+)
+
+func HTTPConnection() *web3.Web3 {
+	var connection = web3.NewWeb3(providers.NewHTTPProvider(HTTP, TIMEOUT, false))
+	return connection
+}
+
+func IPCConnection() *web3.Web3 {
+	var connection = web3.NewWeb3(providers.NewIPCProvider(IPC))
+	return connection
+}
+
+func ListAccounts(connection *web3.Web3) ([]string, error) {
+	return connection.Eth.ListAccounts()
+}

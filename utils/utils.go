@@ -13,19 +13,10 @@
 *********************************************************************************/
 
 /**
- * @file error-constants.go
+ * @file utils.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
 
-package customerror
-
-import "errors"
-
-var (
-	// EMPTYRESPONSE - Server response is empty
-	EMPTYRESPONSE = errors.New("Empty response")
-	// UNPARSEABLEINTERFACE - the conversion failed
-	UNPARSEABLEINTERFACE = errors.New("Unparseable Interface")
-)
+package utils

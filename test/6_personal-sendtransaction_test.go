@@ -13,19 +13,54 @@
 *********************************************************************************/
 
 /**
- * @file error-constants.go
+ * @file personal-sendtransaction_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+package test
 
-package customerror
+import (
+	"fmt"
+	"testing"
 
-import "errors"
-
-var (
-	// EMPTYRESPONSE - Server response is empty
-	EMPTYRESPONSE = errors.New("Empty response")
-	// UNPARSEABLEINTERFACE - the conversion failed
-	UNPARSEABLEINTERFACE = errors.New("Unparseable Interface")
+	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
 )
+
+func Personal_SendTransaction(connection *web3.Web3) error {
+
+	accounts, err := ListAccounts(connection)
+
+	if err != nil {
+		return err
+	}
+	account := accounts[0]
+
+	value := types.ComplexIntParameter(10)
+	txID, err := connection.Personal.SendTransaction(account, account, value, types.ComplexString("go test"), "test")
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(txID)
+
+	return nil
+}
+
+/* func TestPersonal_SendTransaction_IPCConnection(t *testing.T) {
+	err := Personal_SendTransaction(IPCConnection())
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+} */
+
+func TestPersonal_SendTransaction_HTTPConnection(t *testing.T) {
+	err := Personal_SendTransaction(HTTPConnection())
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+}

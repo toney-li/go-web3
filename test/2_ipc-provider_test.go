@@ -13,19 +13,29 @@
 *********************************************************************************/
 
 /**
- * @file error-constants.go
+ * @file ipc-provider_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+package test
 
-package customerror
+import (
+	"testing"
 
-import "errors"
-
-var (
-	// EMPTYRESPONSE - Server response is empty
-	EMPTYRESPONSE = errors.New("Empty response")
-	// UNPARSEABLEINTERFACE - the conversion failed
-	UNPARSEABLEINTERFACE = errors.New("Unparseable Interface")
+	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
+
+func Test_IPCProvider(t *testing.T) {
+
+	var ethClient = web3.NewWeb3(providers.NewIPCProvider(IPC))
+
+	var _, error = ethClient.ClientVersion()
+
+	if error != nil {
+		t.Error(error)
+		t.Fail()
+	}
+
+}

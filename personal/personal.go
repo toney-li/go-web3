@@ -68,9 +68,12 @@ func (personal *Personal) ListAccounts() ([]string, error) {
 //	  - Address - 20 Bytes - The identifier of the new account.
 func (personal *Personal) NewAccount(password string) (string, error) {
 
+	params := make([]string, 1)
+	params[0] = password
+
 	pointer := &dto.RequestResult{}
 
-	err := personal.provider.SendRequest(&pointer, "personal_newAccount", nil)
+	err := personal.provider.SendRequest(&pointer, "personal_newAccount", params)
 
 	if err != nil {
 		return "", err
@@ -135,12 +138,12 @@ func (personal *Personal) SendTransaction(from string, to string, value types.Co
 //    - Quantity - (default: 300) Integer or null - Duration in seconds how long the account should remain unlocked for.
 // Returns:
 // 	   - Boolean - whether the call was successful
-func (personal *Personal) UnlockAccount(address string, password string, duration types.ComplexIntParameter) (bool, error) {
+func (personal *Personal) UnlockAccount(address string, password string, duration uint64) (bool, error) {
 
-	params := make([]string, 3)
-	params[0] = string(address)
+	params := make([]interface{}, 3)
+	params[0] = address
 	params[1] = password
-	params[2] = duration.ToHex()
+	params[2] = duration
 
 	pointer := &dto.RequestResult{}
 

@@ -36,9 +36,10 @@ import (
 type HTTPProvider struct {
 	address string
 	timeout int32
+	secure  bool
 }
 
-func NewHTTPProvider(address string, timeout int32) *HTTPProvider {
+func NewHTTPProvider(address string, timeout int32, secure bool) *HTTPProvider {
 	provider := new(HTTPProvider)
 	provider.address = address
 	provider.timeout = timeout
@@ -49,8 +50,13 @@ func (provider HTTPProvider) SendRequest(v interface{}, method string, params in
 
 	bodyString := util.JSONRPCObject{Version: "2.0", Method: method, Params: params, ID: rand.Intn(100)}
 
+	prefix := "http://"
+	if provider.secure {
+		prefix = "https://"
+	}
+
 	body := strings.NewReader(bodyString.AsJsonString())
-	req, err := http.NewRequest("POST", provider.address, body)
+	req, err := http.NewRequest("POST", prefix+provider.address, body)
 	if err != nil {
 		return err
 	}

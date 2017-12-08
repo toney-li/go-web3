@@ -13,19 +13,45 @@
 *********************************************************************************/
 
 /**
- * @file error-constants.go
+ * @file personal-newaccount_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+package test
 
-package customerror
+import (
+	"testing"
 
-import "errors"
-
-var (
-	// EMPTYRESPONSE - Server response is empty
-	EMPTYRESPONSE = errors.New("Empty response")
-	// UNPARSEABLEINTERFACE - the conversion failed
-	UNPARSEABLEINTERFACE = errors.New("Unparseable Interface")
+	"github.com/regcostajr/go-web3"
 )
+
+func Personal_NewAccount(connection *web3.Web3) (string, error) {
+	address, err := connection.Personal.NewAccount("test")
+
+	if err != nil {
+		return "", err
+	}
+
+	return address, nil
+}
+
+func TestPersonal_NewAccount_IPCConnection(t *testing.T) {
+	_, err := Personal_NewAccount(IPCConnection())
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+
+	//t.Log(address)
+}
+
+func TestPersonal_NewAccount_HTTPConnection(t *testing.T) {
+	_, err := Personal_NewAccount(HTTPConnection())
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+
+	//t.Log(address)
+}

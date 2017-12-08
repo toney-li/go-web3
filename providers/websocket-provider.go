@@ -13,32 +13,20 @@
 *********************************************************************************/
 
 /**
- * @file personal_test.go
+ * @file websocket-provider.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
-package test
 
-import (
-	"testing"
+package providers
 
-	web3 "github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/providers"
-)
+type WebSocketProvider struct {
+	address string
+}
 
-var personalClient = web3.NewWeb3(providers.NewHTTPProvider("http://127.0.0.1:8545", 100))
-
-func TestPersonalListAccounts(t *testing.T) {
-
-	list, err := personalClient.Personal.ListAccounts()
-
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	for index := 0; index < len(list); index++ {
-		t.Log(list[index])
-	}
+func NewWebSocketProvider(address string) *WebSocketProvider {
+	provider := new(WebSocketProvider)
+	provider.address = address
+	return provider
 }
