@@ -1,7 +1,5 @@
 # Ethereum Go Client
 
-## Important: This repository still in development, changes can happen.
-
 This is a Ethereum compatible Go Client
 which implements the 
 [Eth JSON RPC Module](https://github.com/ethereum/wiki/wiki/JSON-RPC),
