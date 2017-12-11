@@ -183,6 +183,32 @@ func (pointer *RequestResult) ToTransactionReceipt() (*TransactionReceipt, error
 
 }
 
+func (pointer *RequestResult) ToBlock() (*Block, error) {
+
+	if pointer.Error != nil {
+		return nil, errors.New(pointer.Error.Message)
+	}
+
+	result := (pointer).Result.(map[string]interface{})
+
+	if len(result) == 0 {
+		return nil, customerror.EMPTYRESPONSE
+	}
+
+	block := &Block{}
+
+	marshal, err := json.Marshal(result)
+
+	if err != nil {
+		return nil, customerror.UNPARSEABLEINTERFACE
+	}
+
+	err = json.Unmarshal([]byte(marshal), block)
+
+	return block, err
+
+}
+
 func (pointer *RequestResult) ToSyncingResponse() (*SyncingResponse, error) {
 
 	if pointer.Error != nil {

@@ -25,6 +25,7 @@ import (
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
+	"strconv"
 )
 
 // Eth - The Eth Module
@@ -404,5 +405,30 @@ func (eth *Eth) GetTransactionReceipt(sourceCode string) (*dto.TransactionReceip
 	}
 
 	return pointer.ToTransactionReceipt()
+
+}
+
+// GetBlockByNumber - Returns the information about a block requested by number.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbynumber
+// Parameters:
+//    - DATA, 32 Bytes - hash of a transaction
+// Returns:
+//    1. Object - A block object, or null when no transaction was found
+//    2. error
+func (eth *Eth) GetBlockByNumber(number int64, transactionDetails bool) (*dto.Block, error) {
+
+	params := make([]interface{}, 2)
+	params[0] = "0x" + strconv.FormatInt(number, 16)
+	params[1] = transactionDetails
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getBlockByNumber", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBlock()
 
 }
