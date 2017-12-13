@@ -16,7 +16,7 @@ func Eth_GetBlockByNumber(connection *web3.Web3) error {
 	//Dec-09-2017 10:28:31 AM +UTC should be block 4701754, hash 0xaec14e98d578351a23d5ab40f65ee431063f582b5d736bbc0705a2eef0fb8f9d
 	//next block Dec-09-2017 10:28:55 AM +UTC
 	expectedBlockHash := "0xaec14e98d578351a23d5ab40f65ee431063f582b5d736bbc0705a2eef0fb8f9d"
-	var blockNumber types.ComplexIntParameter = 436
+	var blockNumber types.ComplexIntParameter = 4701754
 
 	block, err := connection.Eth.GetBlockByNumber(blockNumber, false)
 
