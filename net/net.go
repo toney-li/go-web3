@@ -22,6 +22,7 @@
 package net
 
 import (
+	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 )
@@ -64,17 +65,17 @@ func (net *Net) IsListening() (bool, error) {
 //    - none
 // Returns:
 // 	  - QUANTITY - integer of the number of connected peers.
-func (net *Net) GetPeerCount() (int64, error) {
+func (net *Net) GetPeerCount() (types.ComplexIntResponse, error) {
 
 	pointer := &dto.RequestResult{}
 
 	err := net.provider.SendRequest(pointer, "net_peerCount", nil)
 
 	if err != nil {
-		return 0, err
+		return types.ComplexIntResponse(0), err
 	}
 
-	return pointer.ToInt()
+	return pointer.ToComplexIntResponse()
 
 }
 

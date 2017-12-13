@@ -11,14 +11,15 @@ which implements the
 This package is currently under active development. It is not already stable and the infrastructure is not complete and there are still several RPCs left to implement and the API is not stable yet.
 
 ## Contribute!
-### Include only when development, test, example are done.
+
+### In Progress = ![](https://placehold.it/15/FFFF00/000000?text=+)
 
 TODO List
 
 - [X] web3_clientVersion                      
-- [ ] web3_sha3                               
-- [ ] net_version                             
-- [ ] net_peerCount                           
+- [x] web3_sha3                               
+- [x] net_version                             
+- [x] net_peerCount                           
 - [ ] net_listening                           
 - [ ] eth_protocolVersion                     
 - [ ] eth_syncing                             
@@ -42,7 +43,7 @@ TODO List
 - [ ] eth_call                                
 - [ ] eth_estimateGas                         
 - [ ] eth_getBlockByHash                      
-- [ ] eth_getBlockByNumber                    
+- [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) eth_getBlockByNumber                    
 - [ ] eth_getTransactionByHash                
 - [ ] eth_getTransactionByBlockHashAndIndex   
 - [ ] eth_getTransactionByBlockNumberAndIndex 
@@ -79,7 +80,7 @@ TODO List
 - [ ] shh_getMessages                         
 - [X] personal_listAccounts                   
 - [X] personal_newAccount                     
-- [ ] personal_sendTransaction                
+- [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) personal_sendTransaction                
 - [X] personal_unlockAccount                  
 
 ## Installation

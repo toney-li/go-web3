@@ -22,6 +22,7 @@
 package web3
 
 import (
+	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth"
 	"github.com/regcostajr/go-web3/net"
@@ -77,10 +78,10 @@ func (web Web3) ClientVersion() (string, error) {
 //    - DATA - the data to convert into a SHA3 hash
 // Returns:
 // 	  - DATA - The SHA3 result of the given string.
-func (web Web3) Sha3(hexData string) (string, error) {
+func (web Web3) Sha3(data types.ComplexString) (string, error) {
 
 	params := make([]string, 1)
-	params[0] = hexData
+	params[0] = data.ToHex()
 
 	pointer := &dto.RequestResult{}
 
