@@ -406,3 +406,29 @@ func (eth *Eth) GetTransactionReceipt(sourceCode string) (*dto.TransactionReceip
 	return pointer.ToTransactionReceipt()
 
 }
+
+// GetBlockByNumber - Returns the information about a block requested by number.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbynumber
+// Parameters:
+//    - number, QUANTITY - number of block
+//    - transactionDetails, bool - indicate if we should have or not the details of the transactions of the block
+// Returns:
+//    1. Object - A block object, or null when no transaction was found
+//    2. error
+func (eth *Eth) GetBlockByNumber(number types.ComplexIntParameter, transactionDetails bool) (*dto.Block, error) {
+
+	params := make([]interface{}, 2)
+	params[0] = number.ToHex()
+	params[1] = transactionDetails
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getBlockByNumber", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBlock()
+
+}

@@ -5,11 +5,10 @@ import (
 
 	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/eth/block"
-	"github.com/regcostajr/go-web3/test"
 )
 
 func Eth_GetBalance(connection *web3.Web3) error {
-	accounts, err := test.ListAccounts(connection)
+	accounts, err := ListAccounts(connection)
 
 	if err != nil {
 		return err
