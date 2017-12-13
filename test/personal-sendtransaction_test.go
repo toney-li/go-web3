@@ -30,15 +30,16 @@ import (
 
 func Personal_SendTransaction(connection *web3.Web3) error {
 
-	accounts, err := ListAccounts(connection)
+	accounts, err := listPersonalAccounts(connection)
 
 	if err != nil {
 		return err
 	}
+
 	account := accounts[0]
 
 	value := types.ComplexIntParameter(10)
-	txID, err := connection.Personal.SendTransaction(account, account, value, types.ComplexString("go test"), "test")
+	txID, err := connection.Personal.SendTransaction(account, account, value, types.ComplexString("go test"), "password")
 
 	if err != nil {
 		return err
@@ -49,13 +50,13 @@ func Personal_SendTransaction(connection *web3.Web3) error {
 	return nil
 }
 
-/* func TestPersonal_SendTransaction_IPCConnection(t *testing.T) {
+func TestPersonal_SendTransaction_IPCConnection(t *testing.T) {
 	err := Personal_SendTransaction(IPCConnection())
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
-} */
+}
 
 func TestPersonal_SendTransaction_HTTPConnection(t *testing.T) {
 	err := Personal_SendTransaction(HTTPConnection())

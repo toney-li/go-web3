@@ -32,6 +32,7 @@ const (
 	TIMEOUT = 10
 	// IPC Geth address --dev
 	IPC = "/tmp/ethereum_dev_mode/geth.ipc"
+	//IPC = "/home/reginaldo/.ethereum/rinkeby/geth.ipc"
 )
 
 func HTTPConnection() *web3.Web3 {
@@ -44,6 +45,10 @@ func IPCConnection() *web3.Web3 {
 	return connection
 }
 
-func ListAccounts(connection *web3.Web3) ([]string, error) {
+func listAccounts(connection *web3.Web3) ([]string, error) {
 	return connection.Eth.ListAccounts()
+}
+
+func listPersonalAccounts(connection *web3.Web3) ([]string, error) {
+	return connection.Personal.ListAccounts()
 }

@@ -35,7 +35,7 @@ import (
 type RequestResult struct {
 	ID      int         `json:"id"`
 	Version string      `json:"jsonrpc"`
-	Result  interface{} `json:"result,omitempty"`
+	Result  interface{} `json:"result"`
 	Error   *Error      `json:"error,omitempty"`
 	Data    string      `json:"data,omitempty"`
 }
@@ -48,8 +48,8 @@ type Error struct {
 
 func (pointer *RequestResult) ToStringArray() ([]string, error) {
 
-	if pointer.Error != nil {
-		return nil, errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
 	}
 
 	result := (pointer).Result.([]interface{})
@@ -65,8 +65,8 @@ func (pointer *RequestResult) ToStringArray() ([]string, error) {
 
 func (pointer *RequestResult) ToComplexString() (types.ComplexString, error) {
 
-	if pointer.Error != nil {
-		return "", errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return "", err
 	}
 
 	result := (pointer).Result.(interface{})
@@ -77,8 +77,8 @@ func (pointer *RequestResult) ToComplexString() (types.ComplexString, error) {
 
 func (pointer *RequestResult) ToString() (string, error) {
 
-	if pointer.Error != nil {
-		return "", errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return "", err
 	}
 
 	result := (pointer).Result.(interface{})
@@ -89,8 +89,8 @@ func (pointer *RequestResult) ToString() (string, error) {
 
 func (pointer *RequestResult) ToInt() (int64, error) {
 
-	if pointer.Error != nil {
-		return 0, errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return 0, err
 	}
 
 	result := (pointer).Result.(interface{})
@@ -105,8 +105,8 @@ func (pointer *RequestResult) ToInt() (int64, error) {
 
 func (pointer *RequestResult) ToComplexIntResponse() (types.ComplexIntResponse, error) {
 
-	if pointer.Error != nil {
-		return types.ComplexIntResponse(0), errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return types.ComplexIntResponse(0), err
 	}
 
 	result := (pointer).Result.(interface{})
@@ -121,8 +121,8 @@ func (pointer *RequestResult) ToComplexIntResponse() (types.ComplexIntResponse, 
 
 func (pointer *RequestResult) ToBoolean() (bool, error) {
 
-	if pointer.Error != nil {
-		return false, errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return false, err
 	}
 
 	result := (pointer).Result.(interface{})
@@ -133,8 +133,8 @@ func (pointer *RequestResult) ToBoolean() (bool, error) {
 
 func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, error) {
 
-	if pointer.Error != nil {
-		return nil, errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
 	}
 
 	result := (pointer).Result.(map[string]interface{})
@@ -159,8 +159,8 @@ func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, err
 
 func (pointer *RequestResult) ToTransactionReceipt() (*TransactionReceipt, error) {
 
-	if pointer.Error != nil {
-		return nil, errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
 	}
 
 	result := (pointer).Result.(map[string]interface{})
@@ -185,8 +185,8 @@ func (pointer *RequestResult) ToTransactionReceipt() (*TransactionReceipt, error
 
 func (pointer *RequestResult) ToBlock() (*Block, error) {
 
-	if pointer.Error != nil {
-		return nil, errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
 	}
 
 	result := (pointer).Result.(map[string]interface{})
@@ -211,8 +211,8 @@ func (pointer *RequestResult) ToBlock() (*Block, error) {
 
 func (pointer *RequestResult) ToSyncingResponse() (*SyncingResponse, error) {
 
-	if pointer.Error != nil {
-		return nil, errors.New(pointer.Error.Message)
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
 	}
 
 	var result map[string]interface{}
@@ -241,5 +241,20 @@ func (pointer *RequestResult) ToSyncingResponse() (*SyncingResponse, error) {
 	json.Unmarshal([]byte(marshal), syncingResponse)
 
 	return syncingResponse, nil
+
+}
+
+// To avoid a conversion of a nil interface
+func (pointer *RequestResult) checkResponse() error {
+
+	if pointer.Error != nil {
+		return errors.New(pointer.Error.Message)
+	}
+
+	if pointer.Result == nil {
+		return customerror.EMPTYRESPONSE
+	}
+
+	return nil
 
 }

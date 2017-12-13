@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file personal-newaccount_test.go
+ * @file personal-unlockaccount_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -21,37 +21,45 @@
 package test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/regcostajr/go-web3"
 )
 
-func Personal_NewAccount(connection *web3.Web3) (string, error) {
-	address, err := connection.Personal.NewAccount("test")
+func Personal_UnlockAccount(connection *web3.Web3) error {
+
+	accounts, err := listPersonalAccounts(connection)
 
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return address, nil
+	result, err := connection.Personal.UnlockAccount(accounts[0], "password", 100)
+
+	if err != nil {
+		return err
+	}
+
+	if !result {
+		return errors.New("Can't unlock account")
+	}
+
+	return nil
 }
 
-func TestPersonal_NewAccount_IPCConnection(t *testing.T) {
-	_, err := Personal_NewAccount(IPCConnection())
+func TestPersonal_UnlockAccount_IPCConnection(t *testing.T) {
+	err := Personal_UnlockAccount(IPCConnection())
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
-
-	//t.Log(address)
 }
 
-func TestPersonal_NewAccount_HTTPConnection(t *testing.T) {
-	_, err := Personal_NewAccount(HTTPConnection())
+func TestPersonal_UnlockAccount_HTTPConnection(t *testing.T) {
+	err := Personal_UnlockAccount(HTTPConnection())
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
-
-	//t.Log(address)
 }
