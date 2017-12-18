@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file net-getpeercount_test.go
+ * @file eth-protocolversion_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -28,20 +28,20 @@ import (
 	web3 "github.com/regcostajr/go-web3"
 )
 
-func Net_PeerCount(connection *web3.Web3) error {
-
-	peers, err := connection.Net.GetPeerCount()
+func Eth_ProtocolVersion(connection *web3.Web3) error {
+	version, err := connection.Eth.GetProtocolVersion()
 
 	if err != nil {
 		return err
 	}
-	fmt.Println(peers.ToInt64())
+
+	fmt.Println(version)
 
 	return nil
 }
 
-func TestNetPeerCount_IPCConnection(t *testing.T) {
-	err := Net_PeerCount(IPCConnection())
+func TestGetProtocolVersion_IPCConnection(t *testing.T) {
+	err := Eth_ProtocolVersion(IPCConnection())
 
 	if err != nil {
 		t.Error(err)
@@ -49,8 +49,8 @@ func TestNetPeerCount_IPCConnection(t *testing.T) {
 	}
 }
 
-func TestNetPeerCount_HTTPConnection(t *testing.T) {
-	err := Net_PeerCount(HTTPConnection())
+func TestGetProtocolVersion_HTTPConnection(t *testing.T) {
+	err := Eth_ProtocolVersion(HTTPConnection())
 
 	if err != nil {
 		t.Error(err)

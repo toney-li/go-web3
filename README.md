@@ -20,8 +20,8 @@ TODO List
 - [x] web3_sha3                               
 - [x] net_version                             
 - [x] net_peerCount                           
-- [ ] net_listening                           
-- [ ] eth_protocolVersion                     
+- [x] net_listening                           
+- [x] eth_protocolVersion                     
 - [ ] eth_syncing                             
 - [ ] eth_coinbase                            
 - [ ] eth_mining                              

@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file net-getpeercount_test.go
+ * @file net-listening_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -22,26 +22,29 @@
 package test
 
 import (
-	"fmt"
+	"errors"
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
 )
 
-func Net_PeerCount(connection *web3.Web3) error {
+func Net_Listening(connection *web3.Web3) error {
 
-	peers, err := connection.Net.GetPeerCount()
+	listening, err := connection.Net.IsListening()
 
 	if err != nil {
 		return err
 	}
-	fmt.Println(peers.ToInt64())
+
+	if !listening {
+		return errors.New("Not listening")
+	}
 
 	return nil
 }
 
-func TestNetPeerCount_IPCConnection(t *testing.T) {
-	err := Net_PeerCount(IPCConnection())
+func TestNetIsListening_IPCConnection(t *testing.T) {
+	err := Net_Listening(IPCConnection())
 
 	if err != nil {
 		t.Error(err)
@@ -49,8 +52,8 @@ func TestNetPeerCount_IPCConnection(t *testing.T) {
 	}
 }
 
-func TestNetPeerCount_HTTPConnection(t *testing.T) {
-	err := Net_PeerCount(HTTPConnection())
+func TestNetIsListening_HTTPConnection(t *testing.T) {
+	err := Net_Listening(HTTPConnection())
 
 	if err != nil {
 		t.Error(err)

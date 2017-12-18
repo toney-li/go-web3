@@ -111,7 +111,16 @@ func (pointer *RequestResult) ToComplexIntResponse() (types.ComplexIntResponse, 
 
 	result := (pointer).Result.(interface{})
 
-	hex := result.(string)
+	var hex string
+
+	switch v := result.(type) {
+	//Testrpc returns a float64
+	case float64:
+		hex = strconv.FormatFloat(v, 'E', 16, 64)
+		break
+	default:
+		hex = result.(string)
+	}
 
 	cleaned := strings.Replace(hex, "0x", "", -1)
 

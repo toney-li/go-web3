@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file net-getpeercount_test.go
+ * @file net-syncing_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -22,26 +22,24 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
 )
 
-func Net_PeerCount(connection *web3.Web3) error {
+func Eth_Syncing(connection *web3.Web3) error {
 
-	peers, err := connection.Net.GetPeerCount()
+	_, err := connection.Eth.IsSyncing()
 
 	if err != nil {
 		return err
 	}
-	fmt.Println(peers.ToInt64())
 
 	return nil
 }
 
-func TestNetPeerCount_IPCConnection(t *testing.T) {
-	err := Net_PeerCount(IPCConnection())
+func TestEthIsSyncing_IPCConnection(t *testing.T) {
+	err := Eth_Syncing(IPCConnection())
 
 	if err != nil {
 		t.Error(err)
@@ -49,8 +47,8 @@ func TestNetPeerCount_IPCConnection(t *testing.T) {
 	}
 }
 
-func TestNetPeerCount_HTTPConnection(t *testing.T) {
-	err := Net_PeerCount(HTTPConnection())
+func TestEthIsSyncing_HTTPConnection(t *testing.T) {
+	err := Eth_Syncing(HTTPConnection())
 
 	if err != nil {
 		t.Error(err)
