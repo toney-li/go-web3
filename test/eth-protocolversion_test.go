@@ -26,34 +26,20 @@ import (
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Eth_ProtocolVersion(connection *web3.Web3) error {
+func TestEthGetProtocolVersion(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+
 	version, err := connection.Eth.GetProtocolVersion()
 
 	if err != nil {
-		return err
+		t.Error(err)
+		t.FailNow()
 	}
 
 	fmt.Println(version)
 
-	return nil
-}
-
-func TestGetProtocolVersion_IPCConnection(t *testing.T) {
-	err := Eth_ProtocolVersion(IPCConnection())
-
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
-}
-
-func TestGetProtocolVersion_HTTPConnection(t *testing.T) {
-	err := Eth_ProtocolVersion(HTTPConnection())
-
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
 }

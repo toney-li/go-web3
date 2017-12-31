@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file personal-newaccount_test.go
+ * @file personal-gettransactionbyhash_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -21,21 +21,27 @@
 package test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestPersonalNewAccount(t *testing.T) {
+func TestGetTransactionByHash(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
-	address, err := connection.Personal.NewAccount("password")
+
+	tx, err := connection.Eth.GetTransactionByHash("0x4cad48d861726a414e875d0f9395f9a6eeb7fb761108d521aee07017415256c9")
 
 	if err != nil {
 		t.Error(err)
+		t.FailNow()
+	}
+
+	if strings.Compare(tx.BlockHash, "0x0c6ff72bb2eaea3ad532cc294cfacdeb4428223b0ce648bc5c3ca3b98ab64910") != 0 {
+		t.Error("Invalid transaction")
 		t.Fail()
 	}
 
-	t.Log(address)
 }

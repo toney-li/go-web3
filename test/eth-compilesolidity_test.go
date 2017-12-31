@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file personal-newaccount_test.go
+ * @file eth-compilesolidity_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -27,15 +27,19 @@ import (
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestPersonalNewAccount(t *testing.T) {
+func TestEthCompileSolidity(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
-	address, err := connection.Personal.NewAccount("password")
+
+	code := "var greeterSource = 'contract mortal { address owner; function mortal() { owner = msg.sender; } function kill() { if (msg.sender == owner) selfdestruct(owner); } } contract greeter is mortal { string greeting; function greeter(string _greeting) public { greeting = _greeting; } function greet() constant returns (string) { return greeting; } }"
+
+	compiled, err := connection.Eth.CompileSolidity(code)
 
 	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
 
-	t.Log(address)
+	t.Log(compiled.ToString())
+
 }

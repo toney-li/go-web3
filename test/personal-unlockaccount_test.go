@@ -25,41 +25,30 @@ import (
 	"testing"
 
 	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Personal_UnlockAccount(connection *web3.Web3) error {
+func TestPersonalUnlockAccount(t *testing.T) {
 
-	accounts, err := listPersonalAccounts(connection)
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+
+	accounts, err := connection.Personal.ListAccounts()
 
 	if err != nil {
-		return err
+		t.Error(err)
+		t.FailNow()
 	}
 
 	result, err := connection.Personal.UnlockAccount(accounts[0], "password", 100)
 
 	if err != nil {
-		return err
+		t.Error(err)
+		t.FailNow()
 	}
 
 	if !result {
-		return errors.New("Can't unlock account")
+		t.Error(errors.New("Can't unlock account"))
+		t.FailNow()
 	}
 
-	return nil
-}
-
-func TestPersonal_UnlockAccount_IPCConnection(t *testing.T) {
-	err := Personal_UnlockAccount(IPCConnection())
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
-}
-
-func TestPersonal_UnlockAccount_HTTPConnection(t *testing.T) {
-	err := Personal_UnlockAccount(HTTPConnection())
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
 }

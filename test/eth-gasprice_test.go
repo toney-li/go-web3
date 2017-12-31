@@ -13,29 +13,32 @@
 *********************************************************************************/
 
 /**
- * @file personal-newaccount_test.go
+ * @file web3-gasprice_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+
 package test
 
 import (
 	"testing"
 
-	"github.com/regcostajr/go-web3"
+	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestPersonalNewAccount(t *testing.T) {
+func TestEthGasPrice(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
-	address, err := connection.Personal.NewAccount("password")
+
+	gasPrice, err := connection.Eth.GetGasPrice()
 
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
 
-	t.Log(address)
+	t.Log(gasPrice.ToInt64())
+
 }

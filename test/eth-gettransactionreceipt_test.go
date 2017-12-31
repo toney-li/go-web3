@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file personal-newaccount_test.go
+ * @file eth-gettransactionreceipt_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -21,21 +21,27 @@
 package test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestPersonalNewAccount(t *testing.T) {
+func TestEthGetTransactionReceipt(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
-	address, err := connection.Personal.NewAccount("password")
+
+	tx, err := connection.Eth.GetTransactionReceipt("0xfd53f3ccf3fb55b0333862b804abc6765d1433141b5a860e978f67794861a79b")
 
 	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
 
-	t.Log(address)
+	if strings.Compare(tx.ContractAddress, "0x18a672e11d637fffadccc99b152f4895da069601") != 0 {
+		t.Error("Invalid contract address")
+		t.FailNow()
+	}
+
 }

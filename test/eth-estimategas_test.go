@@ -13,42 +13,40 @@
 *********************************************************************************/
 
 /**
- * @file test-constants.go
+ * @file eth-estimategas_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+
 package test
 
 import (
+	"testing"
+
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-const (
-	// HTTP Ganache address
-	HTTP = "127.0.0.1:8545"
-	// TIMEOUT HTTP
-	TIMEOUT = 10
-	// IPC Geth address --dev
-	IPC = "/tmp/ethereum_dev_mode/geth.ipc"
-	//IPC = "/home/reginaldo/.ethereum/rinkeby/geth.ipc"
-)
+func TestEstimateGas(t *testing.T) {
 
-func HTTPConnection() *web3.Web3 {
-	var connection = web3.NewWeb3(providers.NewHTTPProvider(HTTP, TIMEOUT, false))
-	return connection
-}
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-func IPCConnection() *web3.Web3 {
-	var connection = web3.NewWeb3(providers.NewIPCProvider(IPC))
-	return connection
-}
+	accounts, err := connection.Eth.ListAccounts()
 
-func listAccounts(connection *web3.Web3) ([]string, error) {
-	return connection.Eth.ListAccounts()
-}
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-func listPersonalAccounts(connection *web3.Web3) ([]string, error) {
-	return connection.Personal.ListAccounts()
+	gas, err := connection.Eth.EstimateGas(accounts[0], accounts[0], 1000, types.ComplexString("test"))
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Log(gas)
+
 }

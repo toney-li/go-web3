@@ -26,38 +26,27 @@ import (
 
 	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/eth/block"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Eth_GetBalance(connection *web3.Web3) error {
-	accounts, err := listAccounts(connection)
+func TestEthGetBalance(t *testing.T) {
 
-	if err != nil {
-		return err
-	}
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	_, err = connection.Eth.GetBalance(accounts[0], block.LATEST)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func TestGetBalance_IPCConnection(t *testing.T) {
-	err := Eth_GetBalance(IPCConnection())
+	_, err := connection.Eth.ListAccounts()
 
 	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
-}
 
-func TestGetBalance_HTTPConnection(t *testing.T) {
-	err := Eth_GetBalance(HTTPConnection())
+	bal, err := connection.Eth.GetBalance("0xcEB0030d28C591Be1679bAe40CcD3fe7fBbBCe07", block.LATEST)
 
 	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
+
+	t.Log(bal)
+
 }

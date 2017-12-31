@@ -13,29 +13,35 @@
 *********************************************************************************/
 
 /**
- * @file personal-newaccount_test.go
+ * @file eth-mining_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+
 package test
 
 import (
 	"testing"
 
-	"github.com/regcostajr/go-web3"
+	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestPersonalNewAccount(t *testing.T) {
+func TestEthMining(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
-	address, err := connection.Personal.NewAccount("password")
+
+	isMining, err := connection.Eth.IsMining()
 
 	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	if !isMining {
 		t.Error(err)
 		t.Fail()
 	}
 
-	t.Log(address)
 }

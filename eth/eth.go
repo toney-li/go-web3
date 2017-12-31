@@ -88,7 +88,7 @@ func (eth *Eth) IsSyncing() (*dto.SyncingResponse, error) {
 //    - none
 // Returns:
 // 	  - DATA, 20 bytes - the current coinbase address.
-func (eth *Eth) GetCoinbase() (types.ComplexString, error) {
+func (eth *Eth) GetCoinbase() (string, error) {
 
 	pointer := &dto.RequestResult{}
 
@@ -98,7 +98,7 @@ func (eth *Eth) GetCoinbase() (types.ComplexString, error) {
 		return "", err
 	}
 
-	return pointer.ToComplexString()
+	return pointer.ToString()
 
 }
 
@@ -188,17 +188,17 @@ func (eth *Eth) ListAccounts() ([]string, error) {
 //    - none
 // Returns:
 // 	  - QUANTITY - integer of the current block number the client is on.
-func (eth *Eth) GetBlockNumber() (int64, error) {
+func (eth *Eth) GetBlockNumber() (types.ComplexIntResponse, error) {
 
 	pointer := &dto.RequestResult{}
 
 	err := eth.provider.SendRequest(pointer, "eth_blockNumber", nil)
 
 	if err != nil {
-		return 0, err
+		return types.ComplexIntResponse(0), err
 	}
 
-	return pointer.ToInt()
+	return pointer.ToComplexIntResponse()
 
 }
 
@@ -237,7 +237,7 @@ func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (types.
 // 	  - DATA - the value at this storage position.
 func (eth *Eth) GetStorageAt(address string, position types.ComplexIntParameter, defaultBlockParameter string) (string, error) {
 
-	params := make([]string, 2)
+	params := make([]string, 3)
 	params[0] = address
 	params[1] = position.ToHex()
 	params[2] = defaultBlockParameter
@@ -261,7 +261,7 @@ func (eth *Eth) GetStorageAt(address string, position types.ComplexIntParameter,
 // 		upper bound. As a result the returned estimate might not be enough to executed the call/transaction when the amount of gas is higher than the pending block gas limit.
 // Returns:
 //    - QUANTITY - the amount of gas used.
-func (eth *Eth) EstimateGas(from string, to string, value types.ComplexIntParameter, hexData types.ComplexString) (int64, error) {
+func (eth *Eth) EstimateGas(from string, to string, value types.ComplexIntParameter, hexData types.ComplexString) (types.ComplexIntResponse, error) {
 
 	params := make([]dto.TransactionParameters, 1)
 
@@ -275,10 +275,10 @@ func (eth *Eth) EstimateGas(from string, to string, value types.ComplexIntParame
 	err := eth.provider.SendRequest(&pointer, "eth_estimateGas", params)
 
 	if err != nil {
-		return 0, err
+		return types.ComplexIntResponse(0), err
 	}
 
-	return pointer.ToInt()
+	return pointer.ToComplexIntResponse()
 
 }
 
@@ -390,10 +390,10 @@ func (eth *Eth) CompileSolidity(sourceCode string) (types.ComplexString, error) 
 //    - gasUsed: 				QUANTITY - The amount of gas used by this specific transaction alone.
 //    - contractAddress: 		DATA, 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null.
 //    - logs: 					Array - Array of log objects, which this transaction generated.
-func (eth *Eth) GetTransactionReceipt(sourceCode string) (*dto.TransactionReceipt, error) {
+func (eth *Eth) GetTransactionReceipt(hash string) (*dto.TransactionReceipt, error) {
 
 	params := make([]string, 1)
-	params[0] = sourceCode
+	params[0] = hash
 
 	pointer := &dto.RequestResult{}
 

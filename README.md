@@ -16,21 +16,21 @@ This package is currently under active development. It is not already stable and
 
 TODO List
 
-- [X] web3_clientVersion                      
+- [x] web3_clientVersion                      
 - [x] web3_sha3                               
 - [x] net_version                             
 - [x] net_peerCount                           
 - [x] net_listening                           
 - [x] eth_protocolVersion                     
-- [ ] eth_syncing                             
-- [ ] eth_coinbase                            
-- [ ] eth_mining                              
-- [ ] eth_hashrate                            
-- [ ] eth_gasPrice                            
-- [ ] eth_accounts                            
-- [ ] eth_blockNumber                         
-- [X] eth_getBalance                          
-- [ ] eth_getStorageAt                        
+- [x] eth_syncing                             
+- [x] eth_coinbase                            
+- [x] eth_mining                              
+- [x] eth_hashrate                            
+- [x] eth_gasPrice                            
+- [x] eth_accounts                            
+- [x] eth_blockNumber                         
+- [x] eth_getBalance                          
+- [x] eth_getStorageAt (deprecated)
 - [ ] eth_getTransactionCount                 
 - [ ] eth_getBlockTransactionCountByHash      
 - [ ] eth_getBlockTransactionCountByNumber    
@@ -38,21 +38,21 @@ TODO List
 - [ ] eth_getUncleCountByBlockNumber          
 - [ ] eth_getCode                             
 - [ ] eth_sign                                
-- [ ] eth_sendTransaction                     
+- [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) eth_sendTransaction                     
 - [ ] eth_sendRawTransaction                  
 - [ ] eth_call                                
-- [ ] eth_estimateGas                         
+- [x] eth_estimateGas                         
 - [ ] eth_getBlockByHash                      
 - [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) eth_getBlockByNumber                    
-- [ ] eth_getTransactionByHash                
+- [x] eth_getTransactionByHash                
 - [ ] eth_getTransactionByBlockHashAndIndex   
 - [ ] eth_getTransactionByBlockNumberAndIndex 
-- [ ] eth_getTransactionReceipt               
+- [x] eth_getTransactionReceipt               
 - [ ] eth_getUncleByBlockHashAndIndex         
 - [ ] eth_getUncleByBlockNumberAndIndex       
 - [ ] eth_getCompilers                        
 - [ ] eth_compileLLL                          
-- [ ] eth_compileSolidity                     
+- [x] eth_compileSolidity (deprecated)                    
 - [ ] eth_compileSerpent                      
 - [ ] eth_newFilter                           
 - [ ] eth_newBlockFilter                      
@@ -78,10 +78,10 @@ TODO List
 - [ ] shh_uninstallFilter                     
 - [ ] shh_getFilterChanges                    
 - [ ] shh_getMessages                         
-- [X] personal_listAccounts                   
-- [X] personal_newAccount                     
+- [x] personal_listAccounts                   
+- [x] personal_newAccount                     
 - [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) personal_sendTransaction                
-- [X] personal_unlockAccount                  
+- [x] personal_unlockAccount                  
 
 ## Installation
 

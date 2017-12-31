@@ -28,9 +28,12 @@ import (
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Net_Version(connection *web3.Web3) error {
+func TestNetVersion(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
 	//Possible options
 	po := []string{"1", "2", "3", "4", "42"}
@@ -38,31 +41,15 @@ func Net_Version(connection *web3.Web3) error {
 	version, err := connection.Net.GetVersion()
 
 	if err != nil {
-		return err
+		t.Error(err)
+		t.FailNow()
 	}
+
 	fmt.Println(version)
 
 	if found := sort.SearchStrings(po, version); found < len(po) && po[found] != version {
-		return errors.New("Invalid network")
-	}
-
-	return nil
-}
-
-func TestNetVersion_IPCConnection(t *testing.T) {
-	err := Net_Version(IPCConnection())
-
-	if err != nil {
-		t.Error(err)
+		t.Error(errors.New("Invalid network"))
 		t.Fail()
 	}
-}
 
-func TestNetVersion_HTTPConnection(t *testing.T) {
-	err := Net_Version(HTTPConnection())
-
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
 }

@@ -21,19 +21,22 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Personal_SendTransaction(connection *web3.Web3) error {
+func TestPersonalSendTransaction(t *testing.T) {
 
-	accounts, err := listPersonalAccounts(connection)
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+
+	accounts, err := connection.Personal.ListAccounts()
 
 	if err != nil {
-		return err
+		t.Error(err)
+		t.FailNow()
 	}
 
 	account := accounts[0]
@@ -42,26 +45,10 @@ func Personal_SendTransaction(connection *web3.Web3) error {
 	txID, err := connection.Personal.SendTransaction(account, account, value, types.ComplexString("go test"), "password")
 
 	if err != nil {
-		return err
-	}
-
-	fmt.Println(txID)
-
-	return nil
-}
-
-func TestPersonal_SendTransaction_IPCConnection(t *testing.T) {
-	err := Personal_SendTransaction(IPCConnection())
-	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
-}
 
-func TestPersonal_SendTransaction_HTTPConnection(t *testing.T) {
-	err := Personal_SendTransaction(HTTPConnection())
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
+	t.Log(txID)
+
 }

@@ -22,39 +22,22 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Web3_ClientVersion(connection *web3.Web3) error {
+func TestWeb3ClientVersion(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
 	client, err := connection.ClientVersion()
 
-	fmt.Println(client)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func TestWeb3ClientVersion_IPCConnection(t *testing.T) {
-	err := Web3_ClientVersion(IPCConnection())
-
 	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
-}
 
-func TestWeb3ClientVersion_HTTPConnection(t *testing.T) {
-	err := Web3_ClientVersion(HTTPConnection())
-
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
+	t.Log(client)
 }

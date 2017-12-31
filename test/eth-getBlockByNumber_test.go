@@ -1,17 +1,40 @@
+/********************************************************************************
+   This file is part of go-web3.
+   go-web3 is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   go-web3 is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
+   You should have received a copy of the GNU Lesser General Public License
+   along with go-web3.  If not, see <http://www.gnu.org/licenses/>.
+*********************************************************************************/
+
+/**
+ * @file eth-getBlockByNumber_test.go
+ * @authors:
+ *   Jérôme Laurens <jeromelaurens@gmail.com>
+ * @date 2017
+ */
+
 package test
 
 import (
-	"errors"
-	"fmt"
 	"strings"
 	"testing"
 	"time"
 
 	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Eth_GetBlockByNumber(connection *web3.Web3) error {
+func TestEthGetBlockByNumber(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+
 	//previous block Dec-09-2017 10:28:29 AM +UTC
 	//Dec-09-2017 10:28:31 AM +UTC should be block 4701754, hash 0xaec14e98d578351a23d5ab40f65ee431063f582b5d736bbc0705a2eef0fb8f9d
 	//next block Dec-09-2017 10:28:55 AM +UTC
@@ -21,40 +44,27 @@ func Eth_GetBlockByNumber(connection *web3.Web3) error {
 	block, err := connection.Eth.GetBlockByNumber(blockNumber, false)
 
 	if err != nil {
-		return err
+		t.Error(err)
+		t.FailNow()
 	}
 	if block == nil {
-		return errors.New("Block returned is nil")
+		t.Error("Block returned is nil")
+		t.FailNow()
 	}
 
 	actualBlockDate := time.Unix(block.Timestamp.ToInt64(), 0)
 	expectedBlockDate := time.Date(2017, 12, 9, 10, 28, 31, 0, time.UTC)
 
 	if strings.Compare(block.Hash, expectedBlockHash) != 0 {
-		return fmt.Errorf("Expected block hash %v, got %v", expectedBlockHash, block.Hash)
+		t.Errorf("Expected block hash %v, got %v", expectedBlockHash, block.Hash)
+		t.FailNow()
 	}
 	if block.Number.ToInt64() != int64(blockNumber) {
-		return fmt.Errorf("Expected block number %v, got %v", blockNumber, block.Number)
+		t.Errorf("Expected block number %v, got %v", blockNumber, block.Number)
+		t.FailNow()
 	}
 	if actualBlockDate.Equal(expectedBlockDate) {
-		return fmt.Errorf("Expected block date %v, got %v", expectedBlockDate, actualBlockDate)
-	}
-
-	return nil
-}
-
-func TestGetBlockByNumber_IPCConnection(t *testing.T) {
-	err := Eth_GetBlockByNumber(IPCConnection())
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
-}
-
-func TestGetBlockByNumber_HTTPConnection(t *testing.T) {
-	err := Eth_GetBlockByNumber(HTTPConnection())
-	if err != nil {
-		t.Error(err)
+		t.Errorf("Expected block date %v, got %v", expectedBlockDate, actualBlockDate)
 		t.Fail()
 	}
 }

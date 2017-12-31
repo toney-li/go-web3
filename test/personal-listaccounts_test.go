@@ -24,30 +24,18 @@ import (
 	"testing"
 
 	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Personal_ListAccounts(connection *web3.Web3) error {
+func TestPersonalListAccounts(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+
 	_, err := connection.Personal.ListAccounts()
 
 	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func TestPersonal_ListAccounts_IPCConnection(t *testing.T) {
-	err := Personal_ListAccounts(IPCConnection())
-	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
-}
 
-func TestPersonal_ListAccounts_HTTPConnection(t *testing.T) {
-	err := Personal_ListAccounts(HTTPConnection())
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
 }

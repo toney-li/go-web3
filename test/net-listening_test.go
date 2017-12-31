@@ -26,37 +26,22 @@ import (
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Net_Listening(connection *web3.Web3) error {
+func TestNetListening(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
 	listening, err := connection.Net.IsListening()
-
-	if err != nil {
-		return err
-	}
-
-	if !listening {
-		return errors.New("Not listening")
-	}
-
-	return nil
-}
-
-func TestNetIsListening_IPCConnection(t *testing.T) {
-	err := Net_Listening(IPCConnection())
 
 	if err != nil {
 		t.Error(err)
 		t.Fail()
 	}
-}
 
-func TestNetIsListening_HTTPConnection(t *testing.T) {
-	err := Net_Listening(HTTPConnection())
-
-	if err != nil {
-		t.Error(err)
+	if !listening {
+		t.Error(errors.New("Not listening"))
 		t.Fail()
 	}
 }

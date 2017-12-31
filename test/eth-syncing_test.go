@@ -25,30 +25,14 @@ import (
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Eth_Syncing(connection *web3.Web3) error {
+func TestEthSyncing(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
 	_, err := connection.Eth.IsSyncing()
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func TestEthIsSyncing_IPCConnection(t *testing.T) {
-	err := Eth_Syncing(IPCConnection())
-
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
-}
-
-func TestEthIsSyncing_HTTPConnection(t *testing.T) {
-	err := Eth_Syncing(HTTPConnection())
 
 	if err != nil {
 		t.Error(err)

@@ -29,7 +29,7 @@ import (
 
 func Test_IPCProvider(t *testing.T) {
 
-	var ethClient = web3.NewWeb3(providers.NewIPCProvider(IPC))
+	var ethClient = web3.NewWeb3(providers.NewIPCProvider("/tmp/ethereum_dev_mode/geth.ipc"))
 
 	var _, error = ethClient.ClientVersion()
 

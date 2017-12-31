@@ -23,46 +23,31 @@ package test
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Web3_Sha3(connection *web3.Web3) error {
+func TestWeb3Sha3(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
 	sha3String, err := connection.Sha3("test")
 
-	fmt.Println(sha3String)
-
 	if err != nil {
-		return err
+		t.Error(err)
+		t.FailNow()
 	}
+
+	t.Log(sha3String)
 
 	result := strings.Compare("0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658", sha3String)
 
 	if result != 0 {
-		return errors.New("Sha3 string not equal calculed hash")
-	}
-
-	return nil
-}
-
-func TestWeb3Sha3_IPCConnection(t *testing.T) {
-	err := Web3_Sha3(IPCConnection())
-
-	if err != nil {
-		t.Error(err)
+		t.Error(errors.New("Sha3 string not equal calculed hash"))
 		t.Fail()
 	}
-}
 
-func TestWeb3Sha3_HTTPConnection(t *testing.T) {
-	err := Web3_Sha3(HTTPConnection())
-
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
 }

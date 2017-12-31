@@ -22,38 +22,23 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
 )
 
-func Net_PeerCount(connection *web3.Web3) error {
+func TestNetPeerCount(t *testing.T) {
+
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
 	peers, err := connection.Net.GetPeerCount()
 
 	if err != nil {
-		return err
-	}
-	fmt.Println(peers.ToInt64())
-
-	return nil
-}
-
-func TestNetPeerCount_IPCConnection(t *testing.T) {
-	err := Net_PeerCount(IPCConnection())
-
-	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
-}
 
-func TestNetPeerCount_HTTPConnection(t *testing.T) {
-	err := Net_PeerCount(HTTPConnection())
+	t.Log(peers.ToInt64())
 
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
 }
