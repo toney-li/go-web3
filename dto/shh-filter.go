@@ -13,19 +13,15 @@
 *********************************************************************************/
 
 /**
- * @file ssh-post.go
+ * @file ssh-filter.go
  * @authors:
- *   Reginaldo Costa <regcostajr@gmail.com>
- * @date 2017
+ *   Alexander Litzenberger <litenbergeralex@gmail.com>
+ * @date 2018
  */
 
 package dto
 
-type SHHPostParameters struct {
-	From     string   `json:"from"`
-	To       string   `json:"to"`
+type SHHFilterParameters struct {
 	Topics   []string `json:"topics"`
-	Payload  string   `json:"payload"`
-	Priority string   `json:"priority"`
-	TTL      string   `json:"ttl"`
+        To       string   `json:"to"`
 }

@@ -73,7 +73,7 @@ func (shh *SHH) GetVersion() (string, error) {
 // 	  - Boolean - returns true if the message was sent, otherwise false.
 func (shh *SHH) Post(from string, to string, topics []string, payload string, priority types.ComplexIntParameter, ttl types.ComplexIntParameter) (bool, error) {
 
-	params := make([]dto.SSHPostParameters, 1)
+	params := make([]dto.SHHPostParameters, 1)
 	params[0].From = from
 	params[0].To = to
 	params[0].Topics = topics
@@ -99,7 +99,7 @@ func (shh *SHH) Post(from string, to string, topics []string, payload string, pr
 //      - None
 // Returns:
 // 	- DATA, 60 Bytes - the address of the new identiy.
-func (ssh *SHH) NewIdentity() {
+func (ssh *SHH) NewIdentity() (string, error) {
 
         pointer := &dto.RequestResult{}
 
@@ -118,7 +118,7 @@ func (ssh *SHH) NewIdentity() {
 //       - None
 // Returns:
 // 	  - Boolean - returns true if the client holds the privatekey for that identity, otherwise false
-func (ssh *SHH) NewIdentity() {
+func (ssh *SHH) NewIdentity() (bool, error) {
 
         pointer := &dto.RequestResult{}
 
@@ -137,7 +137,7 @@ func (ssh *SHH) NewIdentity() {
 //       - None
 // Returns:
 //       - DATA, 60 Bytes - the address of the new group.
-func (ssh *SHH) NewGroup() {
+func (ssh *SHH) NewGroup() (string, error) {
 
         pointer := &dto.RequestResult{}
 
@@ -156,7 +156,7 @@ func (ssh *SHH) NewGroup() {
 //       - Identity: DATA, 60 Bytes - The identity address to add to a group (?).
 // Returns:
 //       - Boolean - returns true if the identity was successfully added to the group, otherwise false
-func (ssh *SHH) AddToGroup(id string) {
+func (ssh *SHH) AddToGroup(id string) (bool, error) {
 
         params := [1]string{id}
 
@@ -172,10 +172,9 @@ func (ssh *SHH) AddToGroup(id string) {
 }
 
 
-// NewFilter - 
+// NewFilter - Creates filter to notify, when client receives whisper message matching the filter options. 
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_newfilter
 // Parameters
-//       - QUANTITY - The filter id.
 //       - Object - The filter options:
 //           to: DATA, 60 Bytes - (optional) Identity of the receiver. When present it 
 //              will try to decrypt any incoming message if the client holds the private key to this identity.
@@ -186,7 +185,11 @@ func (ssh *SHH) AddToGroup(id string) {
 //              [null, A, B] = ANYTHING && A && B null works as a wildcard
 // Returns:
 //       - QUANTITY - The newly created filter.
-func (ssh *SHH) NewFilter() {
+func (ssh *SHH) NewFilter(to string, topics []string) {
+
+        params := make(dto.SHHFilterParameters, 1)
+        params[0].Topics = topics
+        params[0].To = to
 
         pointer := &dto.RequestResult{}
 
@@ -199,13 +202,16 @@ func (ssh *SHH) NewFilter() {
         return pointer.ToString()
 }
 
-// UninstallFilter - 
+// UninstallFilter - Uninstalls a filter with given id. Should always be called when watch is no longer needed. 
+//      Additonally Filters timeout when they aren't requested with shh_getFilterChanges for a period of time.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_uninstallfilter
 // Parameters
 //       - QUANTITY - The filter id.
 // Returns:
 //       - Boolean - true if the filter was successfully uninstalled, otherwise false.
-func (ssh *SHH) UninstallFilter() {
+func (ssh *SHH) UninstallFilter(id string) (bool, filter) {
+
+        params := [1]string{id}
 
         pointer := &dto.RequestResult{}
 
@@ -233,7 +239,9 @@ func (ssh *SHH) UninstallFilter() {
 //              topics: Array of DATA - Array of DATA topics the message contained.
 //              payload: DATA - The payload of the message.
 //              workProved: QUANTITY - Integer of the work this message required before it was sent 
-func (ssh *SHH) GetFilterChanges() {
+func (ssh *SHH) GetFilterChanges(id string)  {
+
+        params := [1]string{id}
 
         pointer := &dto.RequestResult{}
 
@@ -243,13 +251,13 @@ func (ssh *SHH) GetFilterChanges() {
                 return nil, err
         }
 
-        return pointer.???
+        return pointer.ToMessageArray()
 }
 
 // GetMessages - Get all messages matching a filter. Unlike shh_getFilterChanges this returns all messages.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_getmessages
 // Parameters
-//       - QUANTITY - The filter id.y
+//       - QUANTITY - The filter id
 // Returns:
 //       - Array - Array of messages received since last poll:
 //              hash: DATA, 32 Bytes (?) - The hash of the message.
@@ -261,7 +269,9 @@ func (ssh *SHH) GetFilterChanges() {
 //              topics: Array of DATA - Array of DATA topics the message contained.
 //              payload: DATA - The payload of the message.
 //              workProved: QUANTITY - Integer of the work this message required before it was sent 
-func (ssh *SHH) GetMessages() {
+func (ssh *SHH) GetMessages(id string) {
+
+        params := [1]string{id}
 
         pointer := &dto.RequestResult{}
 
@@ -271,5 +281,5 @@ func (ssh *SHH) GetMessages() {
                 return nil, err
         }
 
-        return pointer.???
+        return pointer.ToMessageArray()
 }

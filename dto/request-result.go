@@ -267,3 +267,14 @@ func (pointer *RequestResult) checkResponse() error {
 	return nil
 
 }
+
+func (pointer *RequestResult) ToSyncingResponse() SHHPostParameters {
+
+        if err := pointer.checkResponse(); err != nil {
+		return nil, err
+	}
+
+        result := (pointer).Result
+
+        return
+}
