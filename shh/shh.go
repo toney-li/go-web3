@@ -22,9 +22,9 @@
 package shh
 
 import (
-	"github.com/regcostajr/go-web3/complex/types"
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/providers"
+	"github.com/alexlitz/go-web3/complex/types"
+	"github.com/alexlitz/go-web3/dto"
+	"github.com/alexlitz/go-web3/providers"
 )
 
 // SHH - The Net Module

@@ -253,15 +253,16 @@ func (pointer *RequestResult) ToSyncingResponse() (*SyncingResponse, error) {
 
 }
 
-func (pointer *RequestResult) ToSyncingResponse() []WhisperMessage {
+func (pointer *RequestResult) ToMessageArray() ([]WhisperMessage, error) {
 
         if err := pointer.checkResponse(); err != nil {
 		return nil, err
 	}
 
-        result := make(WhisperMessage, len((pointer).Result))
+        r := (pointer).Result.([]interface{})
+        result := make([]WhisperMessage, len(r))
 
-        for i, m := range (pointer).Result {
+        for i, m := range r {
             M := m.(map[string]interface{})
             result[i].From = M["from"]
             result[i].To = M["to"]
@@ -271,7 +272,7 @@ func (pointer *RequestResult) ToSyncingResponse() []WhisperMessage {
             result[i].TTL = M["ttl"]
         }
 
-        return result
+        return result, nil
 }
 
 // To avoid a conversion of a nil interface
