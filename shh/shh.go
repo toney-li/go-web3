@@ -27,7 +27,7 @@ import (
 	"github.com/regcostajr/go-web3/providers"
 )
 
-// SSHH - The Net Module
+// SHH - The Net Module
 type SHH struct {
 	provider providers.ProviderInterface
 }
@@ -44,7 +44,7 @@ func NewSHH(provider providers.ProviderInterface) *SHH {
 // Parameters:
 //    - none
 // Returns:
-// 	  - String - The current whisper protocol version
+//    - String - The current whisper protocol version
 func (shh *SHH) GetVersion() (string, error) {
 
 	pointer := &dto.RequestResult{}
@@ -73,7 +73,7 @@ func (shh *SHH) GetVersion() (string, error) {
 // 	  - Boolean - returns true if the message was sent, otherwise false.
 func (shh *SHH) Post(from string, to string, topics []string, payload string, priority types.ComplexIntParameter, ttl types.ComplexIntParameter) (bool, error) {
 
-	params := make([]dto.SHHPostParameters, 1)
+	params := make([]dto.WhisperMessage, 1)
 	params[0].From = from
 	params[0].To = to
 	params[0].Topics = topics
@@ -239,7 +239,7 @@ func (ssh *SHH) UninstallFilter(id string) (bool, filter) {
 //              topics: Array of DATA - Array of DATA topics the message contained.
 //              payload: DATA - The payload of the message.
 //              workProved: QUANTITY - Integer of the work this message required before it was sent 
-func (ssh *SHH) GetFilterChanges(id string)  {
+func (ssh *SHH) GetFilterChanges(id string) []dto.WhisperMessage {
 
         params := [1]string{id}
 
@@ -269,7 +269,7 @@ func (ssh *SHH) GetFilterChanges(id string)  {
 //              topics: Array of DATA - Array of DATA topics the message contained.
 //              payload: DATA - The payload of the message.
 //              workProved: QUANTITY - Integer of the work this message required before it was sent 
-func (ssh *SHH) GetMessages(id string) {
+func (ssh *SHH) GetMessages(id string) []dto.WhisperMessage {
 
         params := [1]string{id}
 

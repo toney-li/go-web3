@@ -21,7 +21,7 @@
 
 package dto
 
-type SHHPostParameters struct {
+type WhisperMessage struct {
 	From     string   `json:"from"`
 	To       string   `json:"to"`
 	Topics   []string `json:"topics"`

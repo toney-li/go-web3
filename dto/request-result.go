@@ -253,6 +253,27 @@ func (pointer *RequestResult) ToSyncingResponse() (*SyncingResponse, error) {
 
 }
 
+func (pointer *RequestResult) ToSyncingResponse() []WhisperMessage {
+
+        if err := pointer.checkResponse(); err != nil {
+		return nil, err
+	}
+
+        result := make(WhisperMessage, len((pointer).Result))
+
+        for i, m := range (pointer).Result {
+            M := m.(map[string]interface{})
+            result[i].From = M["from"]
+            result[i].To = M["to"]
+            result[i].Topics = M["topics"]
+            result[i].Payload = M["payload"]
+            result[i].Priority = M["priority"]
+            result[i].TTL = M["ttl"]
+        }
+
+        return result
+}
+
 // To avoid a conversion of a nil interface
 func (pointer *RequestResult) checkResponse() error {
 
@@ -268,13 +289,3 @@ func (pointer *RequestResult) checkResponse() error {
 
 }
 
-func (pointer *RequestResult) ToSyncingResponse() SHHPostParameters {
-
-        if err := pointer.checkResponse(); err != nil {
-		return nil, err
-	}
-
-        result := (pointer).Result
-
-        return
-}
