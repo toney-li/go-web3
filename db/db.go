@@ -22,8 +22,8 @@
 package db
 
 import (
-	"github.com/alexlitz/go-web3/dto"
-	"github.com/alexlitz/go-web3/providers"
+	"github.com/regcostajr/go-web3/dto"
+	"github.com/regcostajr/go-web3/providers"
 )
 
 // DB - The DB Module
