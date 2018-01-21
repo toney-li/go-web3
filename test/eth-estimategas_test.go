@@ -25,7 +25,7 @@ import (
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 )
 
@@ -40,13 +40,19 @@ func TestEstimateGas(t *testing.T) {
 		t.FailNow()
 	}
 
-	gas, err := connection.Eth.EstimateGas(accounts[0], accounts[0], 1000, types.ComplexString("test"))
+	transaction := new(dto.TransactionParameters)
+	transaction.Data = "test"
+	transaction.From = accounts[0]
+	transaction.To = accounts[1]
+	transaction.Value = 10
+	transaction.Gas = 40000
+
+	gas, err := connection.Eth.EstimateGas(transaction)
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-
 	t.Log(gas)
 
 }

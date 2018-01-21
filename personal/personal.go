@@ -22,7 +22,6 @@
 package personal
 
 import (
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 )
@@ -100,15 +99,11 @@ func (personal *Personal) NewAccount(password string) (string, error) {
 //    2. String - Passphrase to unlock the from account.
 // Returns:
 //    - Data - 32 Bytes - the transaction hash, or the zero hash if the transaction is not yet available
-func (personal *Personal) SendTransaction(from string, to string, value types.ComplexIntParameter, hexData types.ComplexString, password string) (string, error) {
+func (personal *Personal) SendTransaction(transaction *dto.TransactionParameters, password string) (string, error) {
 
 	params := make([]interface{}, 2)
 
-	transactionParameters := &dto.TransactionParameters{}
-	transactionParameters.From = from
-	transactionParameters.To = to
-	transactionParameters.Value = value.ToHex()
-	transactionParameters.Data = hexData.ToHex()
+	transactionParameters := transaction.Transform()
 
 	params[0] = transactionParameters
 	params[1] = password

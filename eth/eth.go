@@ -261,14 +261,11 @@ func (eth *Eth) GetStorageAt(address string, position types.ComplexIntParameter,
 // 		upper bound. As a result the returned estimate might not be enough to executed the call/transaction when the amount of gas is higher than the pending block gas limit.
 // Returns:
 //    - QUANTITY - the amount of gas used.
-func (eth *Eth) EstimateGas(from string, to string, value types.ComplexIntParameter, hexData types.ComplexString) (types.ComplexIntResponse, error) {
+func (eth *Eth) EstimateGas(transaction *dto.TransactionParameters) (types.ComplexIntResponse, error) {
 
-	params := make([]dto.TransactionParameters, 1)
+	params := make([]*dto.RequestTransactionParameters, 1)
 
-	params[0].From = from
-	params[0].To = to
-	params[0].Value = value.ToHex()
-	params[0].Data = hexData.ToHex()
+	params[0] = transaction.Transform()
 
 	pointer := &dto.RequestResult{}
 
@@ -330,14 +327,10 @@ func (eth *Eth) GetTransactionByHash(hash string) (*dto.TransactionResponse, err
 // Returns:
 //	  - DATA, 32 Bytes - the transaction hash, or the zero hash if the transaction is not yet available.
 // Use eth_getTransactionReceipt to get the contract address, after the transaction was mined, when you created a contract.
-func (eth *Eth) SendTransaction(from string, to string, value types.ComplexIntParameter, stringData types.ComplexString) (string, error) {
+func (eth *Eth) SendTransaction(transaction *dto.TransactionParameters) (string, error) {
 
-	params := make([]dto.TransactionParameters, 1)
-
-	params[0].From = from
-	params[0].To = to
-	params[0].Value = value.ToHex()
-	params[0].Data = stringData.ToHex()
+	params := make([]*dto.RequestTransactionParameters, 1)
+	params[0] = transaction.Transform()
 
 	pointer := &dto.RequestResult{}
 

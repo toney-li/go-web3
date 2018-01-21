@@ -21,15 +21,56 @@
 
 package dto
 
-import "github.com/regcostajr/go-web3/complex/types"
+import (
+	"github.com/regcostajr/go-web3/complex/types"
+)
 
+// TransactionParameters GO transaction to make more easy controll the parameters
 type TransactionParameters struct {
+	From     string
+	To       string
+	Gas      types.ComplexIntParameter
+	GasPrice types.ComplexIntParameter
+	Value    types.ComplexIntParameter
+	Data     types.ComplexString
+}
+
+// RequestTransactionParameters JSON
+type RequestTransactionParameters struct {
 	From     string `json:"from"`
 	To       string `json:"to"`
 	Gas      string `json:"gas,omitempty"`
 	GasPrice string `json:"gasPrice,omitempty"`
 	Value    string `json:"value"`
 	Data     string `json:"data,omitempty"`
+}
+
+// Transform the GO transactions parameters to json style
+func (params *TransactionParameters) Transform() *RequestTransactionParameters {
+	request := new(RequestTransactionParameters)
+	request.From = params.From
+	request.To = params.To
+	if params.Gas != 0 {
+		request.Gas = params.Gas.ToHex()
+	} else {
+		request.Gas = "0x0"
+	}
+	if params.GasPrice != 0 {
+		request.GasPrice = params.GasPrice.ToHex()
+	} else {
+		request.GasPrice = "0x0"
+	}
+	if params.Value != 0 {
+		request.Value = params.Value.ToHex()
+	} else {
+		request.Value = "0x0"
+	}
+	if params.Data != "" {
+		request.Data = params.Data.ToHex()
+	} else {
+		request.Data = "0x0"
+	}
+	return request
 }
 
 type TransactionResponse struct {
