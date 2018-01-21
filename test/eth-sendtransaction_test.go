@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file personal-sendtransaction_test.go
+ * @file eth-sendtransaction_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -28,11 +28,11 @@ import (
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestPersonalSendTransaction(t *testing.T) {
+func TestEthSendTransaction(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	accounts, err := connection.Personal.ListAccounts()
+	accounts, err := connection.Eth.ListAccounts()
 
 	if err != nil {
 		t.Error(err)
@@ -46,7 +46,7 @@ func TestPersonalSendTransaction(t *testing.T) {
 	transaction.Value = 10
 	transaction.Gas = 40000
 
-	txID, err := connection.Personal.SendTransaction(transaction, "password")
+	txID, err := connection.Eth.SendTransaction(transaction)
 
 	if err != nil {
 		t.Error(err)

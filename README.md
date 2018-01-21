@@ -38,7 +38,7 @@ TODO List
 - [ ] eth_getUncleCountByBlockNumber          
 - [ ] eth_getCode                             
 - [ ] eth_sign                                
-- [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) eth_sendTransaction                     
+- [x] eth_sendTransaction                     
 - [ ] eth_sendRawTransaction                  
 - [ ] eth_call                                
 - [x] eth_estimateGas                         
@@ -80,7 +80,7 @@ TODO List
 - [ ] shh_getMessages                         
 - [x] personal_listAccounts                   
 - [x] personal_newAccount                     
-- [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) personal_sendTransaction                
+- [x] personal_sendTransaction                
 - [x] personal_unlockAccount                  
 
 ## Installation
