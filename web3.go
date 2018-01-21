@@ -37,7 +37,7 @@ const (
 
 // Web3 - The Web3 Module
 type Web3 struct {
-	provider providers.ProviderInterface
+	Provider providers.ProviderInterface
 	Eth      *eth.Eth
 	Net      *net.Net
 	Personal *personal.Personal
@@ -49,7 +49,7 @@ func NewWeb3(provider providers.ProviderInterface) *Web3 {
 	web3.Eth = eth.NewEth(provider)
 	web3.Net = net.NewNet(provider)
 	web3.Personal = personal.NewPersonal(provider)
-	web3.provider = provider
+	web3.Provider = provider
 	return web3
 }
 
@@ -63,7 +63,7 @@ func (web Web3) ClientVersion() (string, error) {
 
 	pointer := &dto.RequestResult{}
 
-	err := web.provider.SendRequest(pointer, "web3_clientVersion", nil)
+	err := web.Provider.SendRequest(pointer, "web3_clientVersion", nil)
 
 	if err != nil {
 		return "", err
@@ -85,7 +85,7 @@ func (web Web3) Sha3(data types.ComplexString) (string, error) {
 
 	pointer := &dto.RequestResult{}
 
-	err := web.provider.SendRequest(pointer, "web3_sha3", params)
+	err := web.Provider.SendRequest(pointer, "web3_sha3", params)
 
 	if err != nil {
 		return "", err

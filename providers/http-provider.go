@@ -88,3 +88,5 @@ func (provider HTTPProvider) SendRequest(v interface{}, method string, params in
 	return json.Unmarshal(bodyBytes, v)
 
 }
+
+func (provider HTTPProvider) Close() error { return nil }

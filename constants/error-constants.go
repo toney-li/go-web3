@@ -28,4 +28,6 @@ var (
 	EMPTYRESPONSE = errors.New("Empty response")
 	// UNPARSEABLEINTERFACE - the conversion failed
 	UNPARSEABLEINTERFACE = errors.New("Unparseable Interface")
+	// WEBSOCKETNOTDENIFIED - Websocket connection dont exist
+	WEBSOCKETNOTDENIFIED = errors.New("Websocket connection dont exist")
 )
