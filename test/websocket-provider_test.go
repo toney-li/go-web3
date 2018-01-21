@@ -13,15 +13,35 @@
 *********************************************************************************/
 
 /**
- * @file provider-interface.go
+ * @file websocket-provider_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
- * @date 2017
+ * @date 2018
  */
+package test
 
-package providers
+import (
+	"testing"
 
-type ProviderInterface interface {
-	SendRequest(v interface{}, method string, params interface{}) error
-	Close() error
+	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
+)
+
+func Test_WebSocketProvider(t *testing.T) {
+
+	var ethClient = web3.NewWeb3(providers.NewWebSocketProvider("ws://127.0.0.1:8546"))
+
+	for index := 0; index < 100; index++ {
+
+		var _, error = ethClient.ClientVersion()
+
+		if error != nil {
+			t.Error(error)
+			t.Fail()
+		}
+
+	}
+
+	ethClient.Provider.Close()
+
 }

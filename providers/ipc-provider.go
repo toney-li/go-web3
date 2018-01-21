@@ -71,3 +71,5 @@ func (provider IPCProvider) SendRequest(v interface{}, method string, params int
 	return nil
 
 }
+
+func (provider IPCProvider) Close() error { return nil }

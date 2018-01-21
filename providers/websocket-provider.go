@@ -21,12 +21,53 @@
 
 package providers
 
+import (
+	"math/rand"
+
+	"github.com/regcostajr/go-web3/constants"
+
+	"github.com/regcostajr/go-web3/providers/util"
+	"golang.org/x/net/websocket"
+)
+
 type WebSocketProvider struct {
 	address string
+	ws      *websocket.Conn
 }
 
 func NewWebSocketProvider(address string) *WebSocketProvider {
 	provider := new(WebSocketProvider)
 	provider.address = address
 	return provider
+}
+
+func (provider WebSocketProvider) SendRequest(v interface{}, method string, params interface{}) error {
+
+	bodyString := util.JSONRPCObject{Version: "2.0", Method: method, Params: params, ID: rand.Intn(100)}
+
+	if provider.ws == nil {
+		ws, err := websocket.Dial(provider.address, "", provider.address)
+		if err != nil {
+			return err
+		}
+		provider.ws = ws
+	}
+
+	message := []byte(bodyString.AsJsonString())
+	_, err := provider.ws.Write(message)
+	if err != nil {
+		return err
+	}
+
+	return websocket.JSON.Receive(provider.ws, v)
+
+}
+
+func (provider WebSocketProvider) Close() error {
+	if provider.ws != nil {
+		return provider.ws.Close()
+	}
+
+	return customerror.WEBSOCKETNOTDENIFIED
+
 }
