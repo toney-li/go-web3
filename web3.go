@@ -22,12 +22,12 @@
 package web3
 
 import (
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth"
 	"github.com/regcostajr/go-web3/net"
 	"github.com/regcostajr/go-web3/personal"
 	"github.com/regcostajr/go-web3/providers"
+	"github.com/regcostajr/go-web3/utils"
 )
 
 // Coin - Ethereum value unity value
@@ -41,15 +41,17 @@ type Web3 struct {
 	Eth      *eth.Eth
 	Net      *net.Net
 	Personal *personal.Personal
+	Utils    *utils.Utils
 }
 
 // NewWeb3 - Web3 Module constructor to set the default provider, Eth, Net and Personal
 func NewWeb3(provider providers.ProviderInterface) *Web3 {
 	web3 := new(Web3)
+	web3.Provider = provider
 	web3.Eth = eth.NewEth(provider)
 	web3.Net = net.NewNet(provider)
 	web3.Personal = personal.NewPersonal(provider)
-	web3.Provider = provider
+	web3.Utils = utils.NewUtils(provider)
 	return web3
 }
 
@@ -64,28 +66,6 @@ func (web Web3) ClientVersion() (string, error) {
 	pointer := &dto.RequestResult{}
 
 	err := web.Provider.SendRequest(pointer, "web3_clientVersion", nil)
-
-	if err != nil {
-		return "", err
-	}
-
-	return pointer.ToString()
-
-}
-
-// Sha3 - Returns Keccak-256 (not the standardized SHA3-256) of the given data.
-// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#web3_sha3
-//    - DATA - the data to convert into a SHA3 hash
-// Returns:
-// 	  - DATA - The SHA3 result of the given string.
-func (web Web3) Sha3(data types.ComplexString) (string, error) {
-
-	params := make([]string, 1)
-	params[0] = data.ToHex()
-
-	pointer := &dto.RequestResult{}
-
-	err := web.Provider.SendRequest(pointer, "web3_sha3", params)
 
 	if err != nil {
 		return "", err

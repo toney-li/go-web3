@@ -20,3 +20,43 @@
  */
 
 package utils
+
+import (
+	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/dto"
+	"github.com/regcostajr/go-web3/providers"
+)
+
+// Utils - The Utils Module
+type Utils struct {
+	provider providers.ProviderInterface
+}
+
+// NewUtils - Utils Module constructor to set the default provider
+func NewUtils(provider providers.ProviderInterface) *Utils {
+	utils := new(Utils)
+	utils.provider = provider
+	return utils
+}
+
+// Sha3 - Returns Keccak-256 (not the standardized SHA3-256) of the given data.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#web3_sha3
+//    - DATA - the data to convert into a SHA3 hash
+// Returns:
+// 	  - DATA - The SHA3 result of the given string.
+func (utils *Utils) Sha3(data types.ComplexString) (string, error) {
+
+	params := make([]string, 1)
+	params[0] = data.ToHex()
+
+	pointer := &dto.RequestResult{}
+
+	err := utils.provider.SendRequest(pointer, "web3_sha3", params)
+
+	if err != nil {
+		return "", err
+	}
+
+	return pointer.ToString()
+
+}
