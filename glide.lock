@@ -1,12 +1,8 @@
-hash: e25fede4b30f3623d5b9f7925e0aeb2ea06ac4295f32dc7d00a5222ab043c53b
-updated: 2018-02-18T12:53:54.28307949+08:00
+hash: f2c453c5b9537d928f111bacc8b3c474c2f68314cff27a58c6139b4afbd826de
+updated: 2018-02-19T15:51:57.089135498Z
 imports:
-- name: github.com/ethereum/go-ethereum
-  version: 198ef97108ec257d49a7b593a9c6fe49961319c0
-  subpackages:
-  - core
 - name: golang.org/x/net
-  version: 136a25c244d3019482a795d728110278d6ba09a4
+  version: cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb
   subpackages:
   - websocket
 testImports: []

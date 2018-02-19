@@ -3,7 +3,3 @@ import:
 - package: golang.org/x/net
   subpackages:
   - websocket
-- package: github.com/ethereum/go-ethereum
-  version: ^2.0.0
-  subpackages:
-  - core
