@@ -40,7 +40,7 @@ TODO List
 - [ ] eth_sign                                
 - [x] eth_sendTransaction                     
 - [ ] eth_sendRawTransaction                  
-- [ ] eth_call                                
+- [x] eth_call                                
 - [x] eth_estimateGas                         
 - [ ] eth_getBlockByHash                      
 - [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) eth_getBlockByNumber                    

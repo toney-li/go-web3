@@ -32,7 +32,7 @@ type TransactionParameters struct {
 	Gas      types.ComplexIntParameter
 	GasPrice types.ComplexIntParameter
 	Value    types.ComplexIntParameter
-	Data     types.ComplexString
+	Data     string
 }
 
 // RequestTransactionParameters JSON
@@ -66,7 +66,7 @@ func (params *TransactionParameters) Transform() *RequestTransactionParameters {
 		request.Value = "0x0"
 	}
 	if params.Data != "" {
-		request.Data = params.Data.ToHex()
+		request.Data = params.Data
 	} else {
 		request.Data = "0x0"
 	}

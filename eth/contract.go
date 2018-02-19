@@ -81,7 +81,7 @@ func (eth *Eth) NewContract(abi string) (*Contract, error) {
 }
 
 // prepareTransaction ...
-func (contract *Contract) prepareTransaction(transaction *dto.TransactionParameters, functionName string, args ...interface{}) (*dto.TransactionParameters, error) {
+func (contract *Contract) prepareTransaction(transaction *dto.TransactionParameters, functionName string, args []interface{}) (*dto.TransactionParameters, error) {
 
 	function, ok := contract.functions[functionName]
 	if !ok {
@@ -110,24 +110,28 @@ func (contract *Contract) prepareTransaction(transaction *dto.TransactionParamet
 	for index := 0; index < len(function); index++ {
 		switch argType := function[index]; argType {
 		case "address":
-			data += args[index].(string)
+			data += args[index].(string)[2:]
 		default:
 			data += fmt.Sprintf("0x%x", args[index].(string))
 		}
 	}
 
-	transaction.Data = types.ComplexString(sha3Function[0:10] + data)
+	transaction.Data = sha3Function[0:10] + data
 
 	return transaction, nil
 
 }
 
-func (contract *Contract) Call(transaction *dto.TransactionParameters, functionName string, args ...interface{}) (string, error) {
+func returnInterface(interfaces []interface{}) []interface{} {
+	return interfaces
+}
+
+func (contract *Contract) Call(transaction *dto.TransactionParameters, functionName string, args ...interface{}) (*dto.RequestResult, error) {
 
 	transaction, err := contract.prepareTransaction(transaction, functionName, args)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return contract.super.Call(transaction)

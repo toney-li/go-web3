@@ -364,7 +364,7 @@ func (eth *Eth) SendTransaction(transaction *dto.TransactionParameters) (string,
 //	  2. QUANTITY|TAG - integer block number, or the string "latest", "earliest" or "pending", see the default block parameter: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter
 // Returns:
 //	  - DATA - the return value of executed contract.
-func (eth *Eth) Call(transaction *dto.TransactionParameters) (string, error) {
+func (eth *Eth) Call(transaction *dto.TransactionParameters) (*dto.RequestResult, error) {
 
 	params := make([]interface{}, 2)
 	params[0] = transaction.Transform()
@@ -375,12 +375,10 @@ func (eth *Eth) Call(transaction *dto.TransactionParameters) (string, error) {
 	err := eth.provider.SendRequest(&pointer, "eth_call", params)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	response, err := pointer.ToString()
-
-	return response, err
+	return pointer, err
 
 }
 

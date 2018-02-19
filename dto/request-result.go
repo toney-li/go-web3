@@ -71,7 +71,7 @@ func (pointer *RequestResult) ToComplexString() (types.ComplexString, error) {
 
 	result := (pointer).Result.(interface{})
 
-	return result.(types.ComplexString), nil
+	return types.ComplexString(result.(string)), nil
 
 }
 
