@@ -98,8 +98,6 @@ func (contract *Contract) prepareTransaction(transaction *dto.TransactionParamet
 
 	fullFunction += ")"
 
-	fmt.Println(fullFunction)
-
 	utils := utils.NewUtils(contract.super.provider)
 	sha3Function, err := utils.Sha3(types.ComplexString(fullFunction))
 

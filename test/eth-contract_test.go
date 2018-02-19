@@ -40,7 +40,7 @@ func TestEthContract(t *testing.T) {
 
 	coinbase, err := connection.Eth.GetCoinbase()
 	transaction.From = coinbase
-	transaction.To = "0xB8c77482e45F1F44dE1745F52C74426C631bDD52"
+	transaction.To = "0x612fc93ea7f8b34797ee433fe5e55a07b7f34fd0"
 	transaction.Gas = 40000
 
 	_, err = contract.Call(transaction, "name")
