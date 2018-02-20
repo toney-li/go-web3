@@ -104,12 +104,13 @@ import (
 	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
+	"fmt"
 )
 
 func test() {
 
-	web3Client := web3.NewWeb3(providers.NewHTTPProvider("http://127.0.0.1:8545", 10))
-	balance, err := web3Client.Eth.GetBalance("0x00035DB1C858Fe4C2772a779C6fEF0FdB850dE42", block.LATEST)
+	web3Client := web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, true))
+	balance, err := web3Client.Eth.GetBalance("0x24fc5c1c97f838e57c944240fa2ffc18256bc415", block.LATEST)
 
 	if err != nil {
 		fmt.Println(err)
