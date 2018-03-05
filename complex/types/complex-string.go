@@ -39,9 +39,21 @@ func (s ComplexString) ToString() string {
 
 	stringValue := string(s)
 
-	cleaned := strings.Replace(stringValue, "0x", "", -1)
-	sResult, _ := hex.DecodeString(cleaned)
+	sResult, _ := hex.DecodeString(strings.TrimPrefix(stringValue, "0x"))
 
-	return string(sResult)
+	return s.clean(string(sResult))
 
+}
+
+func (s ComplexString) clean(str string) string {
+	b := make([]byte, len(str))
+	var bl int
+	for i := 0; i < len(str); i++ {
+		c := str[i]
+		if c >= 32 && c < 127 {
+			b[bl] = c
+			bl++
+		}
+	}
+	return strings.TrimSpace(string(b[:bl]))
 }

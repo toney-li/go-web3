@@ -23,8 +23,8 @@ package types
 
 import (
 	"fmt"
+	"math/big"
 	"strconv"
-	"strings"
 )
 
 type ComplexIntParameter int64
@@ -39,10 +39,7 @@ type ComplexIntResponse string
 
 func (s ComplexIntResponse) ToUInt64() uint64 {
 
-	stringValue := string(s)
-
-	cleaned := strings.Replace(stringValue, "0x", "", -1)
-	sResult, _ := strconv.ParseUint(cleaned, 16, 64)
+	sResult, _ := strconv.ParseUint(string(s), 16, 64)
 
 	return sResult
 
@@ -50,11 +47,13 @@ func (s ComplexIntResponse) ToUInt64() uint64 {
 
 func (s ComplexIntResponse) ToInt64() int64 {
 
-	stringValue := string(s)
-
-	cleaned := strings.Replace(stringValue, "0x", "", -1)
-	sResult, _ := strconv.ParseInt(cleaned, 16, 64)
+	sResult, _ := strconv.ParseInt(string(s), 16, 64)
 
 	return sResult
 
+}
+
+func (s ComplexIntResponse) ToBigInt() *big.Int {
+	big, _ := new(big.Int).SetString(string(s), 16)
+	return big
 }

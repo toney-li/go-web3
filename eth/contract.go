@@ -56,8 +56,10 @@ func (eth *Eth) NewContract(abi string) (*Contract, error) {
 	for index := 0; index < len(jsonInterface); index++ {
 		function := jsonInterface[index].(map[string]interface{})
 
-		if function["name"] == nil {
-			continue
+		if function["type"] == "constructor" {
+			function["name"] = "constructor"
+		} else if function["type"] == "fallback" {
+			function["name"] = "fallback"
 		}
 
 		functionName := function["name"].(string)
@@ -72,6 +74,7 @@ func (eth *Eth) NewContract(abi string) (*Contract, error) {
 			params := inputs[paramIndex].(map[string]interface{})
 			contract.functions[functionName] = append(contract.functions[functionName], params["type"].(string))
 		}
+
 	}
 
 	contract.abi = abi
@@ -108,22 +111,13 @@ func (contract *Contract) prepareTransaction(transaction *dto.TransactionParamet
 	var data string
 
 	for index := 0; index < len(function); index++ {
-		switch argType := function[index]; argType {
-		case "address":
-			data += args[index].(string)[2:]
-		default:
-			data += fmt.Sprintf("0x%x", args[index].(string))
-		}
+		data += contract.getHexValue(function[index], args[index])
 	}
 
 	transaction.Data = sha3Function[0:10] + data
 
 	return transaction, nil
 
-}
-
-func returnInterface(interfaces []interface{}) []interface{} {
-	return interfaces
 }
 
 func (contract *Contract) Call(transaction *dto.TransactionParameters, functionName string, args ...interface{}) (*dto.RequestResult, error) {
@@ -147,5 +141,34 @@ func (contract *Contract) Send(transaction *dto.TransactionParameters, functionN
 	}
 
 	return contract.super.SendTransaction(transaction)
+
+}
+
+func (contract *Contract) Deploy(transaction *dto.TransactionParameters, bytecode string, args ...interface{}) (string, error) {
+
+	constructor := contract.functions["constructor"]
+
+	for index := 0; index < len(constructor); index++ {
+		bytecode += contract.getHexValue(constructor[index], args[index])
+	}
+
+	transaction.Data = bytecode
+
+	return contract.super.SendTransaction(transaction)
+
+}
+
+func (contract *Contract) getHexValue(inputType string, value interface{}) string {
+
+	var data string
+
+	switch inputType {
+	case "address":
+		data += fmt.Sprintf("%064s", value.(string)[2:])
+	default:
+		data += fmt.Sprintf("%064s", fmt.Sprintf("0x%x", value.(string)))
+	}
+
+	return data
 
 }

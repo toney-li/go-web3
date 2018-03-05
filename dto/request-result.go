@@ -122,7 +122,7 @@ func (pointer *RequestResult) ToComplexIntResponse() (types.ComplexIntResponse, 
 		hex = result.(string)
 	}
 
-	cleaned := strings.Replace(hex, "0x", "", -1)
+	cleaned := strings.TrimPrefix(hex, "0x")
 
 	return types.ComplexIntResponse(cleaned), nil
 
