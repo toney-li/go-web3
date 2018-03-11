@@ -13,46 +13,42 @@
 *********************************************************************************/
 
 /**
- * @file eth-sendtransaction_test.go
+ * @file eth-getBlockByNumber_test.go
  * @authors:
- *   Reginaldo Costa <regcostajr@gmail.com>
+ *   Jérôme Laurens <jeromelaurens@gmail.com>
  * @date 2017
  */
+
 package test
 
 import (
 	"testing"
 
-	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/dto"
+	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestEthSendTransaction(t *testing.T) {
+func TestEthGetBlockByNumber(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	accounts, err := connection.Eth.ListAccounts()
+	blockNumber, err := connection.Eth.GetBlockNumber()
+	
+	block, err := connection.Eth.GetBlockByNumber(types.ComplexIntParameter(blockNumber.ToInt64()), false)
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-
-	transaction := new(dto.TransactionParameters)
-	transaction.Data = "test"
-	transaction.From = accounts[0]
-	transaction.To = accounts[1]
-	transaction.Value = 10
-	transaction.Gas = 40000
-
-	txID, err := connection.Eth.SendTransaction(transaction)
-
-	if err != nil {
-		t.Error(err)
+	if block == nil {
+		t.Error("Block returned is nil")
 		t.FailNow()
 	}
-
-	t.Log(txID)
+	
+	if block.Number.ToInt64() == 0 {
+		t.Error("Block not found")
+		t.FailNow()
+	}
 
 }

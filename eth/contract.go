@@ -56,10 +56,8 @@ func (eth *Eth) NewContract(abi string) (*Contract, error) {
 	for index := 0; index < len(jsonInterface); index++ {
 		function := jsonInterface[index].(map[string]interface{})
 
-		if function["type"] == "constructor" {
-			function["name"] = "constructor"
-		} else if function["type"] == "fallback" {
-			function["name"] = "fallback"
+		if function["type"] == "constructor" || function["type"] == "fallback" {
+			function["name"] = function["type"]
 		}
 
 		functionName := function["name"].(string)
@@ -114,7 +112,7 @@ func (contract *Contract) prepareTransaction(transaction *dto.TransactionParamet
 		data += contract.getHexValue(function[index], args[index])
 	}
 
-	transaction.Data = sha3Function[0:10] + data
+	transaction.Data = types.ComplexString(sha3Function[0:10] + data)
 
 	return transaction, nil
 
@@ -152,7 +150,7 @@ func (contract *Contract) Deploy(transaction *dto.TransactionParameters, bytecod
 		bytecode += contract.getHexValue(constructor[index], args[index])
 	}
 
-	transaction.Data = bytecode
+	transaction.Data = types.ComplexString(bytecode)
 
 	return contract.super.SendTransaction(transaction)
 

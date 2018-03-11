@@ -23,7 +23,6 @@ package test
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 	"testing"
 
@@ -45,7 +44,7 @@ func TestNetVersion(t *testing.T) {
 		t.FailNow()
 	}
 
-	fmt.Println(version)
+	t.Log(version)
 
 	if found := sort.SearchStrings(po, version); found < len(po) && po[found] != version {
 		t.Error(errors.New("Invalid network"))

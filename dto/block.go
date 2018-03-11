@@ -36,21 +36,3 @@ type Block struct {
 	Nonce      types.ComplexIntResponse `json:"nonce"`
 	Timestamp  types.ComplexIntResponse `json:"timestamp"`
 }
-
-// func (block *Block) UnmarshalJSON(d []byte) error {
-// 	fmt.Println("Inside block.UnmarshalJSON")
-// 	type T2 Block // create new type with same structure as BLock but without its method set!
-// 	x := struct {
-// 		T2               // embed
-// 		Timestamp string `json:"timestamp"`
-// 	}{T2: T2(*block)} // don't forget this, if you do and 't' already has some fields set you would lose them
-
-// 	if err := json.Unmarshal(d, &x); err != nil {
-// 		return err
-// 	}
-// 	*block = Block(x.T2)
-// 	var err error = nil
-// 	block.Timestamp, err = strconv.ParseInt(x.Timestamp, 0, 64)
-// 	fmt.Printf("Timestamp en string %v, en int : %v", x.Timestamp, block.Timestamp)
-// 	return err
-// }

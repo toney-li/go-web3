@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file eth-compilesolidity_test.go
+ * @file eth-sendtransaction_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -24,22 +24,34 @@ import (
 	"testing"
 
 	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestEthCompileSolidity(t *testing.T) {
+func TestEthSendTransaction(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	code := "var greeterSource = 'contract mortal { address owner; function mortal() { owner = msg.sender; } function kill() { if (msg.sender == owner) selfdestruct(owner); } } contract greeter is mortal { string greeting; function greeter(string _greeting) public { greeting = _greeting; } function greet() constant returns (string) { return greeting; } }"
-
-	compiled, err := connection.Eth.CompileSolidity(code)
+	coinbase, err := connection.Eth.GetCoinbase()
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	t.Log(compiled.ToString())
+	transaction := new(dto.TransactionParameters)
+	transaction.From = coinbase
+	transaction.To = coinbase
+	transaction.Value = 10
+	transaction.Gas = 40000
+
+	txID, err := connection.Eth.SendTransaction(transaction)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Log(txID)
 
 }

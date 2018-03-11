@@ -130,6 +130,19 @@ More samples in the 'examples' directory.
 [Go installation instructions.](https://golang.org/doc/install)
 
 ## Testing
+
+Node running in dev mode:
+
+```ba
+geth --dev --rpc --rpcapi eth,web3,personal,ssh```
+
+Full test:
+
+```bash
+go test -v test/*.go
+```
+
+Individual test:
 ```bash
 go test -v test/*.go
 ```

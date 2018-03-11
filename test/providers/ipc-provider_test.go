@@ -13,40 +13,28 @@
 *********************************************************************************/
 
 /**
- * @file web3-sha3_test.go
+ * @file ipc-provider_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
-
 package test
 
 import (
-	"errors"
-	"strings"
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestWeb3Sha3(t *testing.T) {
+func Test_IPCProvider(t *testing.T) {
 
-	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+	var ethClient = web3.NewWeb3(providers.NewIPCProvider("/tmp/geth.ipc"))
 
-	sha3String, err := connection.Sha3("test")
+	var _, error = ethClient.ClientVersion()
 
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-
-	t.Log(sha3String)
-
-	result := strings.Compare("0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658", sha3String)
-
-	if result != 0 {
-		t.Error(errors.New("Sha3 string not equal calculed hash"))
+	if error != nil {
+		t.Error(error)
 		t.Fail()
 	}
 

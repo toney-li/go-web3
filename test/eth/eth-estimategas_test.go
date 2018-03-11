@@ -13,35 +13,46 @@
 *********************************************************************************/
 
 /**
- * @file eth-gettransactionreceipt_test.go
+ * @file eth-estimategas_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+
 package test
 
 import (
-	"strings"
 	"testing"
 
-	"github.com/regcostajr/go-web3"
+	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestEthGetTransactionReceipt(t *testing.T) {
+func TestEstimateGas(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	tx, err := connection.Eth.GetTransactionReceipt("0xfd53f3ccf3fb55b0333862b804abc6765d1433141b5a860e978f67794861a79b")
+	coinbase, err := connection.Eth.GetCoinbase()
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	if strings.Compare(tx.ContractAddress, "0x18a672e11d637fffadccc99b152f4895da069601") != 0 {
-		t.Error("Invalid contract address")
+	transaction := new(dto.TransactionParameters)
+	transaction.Data = "test"
+	transaction.From = coinbase
+	transaction.To = coinbase
+	transaction.Value = 10
+	transaction.Gas = 40000
+
+	gas, err := connection.Eth.EstimateGas(transaction)
+
+	if err != nil {
+		t.Error(err)
 		t.FailNow()
 	}
+	t.Log(gas)
 
 }

@@ -345,9 +345,7 @@ func (eth *Eth) SendTransaction(transaction *dto.TransactionParameters) (string,
 		return "", err
 	}
 
-	response, err := pointer.ToString()
-
-	return response, err
+	return pointer.ToString()
 
 }
 

@@ -32,16 +32,16 @@ type TransactionParameters struct {
 	Gas      types.ComplexIntParameter
 	GasPrice types.ComplexIntParameter
 	Value    types.ComplexIntParameter
-	Data     string
+	Data     types.ComplexString
 }
 
 // RequestTransactionParameters JSON
 type RequestTransactionParameters struct {
 	From     string `json:"from"`
-	To       string `json:"to"`
+	To       string `json:"to,omitempty"`
 	Gas      string `json:"gas,omitempty"`
 	GasPrice string `json:"gasPrice,omitempty"`
-	Value    string `json:"value"`
+	Value    string `json:"value,omitempty"`
 	Data     string `json:"data,omitempty"`
 }
 
@@ -49,26 +49,20 @@ type RequestTransactionParameters struct {
 func (params *TransactionParameters) Transform() *RequestTransactionParameters {
 	request := new(RequestTransactionParameters)
 	request.From = params.From
-	request.To = params.To
+	if params.To != "" {
+		request.To = params.To
+	}
 	if params.Gas != 0 {
 		request.Gas = params.Gas.ToHex()
-	} else {
-		request.Gas = "0x0"
 	}
 	if params.GasPrice != 0 {
 		request.GasPrice = params.GasPrice.ToHex()
-	} else {
-		request.GasPrice = "0x0"
 	}
 	if params.Value != 0 {
 		request.Value = params.Value.ToHex()
-	} else {
-		request.Value = "0x0"
 	}
 	if params.Data != "" {
-		request.Data = params.Data
-	} else {
-		request.Data = "0x0"
+		request.Data = params.Data.ToHex()
 	}
 	return request
 }

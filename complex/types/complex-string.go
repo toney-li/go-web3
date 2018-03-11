@@ -30,7 +30,9 @@ import (
 type ComplexString string
 
 func (s ComplexString) ToHex() string {
-
+	if strings.HasPrefix(string(s), "0x") {
+		return string(s)
+	}
 	return fmt.Sprintf("0x%x", s)
 
 }

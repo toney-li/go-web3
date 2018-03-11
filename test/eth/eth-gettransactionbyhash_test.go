@@ -13,27 +13,25 @@
 *********************************************************************************/
 
 /**
- * @file eth-estimategas_test.go
+ * @file personal-gettransactionbyhash_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
-
 package test
 
 import (
-	"testing"
-
-	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
+	"testing"
 )
 
-func TestEstimateGas(t *testing.T) {
+func TestGetTransactionByHash(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	accounts, err := connection.Eth.ListAccounts()
+	coinbase, err := connection.Eth.GetCoinbase()
 
 	if err != nil {
 		t.Error(err)
@@ -41,18 +39,25 @@ func TestEstimateGas(t *testing.T) {
 	}
 
 	transaction := new(dto.TransactionParameters)
-	transaction.Data = "test"
-	transaction.From = accounts[0]
-	transaction.To = accounts[1]
+	transaction.From = coinbase
+	transaction.To = coinbase
 	transaction.Value = 10
 	transaction.Gas = 40000
 
-	gas, err := connection.Eth.EstimateGas(transaction)
+	txID, err := connection.Eth.SendTransaction(transaction)
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	t.Log(gas)
+
+	tx, err := connection.Eth.GetTransactionByHash(txID)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Log(tx.BlockNumber)
 
 }

@@ -13,46 +13,41 @@
 *********************************************************************************/
 
 /**
- * @file personal-sendtransaction_test.go
+ * @file web3-sha3_test.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
+
 package test
 
 import (
+	"errors"
+	"strings"
 	"testing"
 
-	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/dto"
+	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
 )
 
-func TestPersonalSendTransaction(t *testing.T) {
+func TestUtilsSha3(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	accounts, err := connection.Personal.ListAccounts()
+	sha3String, err := connection.Utils.Sha3("test")
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	transaction := new(dto.TransactionParameters)
-	transaction.Data = "test"
-	transaction.From = accounts[0]
-	transaction.To = accounts[1]
-	transaction.Value = 10
-	transaction.Gas = 40000
+	t.Log(sha3String)
 
-	txID, err := connection.Personal.SendTransaction(transaction, "password")
+	result := strings.Compare("0x9c22ff5f21f0b81b113e63f7db6da94fedef11b2119b4088b89664fb9a3cb658", sha3String)
 
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
+	if result != 0 {
+		t.Error(errors.New("Sha3 string not equal calculed hash"))
+		t.Fail()
 	}
-
-	t.Log(txID)
 
 }
