@@ -33,14 +33,9 @@ func TestEthGetBalance(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	_, err := connection.Eth.ListAccounts()
+	coinbase, _ := connection.Eth.GetCoinbase()
 
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-
-	bal, err := connection.Eth.GetBalance("0xcEB0030d28C591Be1679bAe40CcD3fe7fBbBCe07", block.LATEST)
+	bal, err := connection.Eth.GetBalance(coinbase, block.LATEST)
 
 	if err != nil {
 		t.Error(err)

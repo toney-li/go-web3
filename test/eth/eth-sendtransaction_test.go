@@ -24,6 +24,7 @@ import (
 	"testing"
 
 	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 )
@@ -44,6 +45,7 @@ func TestEthSendTransaction(t *testing.T) {
 	transaction.To = coinbase
 	transaction.Value = 10
 	transaction.Gas = 40000
+	transaction.Data = types.ComplexString("p2p transaction")
 
 	txID, err := connection.Eth.SendTransaction(transaction)
 

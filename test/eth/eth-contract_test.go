@@ -112,8 +112,6 @@ func TestEthContract(t *testing.T) {
 		}
 	}
 
-	_, _ = connection.Eth.ListAccounts()
-
 	result, err = contract.Call(transaction, "balanceOf", coinbase)
 	if result != nil && err == nil {
 		balance, _ := result.ToComplexIntResponse()
@@ -122,5 +120,13 @@ func TestEthContract(t *testing.T) {
 			t.FailNow()
 		}
 	}
+
+	hash, err = contract.Send(transaction, "approve", coinbase, 10)
+	if err != nil {
+		t.Errorf("Can't send approve transaction")
+		t.FailNow()
+	}
+
+	t.Log(hash)
 
 }

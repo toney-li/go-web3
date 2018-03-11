@@ -25,9 +25,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
+	"strings"
 
 	"github.com/regcostajr/go-web3/utils"
 )
@@ -160,11 +160,19 @@ func (contract *Contract) getHexValue(inputType string, value interface{}) strin
 
 	var data string
 
-	switch inputType {
-	case "address":
+	if strings.HasPrefix(inputType, "int") ||
+		strings.HasPrefix(inputType, "uint") ||
+		strings.HasPrefix(inputType, "fixed") ||
+		strings.HasPrefix(inputType, "ufixed") {
+		data += fmt.Sprintf("%064s", fmt.Sprintf("%x", value.(int)))
+	}
+
+	if strings.Compare("address", inputType) == 0 {
 		data += fmt.Sprintf("%064s", value.(string)[2:])
-	default:
-		data += fmt.Sprintf("%064s", fmt.Sprintf("0x%x", value.(string)))
+	}
+
+	if strings.Compare("string", inputType) == 0 {
+		data += fmt.Sprintf("%064s", fmt.Sprintf("%x", value.(string)))
 	}
 
 	return data
