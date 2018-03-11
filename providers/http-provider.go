@@ -43,6 +43,7 @@ func NewHTTPProvider(address string, timeout int32, secure bool) *HTTPProvider {
 	provider := new(HTTPProvider)
 	provider.address = address
 	provider.timeout = timeout
+	provider.secure = secure
 	return provider
 }
 

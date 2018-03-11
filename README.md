@@ -8,11 +8,81 @@ which implements the
 
 ## Status
 
-This package is currently under active development. It is not already stable and the infrastructure is not complete and there are still several RPCs left to implement and the API is not stable yet.
+This package is currently under active development. It is not already stable and the infrastructure is not complete and there are still several RPCs left to implement.
+
+## Usage
+
+#### Deploying a contract
+
+```go
+
+bytecode := ... #contract bytecode
+abi := ... #contract abi
+
+var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+contract, err := connection.Eth.NewContract(abi)
+
+transaction := new(dto.TransactionParameters)
+coinbase, err := connection.Eth.GetCoinbase()
+transaction.From = coinbase
+transaction.Gas = 4000000
+
+hash, err := contract.Deploy(transaction, bytecode, nil)
+
+fmt.Println(hash)
+	
+```
+
+#### Using contract public functions
+
+```go
+
+result, err = contract.Call(transaction, "balanceOf", coinbase)
+if result != nil && err == nil {
+	balance, _ := result.ToComplexIntResponse()
+	fmt.Println(balance.ToBigInt())
+}
+	
+```
+
+#### Using contract payable functions
+
+```go
+
+hash, err = contract.Send(transaction, "approve", coinbase, 10)
+	
+```
+
+#### Using RPC commands
+
+GetBalance
+
+```go
+
+balance, err := connection.Eth.GetBalance(coinbase, block.LATEST)
+
+```
+
+SendTransaction
+
+```go
+
+transaction := new(dto.TransactionParameters)
+transaction.From = coinbase
+transaction.To = coinbase
+transaction.Value = 10
+transaction.Gas = 40000
+transaction.Data = types.ComplexString("p2p transaction")
+
+txID, err := connection.Eth.SendTransaction(transaction)
+
+```
+
 
 ## Contribute!
 
 ### In Progress = ![](https://placehold.it/15/FFFF00/000000?text=+)
+### Partially implemented = ![](https://placehold.it/15/008080/000000?text=+)
 
 TODO List
 
@@ -40,10 +110,10 @@ TODO List
 - [ ] eth_sign                                
 - [x] eth_sendTransaction                     
 - [ ] eth_sendRawTransaction                  
-- [ ] eth_call                                
+- [x] eth_call                                
 - [x] eth_estimateGas                         
 - [ ] eth_getBlockByHash                      
-- [ ] ![](https://placehold.it/15/FFFF00/000000?text=+) eth_getBlockByNumber                    
+- [ ] ![](https://placehold.it/15/008080/000000?text=+) eth_getBlockByNumber                    
 - [x] eth_getTransactionByHash                
 - [ ] eth_getTransactionByBlockHashAndIndex   
 - [ ] eth_getTransactionByBlockNumberAndIndex 
@@ -97,42 +167,28 @@ go get -u github.com/regcostajr/go-web3
 glide get github.com/regcostajr/go-web3
 ```
 
-## Usage
-
-```go
-import (
-	web3 "github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/eth/block"
-	"github.com/regcostajr/go-web3/providers"
-	"fmt"
-)
-
-func test() {
-
-	web3Client := web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, true))
-	balance, err := web3Client.Eth.GetBalance("0x24fc5c1c97f838e57c944240fa2ffc18256bc415", block.LATEST)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println(balance)
-
-}
-```
-
-More samples in the 'examples' directory.
-
 ### Requirements
 
 * go ^1.8.3
-
-[Go installation instructions.](https://golang.org/doc/install)
+* golang.org/x/net
 
 ## Testing
+
+Node running in dev mode:
+
 ```bash
-go test -v test/*.go
+geth --dev --ws --wsorigins="*" --rpc --rpcapi eth,web3,personal,ssh,net --mine
+```
+
+Full test:
+
+```bash
+go test -v test/modulename/*.go
+```
+
+Individual test:
+```bash
+go test -v test/modulename/filename.go
 ```
 
 ## License
