@@ -51,7 +51,7 @@ func TestEthContract(t *testing.T) {
 	transaction := new(dto.TransactionParameters)
 	coinbase, err := connection.Eth.GetCoinbase()
 	transaction.From = coinbase
-	transaction.Gas = 4000000
+	transaction.Gas = big.NewInt(4000000)
 
 	hash, err := contract.Deploy(transaction, bytecode, nil)
 

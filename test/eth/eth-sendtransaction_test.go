@@ -27,6 +27,7 @@ import (
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
+	"math/big"
 )
 
 func TestEthSendTransaction(t *testing.T) {
@@ -43,8 +44,8 @@ func TestEthSendTransaction(t *testing.T) {
 	transaction := new(dto.TransactionParameters)
 	transaction.From = coinbase
 	transaction.To = coinbase
-	transaction.Value = 10
-	transaction.Gas = 40000
+	transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
+	transaction.Gas = big.NewInt(40000)
 	transaction.Data = types.ComplexString("p2p transaction")
 
 	txID, err := connection.Eth.SendTransaction(transaction)

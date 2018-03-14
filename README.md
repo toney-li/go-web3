@@ -25,7 +25,7 @@ contract, err := connection.Eth.NewContract(abi)
 transaction := new(dto.TransactionParameters)
 coinbase, err := connection.Eth.GetCoinbase()
 transaction.From = coinbase
-transaction.Gas = 4000000
+transaction.Gas = big.NewInt(4000000)
 
 hash, err := contract.Deploy(transaction, bytecode, nil)
 
@@ -70,8 +70,8 @@ SendTransaction
 transaction := new(dto.TransactionParameters)
 transaction.From = coinbase
 transaction.To = coinbase
-transaction.Value = 10
-transaction.Gas = 40000
+transaction.Value = big.NewInt(10)
+transaction.Gas = big.NewInt(40000)
 transaction.Data = types.ComplexString("p2p transaction")
 
 txID, err := connection.Eth.SendTransaction(transaction)
