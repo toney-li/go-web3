@@ -23,15 +23,16 @@ package dto
 
 import (
 	"github.com/regcostajr/go-web3/complex/types"
+	"math/big"
 )
 
 // TransactionParameters GO transaction to make more easy controll the parameters
 type TransactionParameters struct {
 	From     string
 	To       string
-	Gas      types.ComplexIntParameter
-	GasPrice types.ComplexIntParameter
-	Value    types.ComplexIntParameter
+	Gas      *big.Int
+	GasPrice *big.Int
+	Value    *big.Int
 	Data     types.ComplexString
 }
 
@@ -52,14 +53,14 @@ func (params *TransactionParameters) Transform() *RequestTransactionParameters {
 	if params.To != "" {
 		request.To = params.To
 	}
-	if params.Gas != 0 {
-		request.Gas = params.Gas.ToHex()
+	if params.Gas != nil {
+		request.Gas = "0x" + params.Gas.Text(16)
 	}
-	if params.GasPrice != 0 {
-		request.GasPrice = params.GasPrice.ToHex()
+	if params.GasPrice != nil {
+		request.GasPrice = "0x" + params.GasPrice.Text(16)
 	}
-	if params.Value != 0 {
-		request.Value = params.Value.ToHex()
+	if params.Value != nil {
+		request.Value = "0x" + params.Value.Text(16)
 	}
 	if params.Data != "" {
 		request.Data = params.Data.ToHex()

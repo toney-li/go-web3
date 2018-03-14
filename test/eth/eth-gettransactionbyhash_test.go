@@ -24,6 +24,7 @@ import (
 	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
+	"math/big"
 	"testing"
 )
 
@@ -41,8 +42,8 @@ func TestGetTransactionByHash(t *testing.T) {
 	transaction := new(dto.TransactionParameters)
 	transaction.From = coinbase
 	transaction.To = coinbase
-	transaction.Value = 10
-	transaction.Gas = 40000
+	transaction.Value = big.NewInt(10)
+	transaction.Gas = big.NewInt(40000)
 
 	txID, err := connection.Eth.SendTransaction(transaction)
 

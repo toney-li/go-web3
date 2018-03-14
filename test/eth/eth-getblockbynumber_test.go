@@ -34,7 +34,7 @@ func TestEthGetBlockByNumber(t *testing.T) {
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
 	blockNumber, err := connection.Eth.GetBlockNumber()
-	
+
 	block, err := connection.Eth.GetBlockByNumber(types.ComplexIntParameter(blockNumber.ToInt64()), false)
 
 	if err != nil {
@@ -45,7 +45,7 @@ func TestEthGetBlockByNumber(t *testing.T) {
 		t.Error("Block returned is nil")
 		t.FailNow()
 	}
-	
+
 	if block.Number.ToInt64() == 0 {
 		t.Error("Block not found")
 		t.FailNow()
