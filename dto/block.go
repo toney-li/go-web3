@@ -35,6 +35,7 @@ type Block struct {
 	ParentHash string                   `json:"parentHash"`
 	Author     string                   `json:"author,omitempty"`
 	Miner      string                   `json:"miner,omitempty"`
+	Size       string                   `json:"size"`
 	Nonce      types.ComplexIntResponse `json:"nonce"`
 	Timestamp  types.ComplexIntResponse `json:"timestamp"`
 }
