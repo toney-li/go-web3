@@ -36,6 +36,7 @@ type Block struct {
 	Author     string                   `json:"author,omitempty"`
 	Miner      string                   `json:"miner,omitempty"`
 	Size       string                   `json:"size"`
+	GasUsed    string                   `json:"gasUsed"`
 	Nonce      types.ComplexIntResponse `json:"nonce"`
 	Timestamp  types.ComplexIntResponse `json:"timestamp"`
 }
