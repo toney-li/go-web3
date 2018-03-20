@@ -33,6 +33,8 @@ type Block struct {
 	Number     types.ComplexIntResponse `json:"number"`
 	Hash       string                   `json:"hash"`
 	ParentHash string                   `json:"parentHash"`
+	Author     string                   `json:"author,omitempty"`
+	Miner      string                   `json:"miner,omitempty"`
 	Nonce      types.ComplexIntResponse `json:"nonce"`
 	Timestamp  types.ComplexIntResponse `json:"timestamp"`
 }
