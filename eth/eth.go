@@ -319,7 +319,7 @@ func (eth *Eth) GetTransactionByHash(hash string) (*dto.TransactionResponse, err
 }
 
 // GetTransactionByBlockNumberAndIndex - Returns the information about a transaction requested by bloack index.
-// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionbyhash
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getTransactionByBlockNumberAndIndex
 // Parameters:
 //    - DATA, 32 Bytes - hash of a transaction
 // Returns:
