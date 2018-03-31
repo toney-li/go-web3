@@ -76,6 +76,7 @@ type TransactionResponse struct {
 	TransactionIndex int64                    `json:"transactionIndex"`
 	From             string                   `json:"from"`
 	To               string                   `json:"to"`
+	Input            string                   `json:"input"`
 	Value            types.ComplexIntResponse `json:"value"`
 	GasPrice         types.ComplexIntResponse `json:"gasPrice,omitempty"`
 	Gas              types.ComplexIntResponse `json:"gas,omitempty"`
