@@ -37,13 +37,22 @@ type HTTPProvider struct {
 	address string
 	timeout int32
 	secure  bool
+	client *http.Client
 }
 
 func NewHTTPProvider(address string, timeout int32, secure bool) *HTTPProvider {
+	return NewHTTPProviderWithClient(address, timeout, secure, &http.Client{
+		Timeout: time.Second * time.Duration(timeout),
+	})
+}
+
+func NewHTTPProviderWithClient(address string, timeout int32, secure bool, client *http.Client) *HTTPProvider {
 	provider := new(HTTPProvider)
 	provider.address = address
 	provider.timeout = timeout
 	provider.secure = secure
+	provider.client = client
+
 	return provider
 }
 
@@ -65,11 +74,7 @@ func (provider HTTPProvider) SendRequest(v interface{}, method string, params in
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 
-	var netClient = &http.Client{
-		Timeout: time.Second * time.Duration(provider.timeout),
-	}
-
-	resp, err := netClient.Do(req)
+	resp, err := provider.client.Do(req)
 
 	if err != nil {
 		return err
