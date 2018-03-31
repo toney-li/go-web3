@@ -1,5 +1,7 @@
 # Ethereum Go Client
 
+[![Build Status](https://travis-ci.org/regcostajr/go-web3.svg?branch=master)](https://travis-ci.org/regcostajr/go-web3)
+
 This is a Ethereum compatible Go Client
 which implements the 
 [Eth JSON RPC Module](https://github.com/ethereum/wiki/wiki/JSON-RPC),
