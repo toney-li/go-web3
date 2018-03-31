@@ -72,8 +72,8 @@ type TransactionResponse struct {
 	Hash             string                   `json:"hash"`
 	Nonce            int                      `json:"nonce"`
 	BlockHash        string                   `json:"blockHash"`
-	BlockNumber      int64                    `json:"blockNumber"`
-	TransactionIndex int64                    `json:"transactionIndex"`
+	BlockNumber      types.ComplexIntResponse `json:"blockNumber"`
+	TransactionIndex types.ComplexIntResponse `json:"transactionIndex"`
 	From             string                   `json:"from"`
 	To               string                   `json:"to"`
 	Input            string                   `json:"input"`
