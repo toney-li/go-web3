@@ -384,6 +384,48 @@ func (eth *Eth) SendTransaction(transaction *dto.TransactionParameters) (string,
 
 }
 
+// SignTransaction - Signs transactions without dispatching it to the network. It can be later submitted using eth_sendRawTransaction.
+// Reference: https://wiki.parity.io/JSONRPC-eth-module.html#eth_signtransaction
+// Parameters:
+//    1. Object - The transaction call object
+//    - from: 		DATA, 20 Bytes - The address the transaction is send from.
+//    - to: 		DATA, 20 Bytes - (optional when creating new contract) The address the transaction is directed to.
+//    - gas: 		QUANTITY - (optional, default: 90000) Integer of the gas provided for the transaction execution. It will return unused gas.
+//    - gasPrice: 	QUANTITY - (optional, default: To-Be-Determined) Integer of the gasPrice used for each paid gas
+//    - value: 	    QUANTITY - (optional) Integer of the value send with this transaction
+//    - data: 		DATA - The compiled code of a contract OR the hash of the invoked method signature and encoded parameters. For details see Ethereum Contract ABI (https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI)
+//    - nonce: 	    QUANTITY - (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+// Returns:
+//    1. Object - A transaction sign result object
+//    - raw: DATA - The signed, RLP encoded transaction.
+//    - tx: Object - A transaction object
+//      - hash: DATA, 32 Bytes - hash of the transaction.
+//      - nonce: QUANTITY - the number of transactions made by the sender prior to this one.
+//      - blockHash: DATA, 32 Bytes - hash of the block where this transaction was in. null when its pending.
+//      - blockNumber: QUANTITY - block number where this transaction was in. null when its pending.
+//      - transactionIndex: QUANTITY - integer of the transactions index position in the block. null when its pending.
+//      - from: DATA, 20 Bytes - address of the sender.
+//      - to: DATA, 20 Bytes - address of the receiver. null when its a contract creation transaction.
+//      - value: QUANTITY - value transferred in Wei.
+//      - gasPrice: QUANTITY - gas price provided by the sender in Wei.
+//      - gas: QUANTITY - gas provided by the sender.
+//      - input: DATA - the data send along with the transaction.
+// Use eth_sendRawTransaction to submit the transaction after it was signed.
+func (eth *Eth) SignTransaction(transaction *dto.TransactionParameters) (*dto.SignTransactionResponse, error) {
+	params := make([]*dto.RequestTransactionParameters, 1)
+	params[0] = transaction.Transform()
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(&pointer, "eth_signTransaction", params)
+
+	if err != nil {
+		return &dto.SignTransactionResponse{}, err
+	}
+
+	return pointer.ToSignTransactionResponse()
+}
+
 // Call - Executes a new message call immediately without creating a transaction on the block chain.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call
 // Parameters:

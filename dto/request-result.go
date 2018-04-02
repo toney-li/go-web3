@@ -140,6 +140,30 @@ func (pointer *RequestResult) ToBoolean() (bool, error) {
 
 }
 
+func (pointer *RequestResult) ToSignTransactionResponse() (*SignTransactionResponse, error) {
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
+	}
+
+	result := (pointer).Result.(map[string]interface{})
+
+	if len(result) == 0 {
+		return nil, customerror.EMPTYRESPONSE
+	}
+
+	signTransactionResponse := &SignTransactionResponse{}
+
+	marshal, err := json.Marshal(result)
+
+	if err != nil {
+		return nil, customerror.UNPARSEABLEINTERFACE
+	}
+
+	json.Unmarshal([]byte(marshal), signTransactionResponse)
+
+	return signTransactionResponse, nil
+}
+
 func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, error) {
 
 	if err := pointer.checkResponse(); err != nil {
