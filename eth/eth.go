@@ -392,9 +392,9 @@ func (eth *Eth) SendTransaction(transaction *dto.TransactionParameters) (string,
 //    - to: 		DATA, 20 Bytes - (optional when creating new contract) The address the transaction is directed to.
 //    - gas: 		QUANTITY - (optional, default: 90000) Integer of the gas provided for the transaction execution. It will return unused gas.
 //    - gasPrice: 	QUANTITY - (optional, default: To-Be-Determined) Integer of the gasPrice used for each paid gas
-//    - value: 	    QUANTITY - (optional) Integer of the value send with this transaction
+//    - value: 		QUANTITY - (optional) Integer of the value send with this transaction
 //    - data: 		DATA - The compiled code of a contract OR the hash of the invoked method signature and encoded parameters. For details see Ethereum Contract ABI (https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI)
-//    - nonce: 	    QUANTITY - (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
+//    - nonce: 		QUANTITY - (optional) Integer of a nonce. This allows to overwrite your own pending transactions that use the same nonce.
 // Returns:
 //    1. Object - A transaction sign result object
 //    - raw: DATA - The signed, RLP encoded transaction.
