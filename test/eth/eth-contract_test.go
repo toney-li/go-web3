@@ -101,12 +101,12 @@ func TestEthContract(t *testing.T) {
 		}
 	}
 
-	big, _ := new(big.Int).SetString("00000000000000000000000000000000000000000000021e19e0c9bab2400000", 16)
+	bigInt, _ := new(big.Int).SetString("00000000000000000000000000000000000000000000021e19e0c9bab2400000", 16)
 
 	result, err = contract.Call(transaction, "totalSupply")
 	if result != nil && err == nil {
 		total, _ := result.ToComplexIntResponse()
-		if total.ToBigInt().Cmp(big) != 0 {
+		if total.ToBigInt().Cmp(bigInt) != 0 {
 			t.Errorf("Total not expected")
 			t.FailNow()
 		}
@@ -115,18 +115,25 @@ func TestEthContract(t *testing.T) {
 	result, err = contract.Call(transaction, "balanceOf", coinbase)
 	if result != nil && err == nil {
 		balance, _ := result.ToComplexIntResponse()
-		if balance.ToBigInt().Cmp(big) != 0 {
+		if balance.ToBigInt().Cmp(bigInt) != 0 {
 			t.Errorf("Balance not expected")
 			t.FailNow()
 		}
 	}
 
-	hash, err = contract.Send(transaction, "approve", coinbase, 10)
+	hash, err = contract.Send(transaction, "approve", coinbase, big.NewInt(10))
 	if err != nil {
 		t.Errorf("Can't send approve transaction")
 		t.FailNow()
 	}
 
 	t.Log(hash)
+
+	reallyBigInt, _ := big.NewInt(0).SetString("20000000000000000000000000000000000000000000000000000000000000000", 16)
+	_, err = contract.Send(transaction, "approve", coinbase, reallyBigInt)
+	if err == nil {
+		t.Errorf("Can't send approve transaction")
+		t.FailNow()
+	}
 
 }
