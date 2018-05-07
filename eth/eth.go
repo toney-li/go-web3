@@ -232,6 +232,31 @@ func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (types.
 
 }
 
+
+// GetTransactionCount -  Returns the number of transactions sent from an address.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionaccount
+// Parameters:
+//    - DATA, 20 Bytes - address to check for balance.
+//	  - QUANTITY|TAG - integer block number, or the string "latest", "earliest" or "pending", see the default block parameter: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter
+// Returns:
+// 	  - QUANTITY - integer of the number of transactions sent from this address
+func (eth *Eth) GetTransactionCount(address string, defaultBlockParameter string) (types.ComplexIntResponse, error) {
+
+	params := make([]string, 2)
+	params[0] = address
+	params[1] = defaultBlockParameter
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getTransactionCount", params)
+
+	if err != nil {
+		return "", err
+	}
+
+	return pointer.ToComplexIntResponse()
+}
+
 // GetStorageAt - Returns the value from a storage position at a given address.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getstorageat
 // Parameters:
