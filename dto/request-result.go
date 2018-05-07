@@ -41,9 +41,9 @@ type RequestResult struct {
 }
 
 type Error struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    string `json:"data"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 func (pointer *RequestResult) ToStringArray() ([]string, error) {
