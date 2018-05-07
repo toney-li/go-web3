@@ -50,8 +50,8 @@ func TestEthGetBlockByHash(t *testing.T) {
 	}
 
 	// Ensure it's the same block
-	if (blockByNumber.Number != blockByHash.Number) &&
-		(blockByNumber.Miner != blockByHash.Miner) &&
+	if (blockByNumber.Number != blockByHash.Number) ||
+		(blockByNumber.Miner != blockByHash.Miner) ||
 		(blockByNumber.Hash != blockByHash.Hash) {
 			t.FailNow()
 	}
