@@ -24,10 +24,11 @@ import (
 "testing"
 
 "github.com/regcostajr/go-web3"
-"github.com/regcostajr/go-web3/complex/types"
 "github.com/regcostajr/go-web3/dto"
 "github.com/regcostajr/go-web3/providers"
 "math/big"
+    "time"
+    "github.com/regcostajr/go-web3/complex/types"
 )
 
 func TestGetTransactionByBlockHashAndIndex(t *testing.T) {
@@ -59,39 +60,43 @@ func TestGetTransactionByBlockHashAndIndex(t *testing.T) {
         t.FailNow()
     }
 
-    blockNumber, err := connection.Eth.GetBlockNumber()
-    num := types.ComplexIntParameter(blockNumber.ToInt64())
-    if err != nil {
-        t.Error(err)
-        t.Fail()
-    }
+    time.Sleep(time.Second)
 
-    block, err := connection.Eth.GetBlockByNumber(num, false)
-
-    if err != nil {
-        t.Error(err)
-        t.Fail()
-    }
-
-    index := types.ComplexIntParameter(0)
-    tx, err := connection.Eth.GetTransactionByBlockHashAndIndex(block.Hash, index)
+    txFromHash, err := connection.Eth.GetTransactionByHash(txID)
 
     if err != nil {
         t.Error(err)
         t.FailNow()
     }
 
+    index := types.ComplexIntParameter(txFromHash.TransactionIndex.ToInt64())
+
+    tx, err := connection.Eth.GetTransactionByBlockHashAndIndex(txFromHash.BlockHash, index)
+
+    if err != nil {
+       t.Error(err)
+       t.FailNow()
+    }
+
+    if tx.From != coinbase || tx.To != coinbase || tx.Value.ToInt64() != txVal.Int64() || tx.Hash != txID {
+       t.Errorf("Incorrect transaction from hash and index")
+       t.FailNow()
+    }
+
+
+    // test removing the 0x
+
+    tx, err = connection.Eth.GetTransactionByBlockHashAndIndex(txFromHash.BlockHash[2:], index)
+
+    if err != nil {
+        t.Error(err)
+        t.FailNow()
+    }
 
     if tx.From != coinbase || tx.To != coinbase || tx.Value.ToInt64() != txVal.Int64() || tx.Hash != txID {
         t.Errorf("Incorrect transaction from hash and index")
         t.FailNow()
     }
 
-    t.Log("BLOCK", block.Hash)
-    t.Log("BLOCK", index)
-    t.Log("BLOCK", tx.Hash)
-    t.Log("BLOCK", tx.BlockHash)
-    t.Log("BLOCK", tx.BlockNumber)
-    t.Log("BLOCK", tx.TransactionIndex)
 
 }

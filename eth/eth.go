@@ -346,10 +346,11 @@ func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index types.Compl
 			return nil, errors.New("malformed block hash")
 		}
 	} else {
-		hash = "0x" + hash
-		if len(hash) != 62 {
+		if len(hash) != 64 {
 			return nil, errors.New("malformed block hash")
 		}
+
+		hash = "0x" + hash
 	}
 
 	params := make([]string, 2)
@@ -358,7 +359,7 @@ func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index types.Compl
 
 	pointer := &dto.RequestResult{}
 
-	err := eth.provider.SendRequest(pointer, "eth_getTransactionByBlockNumberAndIndex", params)
+	err := eth.provider.SendRequest(pointer, "eth_getTransactionByBlockHashAndIndex", params)
 
 	if err != nil {
 		return nil, err
