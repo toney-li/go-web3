@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file eth-sendtransaction_test.go
+ * @file eth-gettransactionbyblockhashandindex_test.go
  * @authors:
  *      Sigma Prime <sigmaprime.io>
  * @date 2018
