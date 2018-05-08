@@ -27,6 +27,10 @@ import (
 	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
+	"math/big"
+	"github.com/regcostajr/go-web3/dto"
+	"github.com/regcostajr/go-web3/complex/types"
+	"time"
 )
 
 func TestEthGetTransactionCount(t *testing.T) {
@@ -42,6 +46,48 @@ func TestEthGetTransactionCount(t *testing.T) {
 		t.FailNow()
 	}
 
-	t.Log(count)
+	countTwo, err := connection.Eth.GetTransactionCount(coinbase, block.LATEST)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+
+	// count should not change
+	if count != countTwo {
+		t.Errorf("Count incorrect, changed between calls")
+		t.FailNow()
+	}
+	// send a transaction and the count should increase
+
+	transaction := new(dto.TransactionParameters)
+	transaction.From = coinbase
+	transaction.To = coinbase
+	transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
+	transaction.Gas = big.NewInt(40000)
+	transaction.Data = types.ComplexString("p2p transaction")
+
+	_, err = connection.Eth.SendTransaction(transaction)
+
+	if err != nil {
+		t.Errorf("Failed to send tx")
+		t.FailNow()
+	}
+
+	time.Sleep(time.Second)
+
+	newCount, err := connection.Eth.GetTransactionCount(coinbase, block.LATEST)
+
+	if err != nil {
+	    t.Error(err)
+	    t.FailNow()
+	}
+
+	if newCount.ToInt64() != (countTwo.ToInt64() + 1) {
+		t.Errorf("Incorrect count retrieved")
+		t.FailNow()
+	}
+
 
 }
