@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file eth-getbalance_test.go
+ * @file eth-gettransactioncount_test.go
  * @authors:
  * 		Sigma Prime <sigmaprime.io>
  * @date 2017
