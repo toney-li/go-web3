@@ -26,8 +26,8 @@ import (
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
-	"strings"
 	"errors"
+	"strings"
 )
 
 // Eth - The Eth Module
@@ -232,6 +232,31 @@ func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (types.
 
 	return pointer.ToComplexIntResponse()
 
+}
+
+
+// GetTransactionCount -  Returns the number of transactions sent from an address.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionaccount
+// Parameters:
+//    - DATA, 20 Bytes - address to check for balance.
+//	  - QUANTITY|TAG - integer block number, or the string "latest", "earliest" or "pending", see the default block parameter: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter
+// Returns:
+// 	  - QUANTITY - integer of the number of transactions sent from this address
+func (eth *Eth) GetTransactionCount(address string, defaultBlockParameter string) (types.ComplexIntResponse, error) {
+
+	params := make([]string, 2)
+	params[0] = address
+	params[1] = defaultBlockParameter
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getTransactionCount", params)
+
+	if err != nil {
+		return "", err
+	}
+
+	return pointer.ToComplexIntResponse()
 }
 
 // GetStorageAt - Returns the value from a storage position at a given address.
@@ -588,3 +613,40 @@ func (eth *Eth) GetBlockByNumber(number types.ComplexIntParameter, transactionDe
 
 }
 
+// GetBlockByHash - Returns information about a block by hash.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbyhash
+// Parameters:
+//    - DATA, 32 bytes - Hash of a block
+//    - transactionDetails, bool - indicate if we should have or not the details of the transactions of the block
+// Returns:
+//    1. Object - A block object, or null when no transaction was found
+//    2. error
+func (eth *Eth) GetBlockByHash(hash string, transactionDetails bool) (*dto.Block, error) {
+
+	// ensure that the hash is correctlyformatted
+	if strings.HasPrefix(hash, "0x") {
+		if len(hash) != 66 {
+			return nil, errors.New("malformed block hash")
+		}
+	} else {
+		hash = "0x" + hash
+		if len(hash) != 62 {
+			return nil, errors.New("malformed block hash")
+		}
+	}
+
+	params := make([]interface{}, 2)
+	params[0] = hash
+	params[1] = transactionDetails
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getBlockByHash", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBlock()
+
+}
