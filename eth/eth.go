@@ -26,6 +26,8 @@ import (
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
+	"errors"
+	"strings"
 )
 
 // Eth - The Eth Module
@@ -562,3 +564,40 @@ func (eth *Eth) GetBlockByNumber(number types.ComplexIntParameter, transactionDe
 
 }
 
+// GetBlockByHash - Returns information about a block by hash.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbyhash
+// Parameters:
+//    - DATA, 32 bytes - Hash of a block
+//    - transactionDetails, bool - indicate if we should have or not the details of the transactions of the block
+// Returns:
+//    1. Object - A block object, or null when no transaction was found
+//    2. error
+func (eth *Eth) GetBlockByHash(hash string, transactionDetails bool) (*dto.Block, error) {
+
+	// ensure that the hash is correctlyformatted
+	if strings.HasPrefix(hash, "0x") {
+		if len(hash) != 66 {
+			return nil, errors.New("malformed block hash")
+		}
+	} else {
+		hash = "0x" + hash
+		if len(hash) != 62 {
+			return nil, errors.New("malformed block hash")
+		}
+	}
+
+	params := make([]interface{}, 2)
+	params[0] = hash
+	params[1] = transactionDetails
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getBlockByHash", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBlock()
+
+}
