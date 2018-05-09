@@ -345,9 +345,58 @@ func (eth *Eth) GetTransactionByHash(hash string) (*dto.TransactionResponse, err
 
 }
 
-// GetTransactionByBlockNumberAndIndex - Returns the information about a transaction requested by bloack index.
+// GetTransactionByBlockHashAndIndex - Returns the information about a transaction requested by block hash.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getTransactionByBlockNumberAndIndex
 // Parameters:
+//    - DATA, 32 Bytes - hash of a block
+//    - QUANTITY, number - index of the transaction position
+// Returns:
+//    1. Object - A transaction object, or null when no transaction was found
+//    - hash: DATA, 32 Bytes - hash of the transaction.
+//    - nonce: QUANTITY - the number of transactions made by the sender prior to this one.
+//    - blockHash: DATA, 32 Bytes - hash of the block where this transaction was in. null when its pending.
+//    - blockNumber: QUANTITY - block number where this transaction was in. null when its pending.
+//    - transactionIndex: QUANTITY - integer of the transactions index position in the block. null when its pending.
+//    - from: DATA, 20 Bytes - address of the sender.
+//    - to: DATA, 20 Bytes - address of the receiver. null when its a contract creation transaction.
+//    - value: QUANTITY - value transferred in Wei.
+//    - gasPrice: QUANTITY - gas price provided by the sender in Wei.
+//    - gas: QUANTITY - gas provided by the sender.
+//    - input: DATA - the data send along with the transaction.
+func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index types.ComplexIntParameter) (*dto.TransactionResponse, error) {
+
+	// ensure that the hash is correctlyformatted
+	if strings.HasPrefix(hash, "0x") {
+		if len(hash) != 66 {
+			return nil, errors.New("malformed block hash")
+		}
+	} else {
+		if len(hash) != 64 {
+			return nil, errors.New("malformed block hash")
+		}
+
+		hash = "0x" + hash
+	}
+
+	params := make([]string, 2)
+	params[0] = hash
+	params[1] = index.ToHex()
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getTransactionByBlockHashAndIndex", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToTransactionResponse()
+}
+
+// GetTransactionByBlockNumberAndIndex - Returns the information about a transaction requested by block index.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getTransactionByBlockNumberAndIndex
+// Parameters:
+//    - QUANTITY, number - block number
 //    - DATA, 32 Bytes - hash of a transaction
 // Returns:
 //    1. Object - A transaction object, or null when no transaction was found
