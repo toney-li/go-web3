@@ -114,10 +114,10 @@ TODO List
 - [ ] eth_sendRawTransaction                  
 - [x] eth_call                                
 - [x] eth_estimateGas                         
-- [ ] eth_getBlockByHash                      
-- [ ] ![](https://placehold.it/15/008080/000000?text=+) eth_getBlockByNumber                    
+- [x] eth_getBlockByHash                      
+- [x] eth_getBlockByNumber                    
 - [x] eth_getTransactionByHash                
-- [ ] eth_getTransactionByBlockHashAndIndex   
+- [x] eth_getTransactionByBlockHashAndIndex   
 - [x] eth_getTransactionByBlockNumberAndIndex 
 - [x] eth_getTransactionReceipt               
 - [ ] eth_getUncleByBlockHashAndIndex         

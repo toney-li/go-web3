@@ -30,6 +30,7 @@ import (
 	"strings"
 
 	"github.com/regcostajr/go-web3/utils"
+	"math/big"
 )
 
 // Contract ...
@@ -109,7 +110,13 @@ func (contract *Contract) prepareTransaction(transaction *dto.TransactionParamet
 	var data string
 
 	for index := 0; index < len(function); index++ {
-		data += contract.getHexValue(function[index], args[index])
+		currentData, err := contract.getHexValue(function[index], args[index])
+
+		if err != nil {
+			return nil, err
+		}
+
+		data += currentData
 	}
 
 	transaction.Data = types.ComplexString(sha3Function[0:10] + data)
@@ -147,7 +154,13 @@ func (contract *Contract) Deploy(transaction *dto.TransactionParameters, bytecod
 	constructor := contract.functions["constructor"]
 
 	for index := 0; index < len(constructor); index++ {
-		bytecode += contract.getHexValue(constructor[index], args[index])
+		tmpBytes, err := contract.getHexValue(constructor[index], args[index])
+
+		if err != nil {
+			return "", err
+		}
+
+		bytecode += tmpBytes
 	}
 
 	transaction.Data = types.ComplexString(bytecode)
@@ -156,15 +169,32 @@ func (contract *Contract) Deploy(transaction *dto.TransactionParameters, bytecod
 
 }
 
-func (contract *Contract) getHexValue(inputType string, value interface{}) string {
+func (contract *Contract) getHexValue(inputType string, value interface{}) (string,error) {
 
 	var data string
+
 
 	if strings.HasPrefix(inputType, "int") ||
 		strings.HasPrefix(inputType, "uint") ||
 		strings.HasPrefix(inputType, "fixed") ||
 		strings.HasPrefix(inputType, "ufixed") {
-		data += fmt.Sprintf("%064s", fmt.Sprintf("%x", value.(int)))
+
+		bigVal := value.(*big.Int)
+
+		// Checking that the string actually is the correct inputType
+		if strings.Contains(inputType, "128") {
+			// 128 bit
+			if bigVal.BitLen() > 128 {
+				return "", errors.New(fmt.Sprintf("Input type %s not met", inputType))
+			}
+		} else if strings.Contains(inputType, "256") {
+			// 256 bit
+			if bigVal.BitLen() > 256 {
+				return "", errors.New(fmt.Sprintf("Input type %s not met", inputType))
+			}
+		}
+
+		data += fmt.Sprintf("%064s", fmt.Sprintf("%x", bigVal.String()))
 	}
 
 	if strings.Compare("address", inputType) == 0 {
@@ -175,6 +205,6 @@ func (contract *Contract) getHexValue(inputType string, value interface{}) strin
 		data += fmt.Sprintf("%064s", fmt.Sprintf("%x", value.(string)))
 	}
 
-	return data
+	return data, nil
 
 }
