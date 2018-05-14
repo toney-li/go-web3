@@ -59,18 +59,13 @@ func TestGetTransactionByBlockNumberAndIndex(t *testing.T) {
 		t.Fail()
 	}
 
-	num := types.ComplexIntParameter(blockNumber.ToInt64())
-	index := types.ComplexIntParameter(0)
-	tx, err := connection.Eth.GetTransactionByBlockNumberAndIndex(num, index)
+	tx, err := connection.Eth.GetTransactionByBlockNumberAndIndex(blockNumber, big.NewInt(0))
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-
-	t.Log(blockNumber.ToInt64())
-	t.Log(index)
 	t.Log(tx.Hash)
 	t.Log(tx.BlockHash)
 	t.Log(tx.BlockNumber)

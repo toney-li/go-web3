@@ -24,8 +24,7 @@ package test
 import (
 	"testing"
 
-	web3 "github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
 )
 
@@ -35,7 +34,7 @@ func TestEthGetBlockByNumber(t *testing.T) {
 
 	blockNumber, err := connection.Eth.GetBlockNumber()
 
-	block, err := connection.Eth.GetBlockByNumber(types.ComplexIntParameter(blockNumber.ToInt64()), false)
+	block, err := connection.Eth.GetBlockByNumber(blockNumber, false)
 
 	if err != nil {
 		t.Error(err)

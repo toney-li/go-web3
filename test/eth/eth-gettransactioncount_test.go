@@ -24,7 +24,7 @@ package test
 import (
 	"testing"
 
-	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
 	"math/big"
@@ -55,7 +55,7 @@ func TestEthGetTransactionCount(t *testing.T) {
 
 
 	// count should not change
-	if count != countTwo {
+	if count.Cmp(countTwo) != 0 {
 		t.Errorf("Count incorrect, changed between calls")
 		t.FailNow()
 	}
@@ -84,7 +84,7 @@ func TestEthGetTransactionCount(t *testing.T) {
 	    t.FailNow()
 	}
 
-	if newCount.ToInt64() != (countTwo.ToInt64() + 1) {
+	if newCount.Int64() != (countTwo.Int64() + 1) {
 		t.Errorf("Incorrect count retrieved")
 		t.FailNow()
 	}

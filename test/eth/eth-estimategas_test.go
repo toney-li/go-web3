@@ -42,7 +42,7 @@ func TestEstimateGas(t *testing.T) {
 	}
 
 	transaction := new(dto.TransactionParameters)
-	transaction.Data = "test"
+//	transaction.Data = "test"
 	transaction.From = coinbase
 	transaction.To = coinbase
 	transaction.Value = big.NewInt(10)

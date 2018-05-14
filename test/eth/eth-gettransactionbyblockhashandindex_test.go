@@ -28,7 +28,6 @@ import (
 "github.com/regcostajr/go-web3/providers"
 "math/big"
     "time"
-    "github.com/regcostajr/go-web3/complex/types"
 )
 
 func TestGetTransactionByBlockHashAndIndex(t *testing.T) {
@@ -69,7 +68,7 @@ func TestGetTransactionByBlockHashAndIndex(t *testing.T) {
         t.FailNow()
     }
 
-    index := types.ComplexIntParameter(txFromHash.TransactionIndex.ToInt64())
+    index := big.NewInt(txFromHash.TransactionIndex.ToInt64())
 
     tx, err := connection.Eth.GetTransactionByBlockHashAndIndex(txFromHash.BlockHash, index)
 
@@ -97,6 +96,5 @@ func TestGetTransactionByBlockHashAndIndex(t *testing.T) {
         t.Errorf("Incorrect transaction from hash and index")
         t.FailNow()
     }
-
 
 }

@@ -39,6 +39,10 @@ func TestEthHashrate(t *testing.T) {
 		t.FailNow()
 	}
 
-	t.Log(rate)
+	if rate.Int64() < int64(0) {
+		t.Errorf("Less than 0 hash rate")
+		t.FailNow()
+	}
 
+	t.Log(rate)
 }

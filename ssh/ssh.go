@@ -22,9 +22,10 @@
 package ssh
 
 import (
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
+	"math/big"
+	"github.com/regcostajr/go-web3/utils"
 )
 
 // SSH - The Net Module
@@ -71,15 +72,15 @@ func (ssh *SSH) GetVersion() (string, error) {
 //    	- ttl: QUANTITY - integer of the time to live in seconds.
 // Returns:
 // 	  - Boolean - returns true if the message was send, otherwise false.
-func (ssh *SSH) Post(from string, to string, topics []string, payload string, priority types.ComplexIntParameter, ttl types.ComplexIntParameter) (bool, error) {
+func (ssh *SSH) Post(from string, to string, topics []string, payload string, priority *big.Int, ttl *big.Int) (bool, error) {
 
 	params := make([]dto.SSHPostParameters, 1)
 	params[0].From = from
 	params[0].To = to
 	params[0].Topics = topics
 	params[0].Payload = payload
-	params[0].Priority = priority.ToHex()
-	params[0].TTL = ttl.ToHex()
+	params[0].Priority = utils.IntToHex(priority)
+	params[0].TTL = utils.IntToHex(ttl)
 
 	pointer := &dto.RequestResult{}
 
