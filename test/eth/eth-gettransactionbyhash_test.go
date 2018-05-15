@@ -26,6 +26,7 @@ import (
 	"github.com/regcostajr/go-web3/providers"
 	"math/big"
 	"testing"
+	"time"
 )
 
 func TestGetTransactionByHash(t *testing.T) {
@@ -46,6 +47,10 @@ func TestGetTransactionByHash(t *testing.T) {
 	transaction.Gas = big.NewInt(40000)
 
 	txID, err := connection.Eth.SendTransaction(transaction)
+
+	// Wait for a block
+	time.Sleep(time.Second)
+
 
 	if err != nil {
 		t.Error(err)
