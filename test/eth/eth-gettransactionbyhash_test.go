@@ -26,6 +26,7 @@ import (
 	"github.com/regcostajr/go-web3/providers"
 	"math/big"
 	"testing"
+	"time"
 )
 
 func TestGetTransactionByHash(t *testing.T) {
@@ -52,6 +53,8 @@ func TestGetTransactionByHash(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
+
+	time.Sleep(time.Second)
 
 	tx, err := connection.Eth.GetTransactionByHash(txID)
 
