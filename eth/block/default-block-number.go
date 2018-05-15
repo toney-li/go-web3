@@ -21,12 +21,15 @@
 
 package block
 
-import "github.com/regcostajr/go-web3/complex/types"
+import (
+	"math/big"
+	"github.com/regcostajr/go-web3/utils"
+)
 
 // NUMBER - An integer block number
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter
-func NUMBER(blocknumber types.ComplexIntParameter) string {
-	return blocknumber.ToHex()
+func NUMBER(blocknumber *big.Int) string {
+	return utils.IntToHex(blocknumber)
 }
 
 const (

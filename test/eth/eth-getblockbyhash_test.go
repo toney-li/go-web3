@@ -49,9 +49,10 @@ func TestEthGetBlockByHash(t *testing.T) {
 	}
 
 	// Ensure it's the same block
-	if (blockByNumber.Number != blockByHash.Number) ||
+	if (blockByNumber.Number.Cmp(blockByHash.Number))  != 0||
 		(blockByNumber.Miner != blockByHash.Miner) ||
 		(blockByNumber.Hash != blockByHash.Hash) {
+		    t.Errorf("Not same block returned")
 			t.FailNow()
 	}
 

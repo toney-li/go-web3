@@ -45,7 +45,7 @@ func TestEthGetBlockByNumber(t *testing.T) {
 		t.FailNow()
 	}
 
-	if block.Number.ToInt64() == 0 {
+	if block.Number.Int64() == 0 {
 		t.Error("Block not found")
 		t.FailNow()
 	}
