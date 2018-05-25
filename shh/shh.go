@@ -23,7 +23,7 @@ package shh
 
 import (
 	"github.com/alexlitz/go-web3/complex/types"
-	"github.com/alexlitz/go-web3/dto"
+	dto "github.com/alexlitz/go-web3/dto"
 	"github.com/alexlitz/go-web3/providers"
 )
 
@@ -56,7 +56,6 @@ func (shh *SHH) GetVersion() (string, error) {
 	}
 
 	return pointer.ToString()
-
 }
 
 // Post - Sends a whisper message.
@@ -99,7 +98,7 @@ func (shh *SHH) Post(from string, to string, topics []string, payload string, pr
 //      - None
 // Returns:
 // 	- DATA, 60 Bytes - the address of the new identiy.
-func (ssh *SHH) NewIdentity() (string, error) {
+func (shh *SHH) NewIdentity() (string, error) {
 
         pointer := &dto.RequestResult{}
 
@@ -112,13 +111,14 @@ func (ssh *SHH) NewIdentity() (string, error) {
         return pointer.ToString()
 }
 
+
 // HasIdentity - Creates a whisper identity in the client.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_hasidentity
 // Parameters:
 //       - None
 // Returns:
 // 	  - Boolean - returns true if the client holds the privatekey for that identity, otherwise false
-func (ssh *SHH) NewIdentity() (bool, error) {
+func (shh *SHH) HasIdentity() (bool, error) {
 
         pointer := &dto.RequestResult{}
 
@@ -137,7 +137,7 @@ func (ssh *SHH) NewIdentity() (bool, error) {
 //       - None
 // Returns:
 //       - DATA, 60 Bytes - the address of the new group.
-func (ssh *SHH) NewGroup() (string, error) {
+func (shh *SHH) NewGroup() (string, error) {
 
         pointer := &dto.RequestResult{}
 
@@ -156,7 +156,7 @@ func (ssh *SHH) NewGroup() (string, error) {
 //       - Identity: DATA, 60 Bytes - The identity address to add to a group (?).
 // Returns:
 //       - Boolean - returns true if the identity was successfully added to the group, otherwise false
-func (ssh *SHH) AddToGroup(id string) (bool, error) {
+func (shh *SHH) AddToGroup(id string) (bool, error) {
 
         params := [1]string{id}
 
@@ -185,9 +185,9 @@ func (ssh *SHH) AddToGroup(id string) (bool, error) {
 //              [null, A, B] = ANYTHING && A && B null works as a wildcard
 // Returns:
 //       - QUANTITY - The newly created filter.
-func (ssh *SHH) NewFilter(to string, topics []string) {
+func (shh *SHH) NewFilter(to string, topics []string) (string, error) {
 
-        params := make(dto.SHHFilterParameters, 1)
+        params := make([]dto.SHHFilterParameters, 1)
         params[0].Topics = topics
         params[0].To = to
 
@@ -209,7 +209,7 @@ func (ssh *SHH) NewFilter(to string, topics []string) {
 //       - QUANTITY - The filter id.
 // Returns:
 //       - Boolean - true if the filter was successfully uninstalled, otherwise false.
-func (ssh *SHH) UninstallFilter(id string) (bool, filter) {
+func (shh *SHH) UninstallFilter(id string) (bool, error) {
 
         params := [1]string{id}
 
@@ -239,7 +239,7 @@ func (ssh *SHH) UninstallFilter(id string) (bool, filter) {
 //              topics: Array of DATA - Array of DATA topics the message contained.
 //              payload: DATA - The payload of the message.
 //              workProved: QUANTITY - Integer of the work this message required before it was sent 
-func (ssh *SHH) GetFilterChanges(id string) []dto.WhisperMessage {
+func (shh *SHH) GetFilterChanges(id string) ([]dto.WhisperMessage, error) {
 
         params := [1]string{id}
 
@@ -269,7 +269,7 @@ func (ssh *SHH) GetFilterChanges(id string) []dto.WhisperMessage {
 //              topics: Array of DATA - Array of DATA topics the message contained.
 //              payload: DATA - The payload of the message.
 //              workProved: QUANTITY - Integer of the work this message required before it was sent 
-func (ssh *SHH) GetMessages(id string) []dto.WhisperMessage {
+func (shh *SHH) GetMessages(id string) ([]dto.WhisperMessage, error) {
 
         params := [1]string{id}
 

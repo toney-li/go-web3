@@ -259,16 +259,16 @@ func (pointer *RequestResult) ToMessageArray() ([]WhisperMessage, error) {
 		return nil, err
 	}
 
-        r := (pointer).Result.([]map[string]interface{}))
+        r := (pointer).Result.([]map[string]interface{})
         result := make([]WhisperMessage, len(r))
 
         for i, m := range r {
-            result[i].From = m["from"]
-            result[i].To = m["to"]
-            result[i].Topics = m["topics"]
-            result[i].Payload = m["payload"]
-            result[i].Priority = m["priority"]
-            result[i].TTL = m["ttl"]
+            result[i].From = m["from"].(string)
+            result[i].To = m["to"].(string)
+            result[i].Topics = m["topics"].([]string)
+            result[i].Payload = m["payload"].(string)
+            result[i].Priority = m["priority"].(string)
+            result[i].TTL = m["ttl"].(string)
         }
 
         return result, nil
