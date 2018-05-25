@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file shh-getversion_test.go
+ * @file shh-newFilter_test.go
  * @authors:
  *   Alex Litzenberger
  * @date 2018
@@ -22,34 +22,23 @@
 package test
 
 import (
-	"errors"
-	"fmt"
-	"sort"
 	"testing"
 
 	shh "github.com/alexlitz/go-web3/shh"
 	"github.com/alexlitz/go-web3/providers"
 )
 
-func TestSHHVersion(t *testing.T) {
+func TestSHHNewFilter(t *testing.T) {
 
 	var instance = shh.NewSHH(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	//Possible options
-	po := []string{"1", "2", "3", "4", "42"}
+	topics := []string{"0x12341234bf4b564f"}
+	to := "0x04f96a5e25610293e42a73908e93ccc8c4d4dc0edcfa9fa872f50cb214e08ebf61a03e245533f97284d442460f2998cd41858798ddfd4d661997d3940272b717b1"
 
-	version, err := instance.GetVersion()
+	_, err := instance.NewFilter(to, topics)
 
 	if err != nil {
-		t.Error(err)
-		t.FailNow()
+       	       t.Error(err)
+	       t.FailNow()
 	}
-
-	fmt.Println(version)
-
-	if found := sort.SearchStrings(po, version); found < len(po) && po[found] != version {
-		t.Error(errors.New("Invalid network"))
-		t.Fail()
-	}
-
 }

@@ -130,7 +130,6 @@ func (shh *SHH) HasIdentity() (bool, error) {
 
         return pointer.ToBoolean()
 }
-
 // NewGroup - Creates a group
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_newgroup
 // Parameters
