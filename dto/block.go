@@ -29,25 +29,29 @@ import (
 )
 
 type Block struct {
-	Number     *big.Int					`json:"number"`
+	Number     *big.Int                 `json:"number"`
 	Hash       string                   `json:"hash"`
 	ParentHash string                   `json:"parentHash"`
 	Author     string                   `json:"author,omitempty"`
 	Miner      string                   `json:"miner,omitempty"`
-	Size       *big.Int 				`json:"size"`
-	GasUsed    *big.Int 				`json:"gasUsed"`
-	Nonce      *big.Int 				`json:"nonce"`
-	Timestamp  *big.Int 				`json:"timestamp"`
+	Size       *big.Int                 `json:"size"`
+	GasUsed    *big.Int                 `json:"gasUsed"`
+	Nonce      *big.Int                 `json:"nonce"`
+	Timestamp  *big.Int                 `json:"timestamp"`
 }
 
+/**
+ * How to un-marshal the block struct using the Big.Int rather than the
+ * `complexReturn` type.
+ */
 func (b *Block) UnmarshalJSON(data []byte) error {
 	type Alias Block;
 	temp := &struct {
-		Number     string				`json:"number"`
-		Size       string 				`json:"size"`
-		GasUsed    string 				`json:"gasUsed"`
-		Nonce      string 				`json:"nonce"`
-		Timestamp  string 				`json:"timestamp"`
+		Number     string               `json:"number"`
+		Size       string               `json:"size"`
+		GasUsed    string               `json:"gasUsed"`
+		Nonce      string               `json:"nonce"`
+		Timestamp  string               `json:"timestamp"`
 		*Alias
 	}{
 		Alias : (*Alias)(b),

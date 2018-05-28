@@ -42,13 +42,13 @@ type TransactionParameters struct {
 
 // RequestTransactionParameters JSON
 type RequestTransactionParameters struct {
-	From     string `json:"from"`
-	To       string `json:"to,omitempty"`
-	Nonce    string `json:"nonce,omitempty"`
-	Gas      string `json:"gas,omitempty"`
-	GasPrice string `json:"gasPrice,omitempty"`
-	Value    string `json:"value,omitempty"`
-	Data     string `json:"data,omitempty"`
+	From     string                 `json:"from"`
+	To       string                 `json:"to,omitempty"`
+	Nonce    string                 `json:"nonce,omitempty"`
+	Gas      string                 `json:"gas,omitempty"`
+	GasPrice string                 `json:"gasPrice,omitempty"`
+	Value    string                 `json:"value,omitempty"`
+	Data     string                 `json:"data,omitempty"`
 }
 
 // Transform the GO transactions parameters to json style
@@ -82,31 +82,31 @@ type SignTransactionResponse struct {
 }
 
 type SignedTransactionParams struct {
-	Gas				*big.Int				`json:gas`
-	GasPrice		*big.Int				`json:gasPrice`
-	Hash			string					`json:hash`
-	Input			string					`json:input`
-	Nonce			*big.Int				`json:nonce`
-	S				string					`json:s`
-	R				string					`json:r`
-	V				*big.Int				`json:v`
-	To				string					`json:to`
-	Value			*big.Int				`json:value`
+	Gas      *big.Int                `json:gas`
+	GasPrice *big.Int                `json:gasPrice`
+	Hash     string                  `json:hash`
+	Input    string                  `json:input`
+	Nonce    *big.Int                `json:nonce`
+	S        string                  `json:s`
+	R        string                  `json:r`
+	V        *big.Int                `json:v`
+	To       string                  `json:to`
+	Value    *big.Int                `json:value`
 }
 
 type TransactionResponse struct {
-	Hash             string                   	`json:"hash"`
-	Nonce            *big.Int 					`json:"nonce"`
-	BlockHash        string                   	`json:"blockHash"`
-	BlockNumber      *big.Int 					`json:"blockNumber"`
-	TransactionIndex *big.Int 					`json:"transactionIndex"`
-	From             string                   	`json:"from"`
-	To               string                   	`json:"to"`
-	Input            string                   	`json:"input"`
-	Value            *big.Int 				  	`json:"value"`
-	GasPrice         *big.Int 				  	`json:"gasPrice,omitempty"`
-	Gas              *big.Int 				  	`json:"gas,omitempty"`
-	Data             types.ComplexString      	`json:"data,omitempty"`
+	Hash             string                  `json:"hash"`
+	Nonce            *big.Int                `json:"nonce"`
+	BlockHash        string                  `json:"blockHash"`
+	BlockNumber      *big.Int                `json:"blockNumber"`
+	TransactionIndex *big.Int                `json:"transactionIndex"`
+	From             string                  `json:"from"`
+	To               string                  `json:"to"`
+	Input            string                  `json:"input"`
+	Value            *big.Int                `json:"value"`
+	GasPrice         *big.Int                `json:"gasPrice,omitempty"`
+	Gas              *big.Int                `json:"gas,omitempty"`
+	Data             types.ComplexString     `json:"data,omitempty"`
 }
 
 type TransactionReceipt struct {
