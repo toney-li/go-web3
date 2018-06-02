@@ -74,8 +74,8 @@ func (params *TransactionParameters) Transform() *RequestTransactionParameters {
 }
 
 type SignTransactionResponse struct {
-	Raw              types.ComplexString      `json:"raw"`
-	Transaction      TransactionResponse      `json:"tx"`
+	Raw         types.ComplexString `json:"raw"`
+	Transaction TransactionResponse `json:"tx"`
 }
 
 type TransactionResponse struct {

@@ -51,7 +51,6 @@ func TestGetTransactionByHash(t *testing.T) {
 	// Wait for a block
 	time.Sleep(time.Second)
 
-
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

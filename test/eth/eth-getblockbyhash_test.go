@@ -53,7 +53,7 @@ func TestEthGetBlockByHash(t *testing.T) {
 	if (blockByNumber.Number != blockByHash.Number) ||
 		(blockByNumber.Miner != blockByHash.Miner) ||
 		(blockByNumber.Hash != blockByHash.Hash) {
-			t.FailNow()
+		t.FailNow()
 	}
 
 	t.Log(blockByHash.Hash, blockByNumber.Hash)

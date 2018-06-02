@@ -22,11 +22,11 @@
 package eth
 
 import (
+	"errors"
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
-	"errors"
 	"strings"
 )
 
@@ -233,7 +233,6 @@ func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (types.
 	return pointer.ToComplexIntResponse()
 
 }
-
 
 // GetTransactionCount -  Returns the number of transactions sent from an address.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionaccount
@@ -643,7 +642,6 @@ func (eth *Eth) GetBlockTransactionCountByHash(hash string) (types.ComplexIntRes
 
 	return pointer.ToComplexIntResponse()
 }
-
 
 // GetBlockByHash - Returns information about a block by hash.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbyhash

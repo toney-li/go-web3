@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file ssh-post.go
+ * @file shh-post.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
@@ -21,7 +21,7 @@
 
 package dto
 
-type SSHPostParameters struct {
+type SHHPostParameters struct {
 	From     string   `json:"from"`
 	To       string   `json:"to"`
 	Topics   []string `json:"topics"`

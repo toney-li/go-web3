@@ -169,10 +169,9 @@ func (contract *Contract) Deploy(transaction *dto.TransactionParameters, bytecod
 
 }
 
-func (contract *Contract) getHexValue(inputType string, value interface{}) (string,error) {
+func (contract *Contract) getHexValue(inputType string, value interface{}) (string, error) {
 
 	var data string
-
 
 	if strings.HasPrefix(inputType, "int") ||
 		strings.HasPrefix(inputType, "uint") ||

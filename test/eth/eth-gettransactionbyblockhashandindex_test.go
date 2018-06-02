@@ -21,82 +21,80 @@
 package test
 
 import (
-"testing"
+	"testing"
 
-"github.com/regcostajr/go-web3"
-"github.com/regcostajr/go-web3/dto"
-"github.com/regcostajr/go-web3/providers"
-"math/big"
-    "time"
-    "github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/dto"
+	"github.com/regcostajr/go-web3/providers"
+	"math/big"
+	"time"
 )
 
 func TestGetTransactionByBlockHashAndIndex(t *testing.T) {
 
-    var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-    coinbase, err := connection.Eth.GetCoinbase()
+	coinbase, err := connection.Eth.GetCoinbase()
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    txVal := big.NewInt(2000000)
+	txVal := big.NewInt(2000000)
 
-    transaction := new(dto.TransactionParameters)
-    transaction.From = coinbase
-    transaction.To = coinbase
-    //transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
-    transaction.Value = txVal
-    transaction.Gas = big.NewInt(40000)
+	transaction := new(dto.TransactionParameters)
+	transaction.From = coinbase
+	transaction.To = coinbase
+	//transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
+	transaction.Value = txVal
+	transaction.Gas = big.NewInt(40000)
 
-    txID, err := connection.Eth.SendTransaction(transaction)
+	txID, err := connection.Eth.SendTransaction(transaction)
 
-    t.Log("Tx Submitted: ", txID)
+	t.Log("Tx Submitted: ", txID)
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    time.Sleep(time.Second)
+	time.Sleep(time.Second)
 
-    txFromHash, err := connection.Eth.GetTransactionByHash(txID)
+	txFromHash, err := connection.Eth.GetTransactionByHash(txID)
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    index := types.ComplexIntParameter(txFromHash.TransactionIndex.ToInt64())
+	index := types.ComplexIntParameter(txFromHash.TransactionIndex.ToInt64())
 
-    tx, err := connection.Eth.GetTransactionByBlockHashAndIndex(txFromHash.BlockHash, index)
+	tx, err := connection.Eth.GetTransactionByBlockHashAndIndex(txFromHash.BlockHash, index)
 
-    if err != nil {
-       t.Error(err)
-       t.FailNow()
-    }
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    if tx.From != coinbase || tx.To != coinbase || tx.Value.ToInt64() != txVal.Int64() || tx.Hash != txID {
-       t.Errorf("Incorrect transaction from hash and index")
-       t.FailNow()
-    }
+	if tx.From != coinbase || tx.To != coinbase || tx.Value.ToInt64() != txVal.Int64() || tx.Hash != txID {
+		t.Errorf("Incorrect transaction from hash and index")
+		t.FailNow()
+	}
 
+	// test removing the 0x
 
-    // test removing the 0x
+	tx, err = connection.Eth.GetTransactionByBlockHashAndIndex(txFromHash.BlockHash[2:], index)
 
-    tx, err = connection.Eth.GetTransactionByBlockHashAndIndex(txFromHash.BlockHash[2:], index)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
-
-    if tx.From != coinbase || tx.To != coinbase || tx.Value.ToInt64() != txVal.Int64() || tx.Hash != txID {
-        t.Errorf("Incorrect transaction from hash and index")
-        t.FailNow()
-    }
-
+	if tx.From != coinbase || tx.To != coinbase || tx.Value.ToInt64() != txVal.Int64() || tx.Hash != txID {
+		t.Errorf("Incorrect transaction from hash and index")
+		t.FailNow()
+	}
 
 }
