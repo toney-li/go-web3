@@ -13,32 +13,19 @@
 *********************************************************************************/
 
 /**
- * @file shh-newFilter_test.go
+ * @file ssh-post.go
  * @authors:
- *   Alex Litzenberger
- * @date 2018
+ *   Reginaldo Costa <regcostajr@gmail.com>
+ * @date 2017
  */
 
-package test
+package dto
 
-import (
-	"testing"
-
-	shh "github.com/alexlitz/go-web3/shh"
-	"github.com/alexlitz/go-web3/providers"
-)
-
-func TestSHHNewFilter(t *testing.T) {
-
-	var instance = shh.NewSHH(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
-
-	topics := []string{"0x12341234bf4b564f"}
-	to := "0x04f96a5e25610293e42a73908e93ccc8c4d4dc0edcfa9fa872f50cb214e08ebf61a03e245533f97284d442460f2998cd41858798ddfd4d661997d3940272b717b1"
-
-	_, err := instance.NewFilter(to, topics)
-
-	if err != nil {
-       	       t.Error(err)
-	       t.FailNow()
-	}
+type SSHPostParameters struct {
+	From     string   `json:"from"`
+	To       string   `json:"to"`
+	Topics   []string `json:"topics"`
+	Payload  string   `json:"payload"`
+	Priority string   `json:"priority"`
+	TTL      string   `json:"ttl"`
 }
