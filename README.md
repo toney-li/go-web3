@@ -106,8 +106,8 @@ TODO List
 - [ ] eth_getTransactionCount                 
 - [ ] eth_getBlockTransactionCountByHash      
 - [ ] eth_getBlockTransactionCountByNumber    
-- [ ] eth_getUncleCountByBlockHash            
-- [ ] eth_getUncleCountByBlockNumber          
+- [x] eth_getUncleCountByBlockHash            
+- [x] eth_getUncleCountByBlockNumber          
 - [ ] eth_getCode                             
 - [ ] eth_sign                                
 - [x] eth_sendTransaction                     

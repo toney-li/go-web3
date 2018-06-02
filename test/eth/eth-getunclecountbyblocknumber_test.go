@@ -1,3 +1,4 @@
+
 /********************************************************************************
    This file is part of go-web3.
    go-web3 is free software: you can redistribute it and/or modify
@@ -13,57 +14,47 @@
 *********************************************************************************/
 
 /**
- * @file personal-gettransactionbyhash_test.go
+ * @file eth-getunclecountbyblocknumber_test.go
  * @authors:
- *   Reginaldo Costa <regcostajr@gmail.com>
- * @date 2017
+ * 		Sigma Prime <sigmaprime.io>
+ * @date 2018
  */
+
 package test
 
 import (
-	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/providers"
-	"math/big"
 	"testing"
-	"time"
+	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/providers"
+	"github.com/regcostajr/go-web3/complex/types"
 )
 
-func TestGetTransactionByHash(t *testing.T) {
+func TestGetUncleCountByBlockNumber(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	coinbase, err := connection.Eth.GetCoinbase()
+	blockNumber, err := connection.Eth.GetBlockNumber()
+
+	uncleByNumber, err := connection.Eth.GetUncleCountByBlockNumber(types.ComplexIntParameter(blockNumber.ToInt64()))
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	transaction := new(dto.TransactionParameters)
-	transaction.From = coinbase
-	transaction.To = coinbase
-	transaction.Value = big.NewInt(10)
-	transaction.Gas = big.NewInt(40000)
+	t.Log(uncleByNumber.ToInt64())
 
-	txID, err := connection.Eth.SendTransaction(transaction)
-
-	// Wait for a block
-	time.Sleep(time.Second)
-
-
-	if err != nil {
-		t.Error(err)
+	if uncleByNumber.ToInt64() != 0 {
+		t.Errorf("Returned uncle for block with no uncle.")
 		t.FailNow()
 	}
 
-	tx, err := connection.Eth.GetTransactionByHash(txID)
+	// should return err with negative number?
+	uncleByNumber, err = connection.Eth.GetUncleCountByBlockNumber(types.ComplexIntParameter(-1))
 
-	if err != nil {
+	if err == nil {
 		t.Error(err)
 		t.FailNow()
 	}
-
-	t.Log(tx.BlockNumber)
-
 }
+

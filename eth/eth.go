@@ -650,3 +650,61 @@ func (eth *Eth) GetBlockByHash(hash string, transactionDetails bool) (*dto.Block
 	return pointer.ToBlock()
 
 }
+
+// GetUncleCountByBlockHash - Returns the number of uncles in a block from a block matching the given block hash.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getunclecountbyblockhash
+// Parameters:
+//    - DATA, 32 bytes - Hash of a block
+// Returns:
+//    - QUANTITY, number - integer of the number of uncles in this block
+//    - error
+func (eth *Eth) GetUncleCountByBlockHash(hash string) (types.ComplexIntResponse, error) {
+	// ensure that the hash has been correctly formatted
+	if strings.HasPrefix(hash, "0x") {
+		if len(hash) != 66 {
+			return types.ComplexIntResponse(0), errors.New("malformed block hash")
+		}
+	} else {
+		if len(hash) != 64 {
+			return types.ComplexIntResponse(0), errors.New("malformed block hash")
+		}
+		hash = "0x" + hash
+	}
+
+	params := make([]string, 1)
+	params[0] = hash
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getUncleCountByBlockHash", params)
+
+	if err != nil {
+		return types.ComplexIntResponse(0), err
+	}
+
+	return pointer.ToComplexIntResponse()
+}
+
+// GetUncleCountByBlockNumber - Returns the number of uncles in a block from a block matching the given block number.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getunclecountbyblocknumber
+// Parameters:
+//    - QUANTITY, number - integer of a block number
+// Returns:
+//    - QUANTITY, number - integer of the number of uncles in this block
+//    - error
+func (eth *Eth) GetUncleCountByBlockNumber(quantity types.ComplexIntParameter) (types.ComplexIntResponse, error) {
+	// ensure that the hash has been correctly formatted
+
+	params := make([]string, 1)
+	params[0] = quantity.ToHex()
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getUncleCountByBlockNumber", params)
+
+	if err != nil {
+		return types.ComplexIntResponse(0), err
+	}
+
+	return pointer.ToComplexIntResponse()
+}
