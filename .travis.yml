@@ -13,12 +13,7 @@ install:
     - sudo apt-get install glide ethereum -y -qq
 before_script:
     - glide install
-    - geth --dev --ws --wsorigins="*" --rpc --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3 --mine &
+    - geth --dev --shh --ws --wsorigins="*" --rpc --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3 --mine &
     - sleep 5
 script:
-    - go test -v test/providers/*.go
-    - go test -v test/web3/*.go
-    - go test -v test/eth/*.go
-    - go test -v test/net/*.go
-    - go test -v test/personal/*.go
-    - go test -v test/utils/*.go
+    - go test -v ./test/...

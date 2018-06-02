@@ -25,11 +25,11 @@ import (
 	"testing"
 
 	web3 "github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
 	"math/big"
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/complex/types"
 	"time"
 )
 
@@ -52,7 +52,6 @@ func TestEthGetTransactionCount(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-
 
 	// count should not change
 	if count != countTwo {
@@ -80,15 +79,14 @@ func TestEthGetTransactionCount(t *testing.T) {
 	newCount, err := connection.Eth.GetTransactionCount(coinbase, block.LATEST)
 
 	if err != nil {
-	    t.Error(err)
-	    t.FailNow()
-	}
-
-	// Add greater or equal because of test deviations
-	if newCount.ToInt64() < (countTwo.ToInt64() + 1) || newCount.ToInt64() > (countTwo.ToInt64() + 4){
-		t.Errorf("Incorrect count retrieved")
+		t.Error(err)
 		t.FailNow()
 	}
 
+	// Add greater or equal because of test deviations
+	if newCount.ToInt64() < (countTwo.ToInt64()+1) || newCount.ToInt64() > (countTwo.ToInt64()+4) {
+		t.Errorf("Incorrect count retrieved")
+		t.FailNow()
+	}
 
 }

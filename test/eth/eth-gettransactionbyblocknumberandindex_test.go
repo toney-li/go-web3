@@ -68,7 +68,6 @@ func TestGetTransactionByBlockNumberAndIndex(t *testing.T) {
 		t.FailNow()
 	}
 
-
 	t.Log(blockNumber.ToInt64())
 	t.Log(index)
 	t.Log(tx.Hash)

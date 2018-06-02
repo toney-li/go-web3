@@ -13,13 +13,13 @@
 *********************************************************************************/
 
 /**
- * @file ssh.go
+ * @file shh.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2017
  */
 
-package ssh
+package shh
 
 import (
 	"github.com/regcostajr/go-web3/complex/types"
@@ -28,14 +28,14 @@ import (
 )
 
 // SSH - The Net Module
-type SSH struct {
+type SHH struct {
 	provider providers.ProviderInterface
 }
 
-// NewSSH - Net Module constructor to set the default provider
-func NewSSH(provider providers.ProviderInterface) *SSH {
-	ssh := new(SSH)
-	ssh.provider = provider
+// NewSHH - Net Module constructor to set the default provider
+func NewSHH(provider providers.ProviderInterface) *SHH {
+	shh := new(SHH)
+	shh.provider = provider
 	return ssh
 }
 
@@ -71,9 +71,9 @@ func (ssh *SSH) GetVersion() (string, error) {
 //    	- ttl: QUANTITY - integer of the time to live in seconds.
 // Returns:
 // 	  - Boolean - returns true if the message was send, otherwise false.
-func (ssh *SSH) Post(from string, to string, topics []string, payload string, priority types.ComplexIntParameter, ttl types.ComplexIntParameter) (bool, error) {
+func (shh *SHH) Post(from string, to string, topics []string, payload string, priority types.ComplexIntParameter, ttl types.ComplexIntParameter) (bool, error) {
 
-	params := make([]dto.SSHPostParameters, 1)
+	params := make([]dto.SHHPostParameters, 1)
 	params[0].From = from
 	params[0].To = to
 	params[0].Topics = topics
@@ -83,7 +83,7 @@ func (ssh *SSH) Post(from string, to string, topics []string, payload string, pr
 
 	pointer := &dto.RequestResult{}
 
-	err := ssh.provider.SendRequest(pointer, "shh_post", params)
+	err := shh.provider.SendRequest(pointer, "shh_post", params)
 
 	if err != nil {
 		return false, err

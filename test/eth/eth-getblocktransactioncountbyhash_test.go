@@ -22,82 +22,80 @@
 package test
 
 import (
-    "testing"
-    "math/big"
-    "time"
-    "github.com/regcostajr/go-web3"
-    "github.com/regcostajr/go-web3/complex/types"
-    "github.com/regcostajr/go-web3/dto"
-    "github.com/regcostajr/go-web3/providers"
+	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/dto"
+	"github.com/regcostajr/go-web3/providers"
+	"math/big"
+	"testing"
+	"time"
 )
 
 func TestGetBlockTransactionCountByHash(t *testing.T) {
 
-    var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-    blockNumber, err := connection.Eth.GetBlockNumber()
+	blockNumber, err := connection.Eth.GetBlockNumber()
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    block, err := connection.Eth.GetBlockByNumber(types.ComplexIntParameter(blockNumber.ToInt64()), false)
+	block, err := connection.Eth.GetBlockByNumber(types.ComplexIntParameter(blockNumber.ToInt64()), false)
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
+	txCount, err := connection.Eth.GetBlockTransactionCountByHash(block.Hash)
 
-    txCount, err := connection.Eth.GetBlockTransactionCountByHash(block.Hash)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	// submit a transaction, wait for the block and there should be 1 tx.
+	coinbase, err := connection.Eth.GetCoinbase()
 
-    // submit a transaction, wait for the block and there should be 1 tx.
-    coinbase, err := connection.Eth.GetCoinbase()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	transaction := new(dto.TransactionParameters)
+	transaction.From = coinbase
+	transaction.To = coinbase
+	transaction.Value = big.NewInt(200000)
+	transaction.Gas = big.NewInt(40000)
 
-    transaction := new(dto.TransactionParameters)
-    transaction.From = coinbase
-    transaction.To = coinbase
-    transaction.Value = big.NewInt(200000)
-    transaction.Gas = big.NewInt(40000)
+	txID, err := connection.Eth.SendTransaction(transaction)
 
-    txID, err := connection.Eth.SendTransaction(transaction)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	time.Sleep(time.Second)
 
-    time.Sleep(time.Second)
+	tx, err := connection.Eth.GetTransactionByHash(txID)
 
-    tx, err := connection.Eth.GetTransactionByHash(txID)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
+	txCount, err = connection.Eth.GetBlockTransactionCountByHash(tx.BlockHash)
 
-    txCount, err = connection.Eth.GetBlockTransactionCountByHash(tx.BlockHash)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 
-    if err != nil {
-        t.Error(err)
-        t.FailNow()
-    }
-
-    if txCount.ToInt64() != 1 {
-       t.Error("invalid block transaction count")
-       t.FailNow()
-    }
+	if txCount.ToInt64() != 1 {
+		t.Error("invalid block transaction count")
+		t.FailNow()
+	}
 
 }
-

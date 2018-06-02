@@ -1,4 +1,3 @@
-
 /********************************************************************************
    This file is part of go-web3.
    go-web3 is free software: you can redistribute it and/or modify
@@ -23,10 +22,10 @@
 package test
 
 import (
-	"testing"
 	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/providers"
 	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/regcostajr/go-web3/providers"
+	"testing"
 )
 
 func TestGetUncleCountByBlockNumber(t *testing.T) {
@@ -57,4 +56,3 @@ func TestGetUncleCountByBlockNumber(t *testing.T) {
 		t.FailNow()
 	}
 }
-
