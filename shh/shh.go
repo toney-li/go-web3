@@ -27,7 +27,7 @@ import (
 	"github.com/regcostajr/go-web3/providers"
 )
 
-// SSH - The Net Module
+// SHH - The Net Module
 type SHH struct {
 	provider providers.ProviderInterface
 }
@@ -36,7 +36,7 @@ type SHH struct {
 func NewSHH(provider providers.ProviderInterface) *SHH {
 	shh := new(SHH)
 	shh.provider = provider
-	return ssh
+	return shh
 }
 
 // GetVersion - Returns the current whisper protocol version.
@@ -45,11 +45,11 @@ func NewSHH(provider providers.ProviderInterface) *SHH {
 //    - none
 // Returns:
 // 	  - String - The current whisper protocol version
-func (ssh *SSH) GetVersion() (string, error) {
+func (shh *SHH) GetVersion() (string, error) {
 
 	pointer := &dto.RequestResult{}
 
-	err := ssh.provider.SendRequest(pointer, "shh_version", nil)
+	err := shh.provider.SendRequest(pointer, "shh_version", nil)
 
 	if err != nil {
 		return "", err
