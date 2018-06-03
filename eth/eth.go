@@ -23,11 +23,12 @@ package eth
 
 import (
 	"errors"
+	"strings"
+
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
-	"strings"
 )
 
 // Eth - The Eth Module
@@ -638,6 +639,28 @@ func (eth *Eth) GetBlockTransactionCountByHash(hash string) (types.ComplexIntRes
 
 	if err != nil {
 		return types.ComplexIntResponse(0), err
+	}
+
+	return pointer.ToComplexIntResponse()
+}
+
+// GetBlockTransactionCountByNumber - Returns the number of transactions in a block matching the given block number
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblocktransactioncountbynumber
+// Parameters:
+//    - QUANTITY|TAG - integer of a block number, or the string "earliest", "latest" or "pending", as in the default block parameter
+// Returns:
+//    - QUANTITY - integer of the number of transactions in this block
+func (eth *Eth) GetBlockTransactionCountByNumber(defaultBlockParameter string) (types.ComplexIntResponse, error) {
+
+	params := make([]string, 1)
+	params[0] = defaultBlockParameter
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getBlockTransactionCountByNumber", params)
+
+	if err != nil {
+		return "", err
 	}
 
 	return pointer.ToComplexIntResponse()

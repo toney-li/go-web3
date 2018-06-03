@@ -110,7 +110,7 @@ TODO List
 - [x] eth_getStorageAt (deprecated)
 - [x] eth_getTransactionCount                 
 - [x] eth_getBlockTransactionCountByHash      
-- [ ] eth_getBlockTransactionCountByNumber    
+- [x] eth_getBlockTransactionCountByNumber    
 - [x] eth_getUncleCountByBlockHash            
 - [x] eth_getUncleCountByBlockNumber          
 - [ ] eth_getCode                             
