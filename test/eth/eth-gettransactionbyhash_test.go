@@ -48,6 +48,9 @@ func TestGetTransactionByHash(t *testing.T) {
 
 	txID, err := connection.Eth.SendTransaction(transaction)
 
+	// Wait for a block
+	time.Sleep(time.Second)
+
 	if err != nil {
 		t.Errorf("Failed SendTransaction")
 		t.Error(err)

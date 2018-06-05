@@ -13,27 +13,49 @@
 *********************************************************************************/
 
 /**
- * @file eth-sendtransaction_test.go
+ * @file eth-getblocktransactioncountbyhash_test.go
  * @authors:
- *   Reginaldo Costa <regcostajr@gmail.com>
- * @date 2017
+ *   Sigma Prime <sigmaprime.io>
+ * @date 2018
  */
+
 package test
 
 import (
-	"testing"
-
 	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 	"math/big"
+	"testing"
+	"time"
 )
 
-func TestGetTransactionByBlockNumberAndIndex(t *testing.T) {
+func TestGetBlockTransactionCountByHash(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
+	blockNumber, err := connection.Eth.GetBlockNumber()
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	block, err := connection.Eth.GetBlockByNumber(blockNumber, false)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	txCount, err := connection.Eth.GetBlockTransactionCountByHash(block.Hash)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	// submit a transaction, wait for the block and there should be 1 tx.
 	coinbase, err := connection.Eth.GetCoinbase()
 
 	if err != nil {
@@ -44,30 +66,35 @@ func TestGetTransactionByBlockNumberAndIndex(t *testing.T) {
 	transaction := new(dto.TransactionParameters)
 	transaction.From = coinbase
 	transaction.To = coinbase
-	transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
+	transaction.Value = big.NewInt(200000)
 	transaction.Gas = big.NewInt(40000)
-	transaction.Data = types.ComplexString("p2p transaction")
 
-	//txID, err := connection.Eth.SendTransaction(transaction)
-
-	//t.Log(txID)
-
-	blockNumber, err := connection.Eth.GetBlockNumber()
-
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
-
-	tx, err := connection.Eth.GetTransactionByBlockNumberAndIndex(blockNumber, big.NewInt(0))
+	txID, err := connection.Eth.SendTransaction(transaction)
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	t.Log(tx.Hash)
-	t.Log(tx.BlockHash)
-	t.Log(tx.BlockNumber)
-	t.Log(tx.TransactionIndex)
+	time.Sleep(time.Second)
+
+	tx, err := connection.Eth.GetTransactionByHash(txID)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	txCount, err = connection.Eth.GetBlockTransactionCountByHash(tx.BlockHash)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	if txCount.Int64() != 1 {
+		t.Error("invalid block transaction count")
+		t.FailNow()
+	}
+
 }

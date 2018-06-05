@@ -54,6 +54,7 @@ func TestEthGetBlockByHash(t *testing.T) {
 		(blockByNumber.Hash != blockByHash.Hash) {
 		    t.Errorf("Not same block returned")
 			t.FailNow()
+		t.FailNow()
 	}
 
 	t.Log(blockByHash.Hash, blockByNumber.Hash)

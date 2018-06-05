@@ -13,61 +13,58 @@
 *********************************************************************************/
 
 /**
- * @file eth-sendtransaction_test.go
+ * @file eth-getunclecountbyblockhash_test.go
  * @authors:
- *   Reginaldo Costa <regcostajr@gmail.com>
- * @date 2017
+ * 		Sigma Prime <sigmaprime.io>
+ * @date 2018
  */
+
 package test
 
 import (
-	"testing"
-
 	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
-	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
-	"math/big"
+	"testing"
 )
 
-func TestGetTransactionByBlockNumberAndIndex(t *testing.T) {
+func TestGetUncleCountByBlockHash(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	coinbase, err := connection.Eth.GetCoinbase()
-
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-
-	transaction := new(dto.TransactionParameters)
-	transaction.From = coinbase
-	transaction.To = coinbase
-	transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
-	transaction.Gas = big.NewInt(40000)
-	transaction.Data = types.ComplexString("p2p transaction")
-
-	//txID, err := connection.Eth.SendTransaction(transaction)
-
-	//t.Log(txID)
-
 	blockNumber, err := connection.Eth.GetBlockNumber()
 
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
-
-	tx, err := connection.Eth.GetTransactionByBlockNumberAndIndex(blockNumber, big.NewInt(0))
+	blockByNumber, err := connection.Eth.GetBlockByNumber(blockNumber, false)
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	t.Log(tx.Hash)
-	t.Log(tx.BlockHash)
-	t.Log(tx.BlockNumber)
-	t.Log(tx.TransactionIndex)
+	uncleByHash, err := connection.Eth.GetUncleCountByBlockHash(blockByNumber.Hash)
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Log(uncleByHash.Int64())
+
+	if uncleByHash.Int64() != 0 {
+		t.Errorf("Returned uncle for block with no uncle.")
+		t.FailNow()
+	}
+
+	_, err = connection.Eth.GetUncleCountByBlockHash("0x1234")
+
+	if err == nil {
+		t.Errorf("Invalid hash not rejected")
+		t.FailNow()
+	}
+
+	_, err = connection.Eth.GetUncleCountByBlockHash("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0")
+
+	if err == nil {
+		t.Errorf("Invalid hash not rejected")
+		t.FailNow()
+	}
 }

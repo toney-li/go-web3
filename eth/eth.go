@@ -22,13 +22,13 @@
 package eth
 
 import (
+	"errors"
+	"strings"
+	"math/big"
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
-	"errors"
-	"strings"
-	"math/big"
 	"github.com/regcostajr/go-web3/utils"
 )
 
@@ -231,7 +231,6 @@ func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (*big.I
 
 	return pointer.ToBigInt()
 }
-
 
 // GetTransactionCount -  Returns the number of transactions sent from an address.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_gettransactionaccount
@@ -608,6 +607,59 @@ func (eth *Eth) GetBlockByNumber(number *big.Int, transactionDetails bool) (*dto
 	return pointer.ToBlock()
 }
 
+// GetBlockTransactionCountByHash
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblocktransactioncountbyhash
+// Parameters:
+//    - DATA, 32 bytes - block hash
+// Returns:
+//    1. QUANTITY, number - number of transactions in the block
+//    2. error
+func (eth *Eth) GetBlockTransactionCountByHash(hash string) (*big.Int, error) {
+	// ensure that the hash is correctlyformatted
+	if strings.HasPrefix(hash, "0x") {
+		if len(hash) != 66 {
+			return nil, errors.New("malformed block hash")
+		}
+	} else {
+		if len(hash) != 64 {
+			return nil, errors.New("malformed block hash")
+		}
+		hash = "0x" + hash
+	}
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getBlockTransactionCountByHash", []string{hash})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBigInt()
+}
+
+// GetBlockTransactionCountByNumber - Returns the number of transactions in a block matching the given block number
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblocktransactioncountbynumber
+// Parameters:
+//    - QUANTITY|TAG - integer of a block number, or the string "earliest", "latest" or "pending", as in the default block parameter
+// Returns:
+//    - QUANTITY - integer of the number of transactions in this block
+func (eth *Eth) GetBlockTransactionCountByNumber(defaultBlockParameter string) (*big.Int, error) {
+
+	params := make([]string, 1)
+	params[0] = defaultBlockParameter
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getBlockTransactionCountByNumber", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBigInt()
+}
+
 // GetBlockByHash - Returns information about a block by hash.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbyhash
 // Parameters:
@@ -617,7 +669,6 @@ func (eth *Eth) GetBlockByNumber(number *big.Int, transactionDetails bool) (*dto
 //    1. Object - A block object, or null when no transaction was found
 //    2. error
 func (eth *Eth) GetBlockByHash(hash string, transactionDetails bool) (*dto.Block, error) {
-
 	// ensure that the hash is correctlyformatted
 	if strings.HasPrefix(hash, "0x") {
 		if len(hash) != 66 {
@@ -643,5 +694,62 @@ func (eth *Eth) GetBlockByHash(hash string, transactionDetails bool) (*dto.Block
 	}
 
 	return pointer.ToBlock()
+}
 
+// GetUncleCountByBlockHash - Returns the number of uncles in a block from a block matching the given block hash.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getunclecountbyblockhash
+// Parameters:
+//    - DATA, 32 bytes - Hash of a block
+// Returns:
+//    - QUANTITY, number - integer of the number of uncles in this block
+//    - error
+func (eth *Eth) GetUncleCountByBlockHash(hash string) (*big.Int, error) {
+	// ensure that the hash has been correctly formatted
+	if strings.HasPrefix(hash, "0x") {
+		if len(hash) != 66 {
+			return nil, errors.New("malformed block hash")
+		}
+	} else {
+		if len(hash) != 64 {
+			return nil, errors.New("malformed block hash")
+		}
+		hash = "0x" + hash
+	}
+
+	params := make([]string, 1)
+	params[0] = hash
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getUncleCountByBlockHash", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBigInt()
+}
+
+// GetUncleCountByBlockNumber - Returns the number of uncles in a block from a block matching the given block number.
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getunclecountbyblocknumber
+// Parameters:
+//    - QUANTITY, number - integer of a block number
+// Returns:
+//    - QUANTITY, number - integer of the number of uncles in this block
+//    - error
+func (eth *Eth) GetUncleCountByBlockNumber(quantity *big.Int) (*big.Int, error) {
+	// ensure that the hash has been correctly formatted
+
+	params := make([]string, 1)
+	params[0] = utils.IntToHex(quantity)
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getUncleCountByBlockNumber", params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return pointer.ToBigInt()
 }

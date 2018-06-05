@@ -13,61 +13,46 @@
 *********************************************************************************/
 
 /**
- * @file eth-sendtransaction_test.go
+ * @file eth-getunclecountbyblocknumber_test.go
  * @authors:
- *   Reginaldo Costa <regcostajr@gmail.com>
- * @date 2017
+ * 		Sigma Prime <sigmaprime.io>
+ * @date 2018
  */
+
 package test
 
 import (
-	"testing"
-
 	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
-	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
+	"testing"
 	"math/big"
 )
 
-func TestGetTransactionByBlockNumberAndIndex(t *testing.T) {
+func TestGetUncleCountByBlockNumber(t *testing.T) {
 
 	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
 
-	coinbase, err := connection.Eth.GetCoinbase()
-
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-
-	transaction := new(dto.TransactionParameters)
-	transaction.From = coinbase
-	transaction.To = coinbase
-	transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
-	transaction.Gas = big.NewInt(40000)
-	transaction.Data = types.ComplexString("p2p transaction")
-
-	//txID, err := connection.Eth.SendTransaction(transaction)
-
-	//t.Log(txID)
-
 	blockNumber, err := connection.Eth.GetBlockNumber()
 
-	if err != nil {
-		t.Error(err)
-		t.Fail()
-	}
-
-	tx, err := connection.Eth.GetTransactionByBlockNumberAndIndex(blockNumber, big.NewInt(0))
+	uncleByNumber, err := connection.Eth.GetUncleCountByBlockNumber(blockNumber)
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	t.Log(tx.Hash)
-	t.Log(tx.BlockHash)
-	t.Log(tx.BlockNumber)
-	t.Log(tx.TransactionIndex)
+	t.Log(uncleByNumber.Int64())
+
+	if uncleByNumber.Int64() != 0 {
+		t.Errorf("Returned uncle for block with no uncle.")
+		t.FailNow()
+	}
+
+	// should return err with negative number?
+	uncleByNumber, err = connection.Eth.GetUncleCountByBlockNumber(big.NewInt(-1))
+
+	if err == nil {
+		t.Error(err)
+		t.FailNow()
+	}
 }

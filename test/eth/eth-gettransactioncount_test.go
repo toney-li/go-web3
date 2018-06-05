@@ -23,13 +23,12 @@ package test
 
 import (
 	"testing"
-
 	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
-	"math/big"
-	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/complex/types"
+	"math/big"
 	"time"
 	"fmt"
 )
@@ -82,8 +81,8 @@ func TestEthGetTransactionCount(t *testing.T) {
 	newCount, err := connection.Eth.GetTransactionCount(coinbase, block.LATEST)
 
 	if err != nil {
-	    t.Error(err)
-	    t.FailNow()
+		t.Error(err)
+		t.FailNow()
 	}
 
 	if newCount.Int64() != (countTwo.Int64() + 1) {
@@ -92,5 +91,4 @@ func TestEthGetTransactionCount(t *testing.T) {
 	}
 
 	t.Log("Final Count: ", newCount)
-
 }

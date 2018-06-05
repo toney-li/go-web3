@@ -37,7 +37,7 @@ type HTTPProvider struct {
 	address string
 	timeout int32
 	secure  bool
-	client *http.Client
+	client  *http.Client
 }
 
 func NewHTTPProvider(address string, timeout int32, secure bool) *HTTPProvider {
