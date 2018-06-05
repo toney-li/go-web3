@@ -759,3 +759,27 @@ func (eth *Eth) GetUncleCountByBlockNumber(quantity types.ComplexIntParameter) (
 
 	return pointer.ToComplexIntResponse()
 }
+
+// GetCode - Returns code at a given address
+// Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getcode
+// Parameters:
+//    - DATA, 20 Bytes - address
+//	  - QUANTITY|TAG - integer block number, or the string "latest", "earliest" or "pending", see the default block parameter: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter
+// Returns:
+//    - DATA - the code from the given address.
+func (eth *Eth) GetCode(address string, defaultBlockParameter string) (string, error) {
+
+	params := make([]string, 2)
+	params[0] = address
+	params[1] = defaultBlockParameter
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "eth_getCode", params)
+
+	if err != nil {
+		return "", err
+	}
+
+	return pointer.ToString()
+}

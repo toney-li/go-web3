@@ -113,7 +113,7 @@ TODO List
 - [x] eth_getBlockTransactionCountByNumber    
 - [x] eth_getUncleCountByBlockHash            
 - [x] eth_getUncleCountByBlockNumber          
-- [ ] eth_getCode                             
+- [x] eth_getCode                             
 - [x] eth_sign                                
 - [x] eth_sendTransaction                     
 - [ ] eth_sendRawTransaction                  
