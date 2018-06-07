@@ -21,10 +21,10 @@
 
 package dto
 
-import "github.com/regcostajr/go-web3/complex/types"
+import "math/big"
 
 type SyncingResponse struct {
-	StartingBlock types.ComplexIntResponse `json:"startingBlock"`
-	CurrentBlock  types.ComplexIntResponse `json:"currentBlock"`
-	HighestBlock  types.ComplexIntResponse `json:"highestBlock"`
+	StartingBlock *big.Int `json:"startingBlock"`
+	CurrentBlock  *big.Int `json:"currentBlock"`
+	HighestBlock  *big.Int `json:"highestBlock"`
 }

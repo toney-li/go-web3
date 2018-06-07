@@ -23,9 +23,9 @@ package test
 
 import (
 	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/providers"
 	"testing"
+	"math/big"
 )
 
 func TestGetUncleCountByBlockNumber(t *testing.T) {
@@ -34,22 +34,22 @@ func TestGetUncleCountByBlockNumber(t *testing.T) {
 
 	blockNumber, err := connection.Eth.GetBlockNumber()
 
-	uncleByNumber, err := connection.Eth.GetUncleCountByBlockNumber(types.ComplexIntParameter(blockNumber.ToInt64()))
+	uncleByNumber, err := connection.Eth.GetUncleCountByBlockNumber(blockNumber)
 
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 
-	t.Log(uncleByNumber.ToInt64())
+	t.Log(uncleByNumber.Int64())
 
-	if uncleByNumber.ToInt64() != 0 {
+	if uncleByNumber.Int64() != 0 {
 		t.Errorf("Returned uncle for block with no uncle.")
 		t.FailNow()
 	}
 
 	// should return err with negative number?
-	uncleByNumber, err = connection.Eth.GetUncleCountByBlockNumber(types.ComplexIntParameter(-1))
+	uncleByNumber, err = connection.Eth.GetUncleCountByBlockNumber(big.NewInt(-1))
 
 	if err == nil {
 		t.Error(err)

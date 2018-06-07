@@ -52,13 +52,17 @@ func TestGetTransactionByHash(t *testing.T) {
 	time.Sleep(time.Second)
 
 	if err != nil {
+		t.Errorf("Failed SendTransaction")
 		t.Error(err)
 		t.FailNow()
 	}
 
+	time.Sleep(time.Second)
+
 	tx, err := connection.Eth.GetTransactionByHash(txID)
 
 	if err != nil {
+		t.Errorf("Failed GetTransactionByHash")
 		t.Error(err)
 		t.FailNow()
 	}

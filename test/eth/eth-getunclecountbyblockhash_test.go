@@ -23,7 +23,6 @@ package test
 
 import (
 	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/providers"
 	"testing"
 )
@@ -34,7 +33,7 @@ func TestGetUncleCountByBlockHash(t *testing.T) {
 
 	blockNumber, err := connection.Eth.GetBlockNumber()
 
-	blockByNumber, err := connection.Eth.GetBlockByNumber(types.ComplexIntParameter(blockNumber.ToInt64()), false)
+	blockByNumber, err := connection.Eth.GetBlockByNumber(blockNumber, false)
 
 	if err != nil {
 		t.Error(err)
@@ -48,9 +47,9 @@ func TestGetUncleCountByBlockHash(t *testing.T) {
 		t.FailNow()
 	}
 
-	t.Log(uncleByHash.ToInt64())
+	t.Log(uncleByHash.Int64())
 
-	if uncleByHash.ToInt64() != 0 {
+	if uncleByHash.Int64() != 0 {
 		t.Errorf("Returned uncle for block with no uncle.")
 		t.FailNow()
 	}

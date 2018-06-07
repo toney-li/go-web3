@@ -24,11 +24,12 @@ package eth
 import (
 	"errors"
 	"strings"
-
+	"math/big"
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
+	"github.com/regcostajr/go-web3/utils"
 )
 
 // Eth - The Eth Module
@@ -136,18 +137,17 @@ func (eth *Eth) IsMining() (bool, error) {
 //    - none
 // Returns:
 // 	  - QUANTITY - number of hashes per second.
-func (eth *Eth) GetHashRate() (types.ComplexIntResponse, error) {
+func (eth *Eth) GetHashRate() (*big.Int, error) {
 
 	pointer := &dto.RequestResult{}
 
 	err := eth.provider.SendRequest(pointer, "eth_hashrate", nil)
 
 	if err != nil {
-		return types.ComplexIntResponse(0), err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
-
+	return pointer.ToBigInt()
 }
 
 // GetGasPrice - Returns the current price per gas in wei.
@@ -156,18 +156,17 @@ func (eth *Eth) GetHashRate() (types.ComplexIntResponse, error) {
 //    - none
 // Returns:
 // 	  - QUANTITY - integer of the current gas price in wei.
-func (eth *Eth) GetGasPrice() (types.ComplexIntResponse, error) {
+func (eth *Eth) GetGasPrice() (*big.Int, error) {
 
 	pointer := &dto.RequestResult{}
 
 	err := eth.provider.SendRequest(pointer, "eth_gasPrice", nil)
 
 	if err != nil {
-		return types.ComplexIntResponse(0), err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
-
+	return pointer.ToBigInt()
 }
 
 // ListAccounts - Returns a list of addresses owned by client.
@@ -196,18 +195,17 @@ func (eth *Eth) ListAccounts() ([]string, error) {
 //    - none
 // Returns:
 // 	  - QUANTITY - integer of the current block number the client is on.
-func (eth *Eth) GetBlockNumber() (types.ComplexIntResponse, error) {
+func (eth *Eth) GetBlockNumber() (*big.Int, error) {
 
 	pointer := &dto.RequestResult{}
 
 	err := eth.provider.SendRequest(pointer, "eth_blockNumber", nil)
 
 	if err != nil {
-		return types.ComplexIntResponse(0), err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
-
+	return pointer.ToBigInt()
 }
 
 // GetBalance - Returns the balance of the account of given address.
@@ -217,7 +215,7 @@ func (eth *Eth) GetBlockNumber() (types.ComplexIntResponse, error) {
 //	  - QUANTITY|TAG - integer block number, or the string "latest", "earliest" or "pending", see the default block parameter: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter
 // Returns:
 // 	  - QUANTITY - integer of the current balance in wei.
-func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (types.ComplexIntResponse, error) {
+func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (*big.Int, error) {
 
 	params := make([]string, 2)
 	params[0] = address
@@ -228,11 +226,10 @@ func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (types.
 	err := eth.provider.SendRequest(pointer, "eth_getBalance", params)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
-
+	return pointer.ToBigInt()
 }
 
 // GetTransactionCount -  Returns the number of transactions sent from an address.
@@ -242,7 +239,7 @@ func (eth *Eth) GetBalance(address string, defaultBlockParameter string) (types.
 //	  - QUANTITY|TAG - integer block number, or the string "latest", "earliest" or "pending", see the default block parameter: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter
 // Returns:
 // 	  - QUANTITY - integer of the number of transactions sent from this address
-func (eth *Eth) GetTransactionCount(address string, defaultBlockParameter string) (types.ComplexIntResponse, error) {
+func (eth *Eth) GetTransactionCount(address string, defaultBlockParameter string) (*big.Int, error) {
 
 	params := make([]string, 2)
 	params[0] = address
@@ -253,10 +250,10 @@ func (eth *Eth) GetTransactionCount(address string, defaultBlockParameter string
 	err := eth.provider.SendRequest(pointer, "eth_getTransactionCount", params)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
+	return pointer.ToBigInt()
 }
 
 // GetStorageAt - Returns the value from a storage position at a given address.
@@ -267,11 +264,11 @@ func (eth *Eth) GetTransactionCount(address string, defaultBlockParameter string
 //	  - QUANTITY|TAG - integer block number, or the string "latest", "earliest" or "pending", see the default block parameter: https://github.com/ethereum/wiki/wiki/JSON-RPC#the-default-block-parameter.
 // Returns:
 // 	  - DATA - the value at this storage position.
-func (eth *Eth) GetStorageAt(address string, position types.ComplexIntParameter, defaultBlockParameter string) (string, error) {
+func (eth *Eth) GetStorageAt(address string, position *big.Int, defaultBlockParameter string) (string, error) {
 
 	params := make([]string, 3)
 	params[0] = address
-	params[1] = position.ToHex()
+	params[1] = utils.IntToHex(position)
 	params[2] = defaultBlockParameter
 
 	pointer := &dto.RequestResult{}
@@ -283,7 +280,6 @@ func (eth *Eth) GetStorageAt(address string, position types.ComplexIntParameter,
 	}
 
 	return pointer.ToString()
-
 }
 
 // EstimateGas - Makes a call or transaction, which won't be added to the blockchain and returns the used gas, which can be used for estimating the used gas.
@@ -293,7 +289,7 @@ func (eth *Eth) GetStorageAt(address string, position types.ComplexIntParameter,
 // 		upper bound. As a result the returned estimate might not be enough to executed the call/transaction when the amount of gas is higher than the pending block gas limit.
 // Returns:
 //    - QUANTITY - the amount of gas used.
-func (eth *Eth) EstimateGas(transaction *dto.TransactionParameters) (types.ComplexIntResponse, error) {
+func (eth *Eth) EstimateGas(transaction *dto.TransactionParameters) (*big.Int, error) {
 
 	params := make([]*dto.RequestTransactionParameters, 1)
 
@@ -304,11 +300,10 @@ func (eth *Eth) EstimateGas(transaction *dto.TransactionParameters) (types.Compl
 	err := eth.provider.SendRequest(&pointer, "eth_estimateGas", params)
 
 	if err != nil {
-		return types.ComplexIntResponse(0), err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
-
+	return pointer.ToBigInt()
 }
 
 // GetTransactionByHash - Returns the information about a transaction requested by transaction hash.
@@ -363,7 +358,7 @@ func (eth *Eth) GetTransactionByHash(hash string) (*dto.TransactionResponse, err
 //    - gasPrice: QUANTITY - gas price provided by the sender in Wei.
 //    - gas: QUANTITY - gas provided by the sender.
 //    - input: DATA - the data send along with the transaction.
-func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index types.ComplexIntParameter) (*dto.TransactionResponse, error) {
+func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index *big.Int) (*dto.TransactionResponse, error) {
 
 	// ensure that the hash is correctlyformatted
 	if strings.HasPrefix(hash, "0x") {
@@ -380,7 +375,7 @@ func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index types.Compl
 
 	params := make([]string, 2)
 	params[0] = hash
-	params[1] = index.ToHex()
+	params[1] = utils.IntToHex(index)
 
 	pointer := &dto.RequestResult{}
 
@@ -397,7 +392,7 @@ func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index types.Compl
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getTransactionByBlockNumberAndIndex
 // Parameters:
 //    - QUANTITY, number - block number
-//    - DATA, 32 Bytes - hash of a transaction
+//    - QUANTITY, number - transaction index in block
 // Returns:
 //    1. Object - A transaction object, or null when no transaction was found
 //    - hash: DATA, 32 Bytes - hash of the transaction.
@@ -411,11 +406,11 @@ func (eth *Eth) GetTransactionByBlockHashAndIndex(hash string, index types.Compl
 //    - gasPrice: QUANTITY - gas price provided by the sender in Wei.
 //    - gas: QUANTITY - gas provided by the sender.
 //    - input: DATA - the data send along with the transaction.
-func (eth *Eth) GetTransactionByBlockNumberAndIndex(blockIndex types.ComplexIntParameter, index types.ComplexIntParameter) (*dto.TransactionResponse, error) {
+func (eth *Eth) GetTransactionByBlockNumberAndIndex(blockIndex *big.Int, index *big.Int) (*dto.TransactionResponse, error) {
 
 	params := make([]string, 2)
-	params[0] = blockIndex.ToHex()
-	params[1] = index.ToHex()
+	params[0] = utils.IntToHex(blockIndex)
+	params[1] = utils.IntToHex(index)
 
 	pointer := &dto.RequestResult{}
 
@@ -595,10 +590,10 @@ func (eth *Eth) GetTransactionReceipt(hash string) (*dto.TransactionReceipt, err
 // Returns:
 //    1. Object - A block object, or null when no transaction was found
 //    2. error
-func (eth *Eth) GetBlockByNumber(number types.ComplexIntParameter, transactionDetails bool) (*dto.Block, error) {
+func (eth *Eth) GetBlockByNumber(number *big.Int, transactionDetails bool) (*dto.Block, error) {
 
 	params := make([]interface{}, 2)
-	params[0] = number.ToHex()
+	params[0] = utils.IntToHex(number)
 	params[1] = transactionDetails
 
 	pointer := &dto.RequestResult{}
@@ -610,7 +605,6 @@ func (eth *Eth) GetBlockByNumber(number types.ComplexIntParameter, transactionDe
 	}
 
 	return pointer.ToBlock()
-
 }
 
 // GetBlockTransactionCountByHash
@@ -620,15 +614,15 @@ func (eth *Eth) GetBlockByNumber(number types.ComplexIntParameter, transactionDe
 // Returns:
 //    1. QUANTITY, number - number of transactions in the block
 //    2. error
-func (eth *Eth) GetBlockTransactionCountByHash(hash string) (types.ComplexIntResponse, error) {
+func (eth *Eth) GetBlockTransactionCountByHash(hash string) (*big.Int, error) {
 	// ensure that the hash is correctlyformatted
 	if strings.HasPrefix(hash, "0x") {
 		if len(hash) != 66 {
-			return types.ComplexIntResponse(0), errors.New("malformed block hash")
+			return nil, errors.New("malformed block hash")
 		}
 	} else {
 		if len(hash) != 64 {
-			return types.ComplexIntResponse(0), errors.New("malformed block hash")
+			return nil, errors.New("malformed block hash")
 		}
 		hash = "0x" + hash
 	}
@@ -638,10 +632,10 @@ func (eth *Eth) GetBlockTransactionCountByHash(hash string) (types.ComplexIntRes
 	err := eth.provider.SendRequest(pointer, "eth_getBlockTransactionCountByHash", []string{hash})
 
 	if err != nil {
-		return types.ComplexIntResponse(0), err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
+	return pointer.ToBigInt()
 }
 
 // GetBlockTransactionCountByNumber - Returns the number of transactions in a block matching the given block number
@@ -650,7 +644,7 @@ func (eth *Eth) GetBlockTransactionCountByHash(hash string) (types.ComplexIntRes
 //    - QUANTITY|TAG - integer of a block number, or the string "earliest", "latest" or "pending", as in the default block parameter
 // Returns:
 //    - QUANTITY - integer of the number of transactions in this block
-func (eth *Eth) GetBlockTransactionCountByNumber(defaultBlockParameter string) (types.ComplexIntResponse, error) {
+func (eth *Eth) GetBlockTransactionCountByNumber(defaultBlockParameter string) (*big.Int, error) {
 
 	params := make([]string, 1)
 	params[0] = defaultBlockParameter
@@ -660,10 +654,10 @@ func (eth *Eth) GetBlockTransactionCountByNumber(defaultBlockParameter string) (
 	err := eth.provider.SendRequest(pointer, "eth_getBlockTransactionCountByNumber", params)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
+	return pointer.ToBigInt()
 }
 
 // GetBlockByHash - Returns information about a block by hash.
@@ -709,15 +703,15 @@ func (eth *Eth) GetBlockByHash(hash string, transactionDetails bool) (*dto.Block
 // Returns:
 //    - QUANTITY, number - integer of the number of uncles in this block
 //    - error
-func (eth *Eth) GetUncleCountByBlockHash(hash string) (types.ComplexIntResponse, error) {
+func (eth *Eth) GetUncleCountByBlockHash(hash string) (*big.Int, error) {
 	// ensure that the hash has been correctly formatted
 	if strings.HasPrefix(hash, "0x") {
 		if len(hash) != 66 {
-			return types.ComplexIntResponse(0), errors.New("malformed block hash")
+			return nil, errors.New("malformed block hash")
 		}
 	} else {
 		if len(hash) != 64 {
-			return types.ComplexIntResponse(0), errors.New("malformed block hash")
+			return nil, errors.New("malformed block hash")
 		}
 		hash = "0x" + hash
 	}
@@ -730,10 +724,10 @@ func (eth *Eth) GetUncleCountByBlockHash(hash string) (types.ComplexIntResponse,
 	err := eth.provider.SendRequest(pointer, "eth_getUncleCountByBlockHash", params)
 
 	if err != nil {
-		return types.ComplexIntResponse(0), err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
+	return pointer.ToBigInt()
 }
 
 // GetUncleCountByBlockNumber - Returns the number of uncles in a block from a block matching the given block number.
@@ -743,21 +737,21 @@ func (eth *Eth) GetUncleCountByBlockHash(hash string) (types.ComplexIntResponse,
 // Returns:
 //    - QUANTITY, number - integer of the number of uncles in this block
 //    - error
-func (eth *Eth) GetUncleCountByBlockNumber(quantity types.ComplexIntParameter) (types.ComplexIntResponse, error) {
+func (eth *Eth) GetUncleCountByBlockNumber(quantity *big.Int) (*big.Int, error) {
 	// ensure that the hash has been correctly formatted
 
 	params := make([]string, 1)
-	params[0] = quantity.ToHex()
+	params[0] = utils.IntToHex(quantity)
 
 	pointer := &dto.RequestResult{}
 
 	err := eth.provider.SendRequest(pointer, "eth_getUncleCountByBlockNumber", params)
 
 	if err != nil {
-		return types.ComplexIntResponse(0), err
+		return nil, err
 	}
 
-	return pointer.ToComplexIntResponse()
+	return pointer.ToBigInt()
 }
 
 // GetCode - Returns code at a given address

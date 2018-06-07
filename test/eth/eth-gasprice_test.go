@@ -39,6 +39,10 @@ func TestEthGasPrice(t *testing.T) {
 		t.Fail()
 	}
 
-	t.Log(gasPrice.ToInt64())
+	if gasPrice.Int64() < 0 {
+		t.Errorf("Negative gasprice");
+		t.FailNow()
+	}
 
+	t.Log(gasPrice.Int64())
 }

@@ -23,7 +23,6 @@ package test
 
 import (
 	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
 	"math/big"
@@ -42,7 +41,7 @@ func TestGetBlockTransactionCountByHash(t *testing.T) {
 		t.FailNow()
 	}
 
-	block, err := connection.Eth.GetBlockByNumber(types.ComplexIntParameter(blockNumber.ToInt64()), false)
+	block, err := connection.Eth.GetBlockByNumber(blockNumber, false)
 
 	if err != nil {
 		t.Error(err)
@@ -93,7 +92,7 @@ func TestGetBlockTransactionCountByHash(t *testing.T) {
 		t.FailNow()
 	}
 
-	if txCount.ToInt64() != 1 {
+	if txCount.Int64() != 1 {
 		t.Error("invalid block transaction count")
 		t.FailNow()
 	}

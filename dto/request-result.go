@@ -30,6 +30,8 @@ import (
 	"github.com/regcostajr/go-web3/constants"
 
 	"encoding/json"
+	"math/big"
+	"fmt"
 )
 
 type RequestResult struct {
@@ -101,6 +103,23 @@ func (pointer *RequestResult) ToInt() (int64, error) {
 
 	return numericResult, err
 
+}
+
+func (pointer *RequestResult) ToBigInt() (*big.Int, error) {
+
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err;
+	}
+
+	res := (pointer).Result.(interface{});
+
+	ret, success := big.NewInt(0).SetString(res.(string)[2:], 16)
+
+	if !success {
+		return nil, errors.New(fmt.Sprintf("Failed to convert %s to BigInt", res.(string)));
+	}
+
+	return ret, nil
 }
 
 func (pointer *RequestResult) ToComplexIntResponse() (types.ComplexIntResponse, error) {

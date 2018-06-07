@@ -39,6 +39,6 @@ func TestNetPeerCount(t *testing.T) {
 		t.FailNow()
 	}
 
-	t.Log(peers.ToInt64())
+	t.Log(peers.Uint64())
 
 }

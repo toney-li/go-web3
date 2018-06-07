@@ -27,7 +27,6 @@ import (
 	"time"
 
 	web3 "github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
@@ -67,7 +66,7 @@ func TestGetBlockTransactionCountByNumber(t *testing.T) {
 		t.FailNow()
 	}
 
-	blockNumber := block.NUMBER(types.ComplexIntParameter(tx.BlockNumber.ToInt64()))
+	blockNumber := block.NUMBER(tx.BlockNumber)
 
 	txCount, err := connection.Eth.GetBlockTransactionCountByNumber(blockNumber)
 
@@ -76,7 +75,7 @@ func TestGetBlockTransactionCountByNumber(t *testing.T) {
 		t.FailNow()
 	}
 
-	if txCount.ToInt64() != 1 {
+	if txCount.Int64() != 1 {
 		t.Error("invalid block transaction count")
 		t.FailNow()
 	}
@@ -88,7 +87,7 @@ func TestGetBlockTransactionCountByNumber(t *testing.T) {
 		t.FailNow()
 	}
 
-	if txCount.ToInt64() != 1 {
+	if txCount.Int64() != 1 {
 		t.Error("invalid block transaction count")
 		t.FailNow()
 	}

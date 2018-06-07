@@ -24,6 +24,9 @@ package dto
 import (
 	"github.com/regcostajr/go-web3/complex/types"
 	"math/big"
+	"encoding/json"
+	"errors"
+	"fmt"
 )
 
 // TransactionParameters GO transaction to make more easy controll the parameters
@@ -39,13 +42,13 @@ type TransactionParameters struct {
 
 // RequestTransactionParameters JSON
 type RequestTransactionParameters struct {
-	From     string `json:"from"`
-	To       string `json:"to,omitempty"`
-	Nonce    string `json:"nonce,omitempty"`
-	Gas      string `json:"gas,omitempty"`
-	GasPrice string `json:"gasPrice,omitempty"`
-	Value    string `json:"value,omitempty"`
-	Data     string `json:"data,omitempty"`
+	From     string                 `json:"from"`
+	To       string                 `json:"to,omitempty"`
+	Nonce    string                 `json:"nonce,omitempty"`
+	Gas      string                 `json:"gas,omitempty"`
+	GasPrice string                 `json:"gasPrice,omitempty"`
+	Value    string                 `json:"value,omitempty"`
+	Data     string                 `json:"data,omitempty"`
 }
 
 // Transform the GO transactions parameters to json style
@@ -74,32 +77,226 @@ func (params *TransactionParameters) Transform() *RequestTransactionParameters {
 }
 
 type SignTransactionResponse struct {
-	Raw         types.ComplexString `json:"raw"`
-	Transaction TransactionResponse `json:"tx"`
+	Raw              types.ComplexString		`json:"raw"`
+	Transaction      SignedTransactionParams	`json:"tx"`
+}
+
+type SignedTransactionParams struct {
+	Gas      *big.Int                `json:gas`
+	GasPrice *big.Int                `json:gasPrice`
+	Hash     string                  `json:hash`
+	Input    string                  `json:input`
+	Nonce    *big.Int                `json:nonce`
+	S        string                  `json:s`
+	R        string                  `json:r`
+	V        *big.Int                `json:v`
+	To       string                  `json:to`
+	Value    *big.Int                `json:value`
 }
 
 type TransactionResponse struct {
-	Hash             string                   `json:"hash"`
-	Nonce            int                      `json:"nonce"`
-	BlockHash        string                   `json:"blockHash"`
-	BlockNumber      types.ComplexIntResponse `json:"blockNumber"`
-	TransactionIndex types.ComplexIntResponse `json:"transactionIndex"`
-	From             string                   `json:"from"`
-	To               string                   `json:"to"`
-	Input            string                   `json:"input"`
-	Value            types.ComplexIntResponse `json:"value"`
-	GasPrice         types.ComplexIntResponse `json:"gasPrice,omitempty"`
-	Gas              types.ComplexIntResponse `json:"gas,omitempty"`
-	Data             types.ComplexString      `json:"data,omitempty"`
+	Hash             string                  `json:"hash"`
+	Nonce            *big.Int                `json:"nonce"`
+	BlockHash        string                  `json:"blockHash"`
+	BlockNumber      *big.Int                `json:"blockNumber"`
+	TransactionIndex *big.Int                `json:"transactionIndex"`
+	From             string                  `json:"from"`
+	To               string                  `json:"to"`
+	Input            string                  `json:"input"`
+	Value            *big.Int                `json:"value"`
+	GasPrice         *big.Int                `json:"gasPrice,omitempty"`
+	Gas              *big.Int                `json:"gas,omitempty"`
+	Data             types.ComplexString     `json:"data,omitempty"`
 }
 
 type TransactionReceipt struct {
 	TransactionHash   string   `json:"transactionHash"`
-	TransactionIndex  int64    `json:"transactionIndex"`
+	TransactionIndex  *big.Int `json:"transactionIndex"`
 	BlockHash         string   `json:"blockHash"`
-	BlockNumber       int64    `json:"blockNumber"`
-	CumulativeGasUsed int64    `json:"cumulativeGasUsed"`
-	GasUsed           int64    `json:"gasUsed"`
+	BlockNumber       *big.Int `json:"blockNumber"`
+	CumulativeGasUsed *big.Int `json:"cumulativeGasUsed"`
+	GasUsed           *big.Int `json:"gasUsed"`
 	ContractAddress   string   `json:"contractAddress"`
 	Logs              []string `json:"logs"`
+}
+
+
+func (t *TransactionResponse) UnmarshalJSON(data []byte) error {
+	type Alias TransactionResponse
+	temp := &struct{
+		Nonce            string 	`json:"nonce"`
+		BlockNumber      string 	`json:"blockNumber"`
+		TransactionIndex string 	`json:"transactionIndex"`
+		Value            string 	`json:"value"`
+		GasPrice         string 	`json:"gasPrice,omitempty"`
+		Gas              string 	`json:"gas,omitempty"`
+		*Alias
+	}{
+		Alias: (*Alias)(t),
+	}
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	nonce, success := big.NewInt(0).SetString(temp.Nonce[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.Nonce))
+	}
+
+	if len(temp.BlockNumber) == 0 {
+		temp.BlockNumber = "0x"
+	}
+
+	blockNum, success := big.NewInt(0).SetString(temp.BlockNumber[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.BlockNumber))
+	}
+
+	if len(temp.TransactionIndex) == 0 {
+		temp.TransactionIndex = "0x"
+	}
+
+	txIndex, success := big.NewInt(0).SetString(temp.TransactionIndex[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.TransactionIndex))
+	}
+
+	gas, success := big.NewInt(0).SetString(temp.Gas[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.Gas))
+	}
+
+	gasPrice, success := big.NewInt(0).SetString(temp.GasPrice[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.GasPrice))
+	}
+
+	value, success := big.NewInt(0).SetString(temp.Value[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.Value))
+	}
+
+
+	t.Nonce = nonce
+	t.BlockNumber = blockNum
+	t.TransactionIndex = txIndex
+	t.Gas = gas
+	t.GasPrice = gasPrice
+	t.Value = value
+
+	return nil
+}
+
+func (r *TransactionReceipt) UnmarshalJSON(data []byte) error {
+	type Alias TransactionReceipt
+
+	temp := &struct {
+		TransactionIndex  string	`json:"transactionIndex"`
+		BlockNumber       string	`json:"blockNumber"`
+		CumulativeGasUsed string	`json:"cumulativeGasUsed"`
+		GasUsed           string	`json:"gasUsed"`
+		*Alias
+	}{
+		Alias: (*Alias)(r),
+	}
+
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	blockNum, success := big.NewInt(0).SetString(temp.BlockNumber[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.BlockNumber))
+	}
+
+	txIndex, success := big.NewInt(0).SetString(temp.TransactionIndex[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.TransactionIndex))
+	}
+
+	gasUsed, success := big.NewInt(0).SetString(temp.GasUsed[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.GasUsed))
+	}
+
+	cumulativeGas , success := big.NewInt(0).SetString(temp.CumulativeGasUsed[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.CumulativeGasUsed))
+	}
+
+
+	r.TransactionIndex = txIndex
+	r.BlockNumber = blockNum
+	r.CumulativeGasUsed = cumulativeGas
+	r.GasUsed = gasUsed
+
+	return nil
+}
+
+func (sp *SignedTransactionParams) UnmarshalJSON(data []byte) error {
+	type Alias SignedTransactionParams
+
+	temp := &struct {
+        Gas			string	`json:gas`
+        GasPrice	string	`json:gasPrice`
+        Nonce		string	`json:nonce`
+        V			string	`json:v`
+        Value		string	`json:value`
+        *Alias
+	}{
+		Alias: (*Alias)(sp),
+	}
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	gas, success := big.NewInt(0).SetString(temp.Gas[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.Gas))
+	}
+
+	gasPrice, success := big.NewInt(0).SetString(temp.GasPrice[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.GasPrice))
+	}
+
+	nonce, success := big.NewInt(0).SetString(temp.Nonce[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.Nonce))
+	}
+
+	v, success := big.NewInt(0).SetString(temp.V[2:], 16)
+
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.V))
+	}
+
+	val, success := big.NewInt(0).SetString(temp.Value[2:], 16)
+	if !success {
+		return errors.New(fmt.Sprintf("Error converting %s to BigInt", temp.Value))
+	}
+
+	sp.Gas = gas
+	sp.GasPrice = gasPrice
+	sp.Nonce = nonce
+	sp.V = v
+	sp.Value = val
+
+	return nil
 }

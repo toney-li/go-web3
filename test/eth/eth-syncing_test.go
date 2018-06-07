@@ -36,6 +36,6 @@ func TestEthSyncing(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
-		t.Fail()
+		t.FailNow()
 	}
 }

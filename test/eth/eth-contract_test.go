@@ -29,6 +29,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"testing"
+	"fmt"
 )
 
 func TestEthContract(t *testing.T) {
@@ -68,6 +69,7 @@ func TestEthContract(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
+		t.FailNow()
 	}
 
 	t.Log("Contract Address: ", receipt.ContractAddress)
@@ -75,10 +77,16 @@ func TestEthContract(t *testing.T) {
 	transaction.To = receipt.ContractAddress
 
 	result, err := contract.Call(transaction, "name")
+
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
 	if result != nil && err == nil {
 		name, _ := result.ToComplexString()
 		if name.ToString() != "SimpleToken" {
-			t.Errorf("Name not expected")
+			t.Errorf(fmt.Sprintf("Name not expected; [Expected %s | Got %s]", "SimpleToken", name.ToString()))
 			t.FailNow()
 		}
 	}
@@ -94,8 +102,8 @@ func TestEthContract(t *testing.T) {
 
 	result, err = contract.Call(transaction, "decimals")
 	if result != nil && err == nil {
-		decimals, _ := result.ToComplexIntResponse()
-		if decimals.ToInt64() != 18 {
+		decimals, _ := result.ToBigInt()
+		if decimals.Int64() != 18 {
 			t.Errorf("Decimals not expected")
 			t.FailNow()
 		}
@@ -105,8 +113,8 @@ func TestEthContract(t *testing.T) {
 
 	result, err = contract.Call(transaction, "totalSupply")
 	if result != nil && err == nil {
-		total, _ := result.ToComplexIntResponse()
-		if total.ToBigInt().Cmp(bigInt) != 0 {
+		total, _ := result.ToBigInt()
+		if total.Cmp(bigInt) != 0 {
 			t.Errorf("Total not expected")
 			t.FailNow()
 		}
@@ -114,8 +122,8 @@ func TestEthContract(t *testing.T) {
 
 	result, err = contract.Call(transaction, "balanceOf", coinbase)
 	if result != nil && err == nil {
-		balance, _ := result.ToComplexIntResponse()
-		if balance.ToBigInt().Cmp(bigInt) != 0 {
+		balance, _ := result.ToBigInt()
+		if balance.Cmp(bigInt) != 0 {
 			t.Errorf("Balance not expected")
 			t.FailNow()
 		}
