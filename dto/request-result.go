@@ -30,8 +30,8 @@ import (
 	"github.com/regcostajr/go-web3/constants"
 
 	"encoding/json"
-	"math/big"
 	"fmt"
+	"math/big"
 )
 
 type RequestResult struct {
@@ -108,15 +108,15 @@ func (pointer *RequestResult) ToInt() (int64, error) {
 func (pointer *RequestResult) ToBigInt() (*big.Int, error) {
 
 	if err := pointer.checkResponse(); err != nil {
-		return nil, err;
+		return nil, err
 	}
 
-	res := (pointer).Result.(interface{});
+	res := (pointer).Result.(interface{})
 
 	ret, success := big.NewInt(0).SetString(res.(string)[2:], 16)
 
 	if !success {
-		return nil, errors.New(fmt.Sprintf("Failed to convert %s to BigInt", res.(string)));
+		return nil, errors.New(fmt.Sprintf("Failed to convert %s to BigInt", res.(string)))
 	}
 
 	return ret, nil
@@ -178,9 +178,9 @@ func (pointer *RequestResult) ToSignTransactionResponse() (*SignTransactionRespo
 		return nil, customerror.UNPARSEABLEINTERFACE
 	}
 
-	json.Unmarshal([]byte(marshal), signTransactionResponse)
+	err = json.Unmarshal([]byte(marshal), signTransactionResponse)
 
-	return signTransactionResponse, nil
+	return signTransactionResponse, err
 }
 
 func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, error) {
@@ -203,9 +203,9 @@ func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, err
 		return nil, customerror.UNPARSEABLEINTERFACE
 	}
 
-	json.Unmarshal([]byte(marshal), transactionResponse)
+	err = json.Unmarshal([]byte(marshal), transactionResponse)
 
-	return transactionResponse, nil
+	return transactionResponse, err
 
 }
 
@@ -229,9 +229,9 @@ func (pointer *RequestResult) ToTransactionReceipt() (*TransactionReceipt, error
 		return nil, customerror.UNPARSEABLEINTERFACE
 	}
 
-	json.Unmarshal([]byte(marshal), transactionReceipt)
+	err = json.Unmarshal([]byte(marshal), transactionReceipt)
 
-	return transactionReceipt, nil
+	return transactionReceipt, err
 
 }
 

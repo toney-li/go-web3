@@ -22,22 +22,22 @@
 package dto
 
 import (
-	"math/big"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/big"
 )
 
 type Block struct {
-	Number     *big.Int                 `json:"number"`
-	Hash       string                   `json:"hash"`
-	ParentHash string                   `json:"parentHash"`
-	Author     string                   `json:"author,omitempty"`
-	Miner      string                   `json:"miner,omitempty"`
-	Size       *big.Int                 `json:"size"`
-	GasUsed    *big.Int                 `json:"gasUsed"`
-	Nonce      *big.Int                 `json:"nonce"`
-	Timestamp  *big.Int                 `json:"timestamp"`
+	Number     *big.Int `json:"number"`
+	Hash       string   `json:"hash"`
+	ParentHash string   `json:"parentHash"`
+	Author     string   `json:"author,omitempty"`
+	Miner      string   `json:"miner,omitempty"`
+	Size       *big.Int `json:"size"`
+	GasUsed    *big.Int `json:"gasUsed"`
+	Nonce      *big.Int `json:"nonce"`
+	Timestamp  *big.Int `json:"timestamp"`
 }
 
 /**
@@ -45,23 +45,23 @@ type Block struct {
  * `complexReturn` type.
  */
 func (b *Block) UnmarshalJSON(data []byte) error {
-	type Alias Block;
+	type Alias Block
 	temp := &struct {
-		Number     string               `json:"number"`
-		Size       string               `json:"size"`
-		GasUsed    string               `json:"gasUsed"`
-		Nonce      string               `json:"nonce"`
-		Timestamp  string               `json:"timestamp"`
+		Number    string `json:"number"`
+		Size      string `json:"size"`
+		GasUsed   string `json:"gasUsed"`
+		Nonce     string `json:"nonce"`
+		Timestamp string `json:"timestamp"`
 		*Alias
 	}{
-		Alias : (*Alias)(b),
+		Alias: (*Alias)(b),
 	}
 
 	if err := json.Unmarshal(data, &temp); err != nil {
 		return err
 	}
 
-	num, success := big.NewInt(0).SetString(temp.Number[2:],  16)
+	num, success := big.NewInt(0).SetString(temp.Number[2:], 16)
 
 	if !success {
 		return errors.New(fmt.Sprintf("Error converting %s to bigInt", temp.Number))
@@ -73,7 +73,7 @@ func (b *Block) UnmarshalJSON(data []byte) error {
 		return errors.New(fmt.Sprintf("Error converting %s to bigInt", temp.Size))
 	}
 
-	gas , success := big.NewInt(0).SetString(temp.GasUsed[2:], 16)
+	gas, success := big.NewInt(0).SetString(temp.GasUsed[2:], 16)
 
 	if !success {
 		return errors.New(fmt.Sprintf("Error converting %s to bigInt", temp.GasUsed))
@@ -85,7 +85,7 @@ func (b *Block) UnmarshalJSON(data []byte) error {
 		return errors.New(fmt.Sprintf("Error converting %s to bigInt", temp.Nonce))
 	}
 
-	timestamp , success := big.NewInt(0).SetString(temp.Timestamp[2:], 16)
+	timestamp, success := big.NewInt(0).SetString(temp.Timestamp[2:], 16)
 
 	if !success {
 		return errors.New(fmt.Sprintf("Error converting %s to bigInt", temp.Timestamp))

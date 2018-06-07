@@ -24,8 +24,8 @@ package shh
 import (
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
-	"math/big"
 	"github.com/regcostajr/go-web3/utils"
+	"math/big"
 )
 
 // SHH - The Net Module

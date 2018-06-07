@@ -1,10 +1,10 @@
 package utils
 
 import (
-    "math/big"
-    "fmt"
+	"fmt"
+	"math/big"
 )
 
 func IntToHex(n *big.Int) string {
-    return fmt.Sprintf("0x%x", n)
+	return fmt.Sprintf("0x%x", n)
 }

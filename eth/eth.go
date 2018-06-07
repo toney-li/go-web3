@@ -23,13 +23,13 @@ package eth
 
 import (
 	"errors"
-	"strings"
-	"math/big"
 	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
 	"github.com/regcostajr/go-web3/utils"
+	"math/big"
+	"strings"
 )
 
 // Eth - The Eth Module
