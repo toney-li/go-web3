@@ -31,7 +31,7 @@ import (
 	"testing"
 )
 
-func TestEthContract(t *testing.T) {
+func TestEthGetTransactionReceipt(t *testing.T) {
 
 	content, err := ioutil.ReadFile("../resources/simple-token.json")
 
