@@ -22,15 +22,15 @@
 package test
 
 import (
-	"testing"
+	"fmt"
 	"github.com/regcostajr/go-web3"
+	"github.com/regcostajr/go-web3/complex/types"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/eth/block"
 	"github.com/regcostajr/go-web3/providers"
-	"github.com/regcostajr/go-web3/complex/types"
 	"math/big"
+	"testing"
 	"time"
-	"fmt"
 )
 
 func TestEthGetTransactionCount(t *testing.T) {
@@ -52,7 +52,6 @@ func TestEthGetTransactionCount(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-
 
 	// count should not change
 	if count.Cmp(countTwo) != 0 {
@@ -86,7 +85,7 @@ func TestEthGetTransactionCount(t *testing.T) {
 	}
 
 	if newCount.Int64() != (countTwo.Int64() + 1) {
-		t.Errorf(fmt.Sprintf("Incorrect count retrieved; [Expected %d | Got %d]", countTwo.Int64() + 1, newCount))
+		t.Errorf(fmt.Sprintf("Incorrect count retrieved; [Expected %d | Got %d]", countTwo.Int64()+1, newCount))
 		t.FailNow()
 	}
 

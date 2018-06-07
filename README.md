@@ -80,7 +80,7 @@ txID, err := connection.Eth.SendTransaction(transaction)
 ## Contribute!
 
 #### Before a Pull Request:
-- Create at least one test for you implementation.
+- Create at least one test for your implementation.
 - Don't change the import path to your github username.
 - run `go fmt` for all your changes.
 - run `go test -v ./...`

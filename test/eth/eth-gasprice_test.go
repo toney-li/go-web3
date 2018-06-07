@@ -40,7 +40,7 @@ func TestEthGasPrice(t *testing.T) {
 	}
 
 	if gasPrice.Int64() < 0 {
-		t.Errorf("Negative gasprice");
+		t.Errorf("Negative gasprice")
 		t.FailNow()
 	}
 

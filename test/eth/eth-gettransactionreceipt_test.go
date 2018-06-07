@@ -13,7 +13,7 @@
 *********************************************************************************/
 
 /**
- * @file contract.go
+ * @file eth-gettransactionreceipt.go
  * @authors:
  *   Reginaldo Costa <regcostajr@gmail.com>
  * @date 2018
@@ -23,7 +23,6 @@ package test
 
 import (
 	"encoding/json"
-	"fmt"
 	web3 "github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/dto"
 	"github.com/regcostajr/go-web3/providers"
@@ -72,76 +71,40 @@ func TestEthContract(t *testing.T) {
 		t.FailNow()
 	}
 
-	t.Log("Contract Address: ", receipt.ContractAddress)
+    if len(receipt.ContractAddress) == 0{
+        t.Error("No contract address")
+        t.FailNow()
+    }
 
-	transaction.To = receipt.ContractAddress
+    if len(receipt.TransactionHash) == 0{
+        t.Error("No transaction hash")
+        t.FailNow()
+    }
 
-	result, err := contract.Call(transaction, "name")
+    if receipt.TransactionIndex == nil{
+        t.Error("No transaction index")
+        t.FailNow()
+    }
 
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
+    if len(receipt.BlockHash) == 0{
+        t.Error("No block hash")
+        t.FailNow()
+    }
 
-	if result != nil && err == nil {
-		name, _ := result.ToComplexString()
-		if name.ToString() != "SimpleToken" {
-			t.Errorf(fmt.Sprintf("Name not expected; [Expected %s | Got %s]", "SimpleToken", name.ToString()))
-			t.FailNow()
-		}
-	}
+    if (receipt.BlockNumber == nil || receipt.BlockNumber.Cmp(big.NewInt(0)) == 0){
+        t.Error("No block number")
+        t.FailNow()
+    }
 
-	result, err = contract.Call(transaction, "symbol")
-	if result != nil && err == nil {
-		symbol, _ := result.ToComplexString()
-		if symbol.ToString() != "SIM" {
-			t.Errorf("Symbol not expected")
-			t.FailNow()
-		}
-	}
+    if (receipt.Logs == nil || len(receipt.Logs) == 0){
+        t.Error("No logs")
+        t.FailNow()
+    }
 
-	result, err = contract.Call(transaction, "decimals")
-	if result != nil && err == nil {
-		decimals, _ := result.ToBigInt()
-		if decimals.Int64() != 18 {
-			t.Errorf("Decimals not expected")
-			t.FailNow()
-		}
-	}
+    if (!receipt.Status){
+        t.Error("False status")
+        t.FailNow()
+    }
 
-	bigInt, _ := new(big.Int).SetString("00000000000000000000000000000000000000000000021e19e0c9bab2400000", 16)
-
-	result, err = contract.Call(transaction, "totalSupply")
-	if result != nil && err == nil {
-		total, _ := result.ToBigInt()
-		if total.Cmp(bigInt) != 0 {
-			t.Errorf("Total not expected")
-			t.FailNow()
-		}
-	}
-
-	result, err = contract.Call(transaction, "balanceOf", coinbase)
-	if result != nil && err == nil {
-		balance, _ := result.ToBigInt()
-		if balance.Cmp(bigInt) != 0 {
-			t.Errorf("Balance not expected")
-			t.FailNow()
-		}
-	}
-
-	hash, err = contract.Send(transaction, "approve", coinbase, big.NewInt(10))
-	if err != nil {
-		t.Errorf("Can't send approve transaction")
-		t.FailNow()
-	}
-
-	t.Log(hash)
-
-	reallyBigInt, _ := big.NewInt(0).SetString("20000000000000000000000000000000000000000000000000000000000000000", 16)
-	_, err = contract.Send(transaction, "approve", coinbase, reallyBigInt)
-	if err == nil {
-		t.Errorf("Can't send approve transaction")
-		t.FailNow()
-	}
 
 }

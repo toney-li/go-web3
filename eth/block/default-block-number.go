@@ -22,8 +22,8 @@
 package block
 
 import (
-	"math/big"
 	"github.com/regcostajr/go-web3/utils"
+	"math/big"
 )
 
 // NUMBER - An integer block number

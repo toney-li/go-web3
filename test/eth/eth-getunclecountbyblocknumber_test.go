@@ -24,8 +24,8 @@ package test
 import (
 	"github.com/regcostajr/go-web3"
 	"github.com/regcostajr/go-web3/providers"
-	"testing"
 	"math/big"
+	"testing"
 )
 
 func TestGetUncleCountByBlockNumber(t *testing.T) {
