@@ -1,3 +1,11 @@
+# DEPRECATED
+
+ [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+This project is no longer supported, please consider using [go-ethereum](https://github.com/ethereum/go-ethereum) instead.
+
+[go-ethereum](https://github.com/ethereum/go-ethereum) has all the features of this project(and more) and it's development is much more robust.
+
 # Ethereum Go Client
 
 [![Build Status](https://travis-ci.org/regcostajr/go-web3.svg?branch=master)](https://travis-ci.org/regcostajr/go-web3)
@@ -6,7 +14,9 @@ This is a Ethereum compatible Go Client
 
 ## Status
 
-This package is currently under active development. It is not already stable and the infrastructure is not complete and there are still several RPCs left to implement.
+## DEPRECATED
+
+This package is not currently under active development. It is not already stable and the infrastructure is not complete and there are still several RPCs left to implement.
 
 ## Usage
 
