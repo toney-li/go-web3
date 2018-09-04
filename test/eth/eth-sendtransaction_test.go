@@ -23,18 +23,18 @@ package test
 import (
 	"testing"
 
-	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/providers"
+	"github.com/toney-li/go-web3"
+	"github.com/toney-li/go-web3/complex/types"
+	"github.com/toney-li/go-web3/dto"
+	"github.com/toney-li/go-web3/providers"
 	"math/big"
 )
 
 func TestEthSendTransaction(t *testing.T) {
 
-	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8547", 10, false))
 
-	coinbase, err := connection.Eth.GetCoinbase()
+	_, err := connection.Eth.GetCoinbase()
 
 	if err != nil {
 		t.Error(err)
@@ -42,9 +42,9 @@ func TestEthSendTransaction(t *testing.T) {
 	}
 
 	transaction := new(dto.TransactionParameters)
-	transaction.From = coinbase
-	transaction.To = coinbase
-	transaction.Value = big.NewInt(0).Mul(big.NewInt(500), big.NewInt(1E18))
+	transaction.From = "0x5dd179db112df1b88b22bfeaade4818502066ee0"
+	transaction.To = "0x8bab64f25be09973cd1bcdf90650eb49aa85e825"
+	transaction.Value = big.NewInt(0).Mul(big.NewInt(1), big.NewInt(1))
 	transaction.Gas = big.NewInt(40000)
 	transaction.Data = types.ComplexString("p2p transaction")
 

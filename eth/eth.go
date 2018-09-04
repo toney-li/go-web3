@@ -23,13 +23,14 @@ package eth
 
 import (
 	"errors"
-	"github.com/regcostajr/go-web3/complex/types"
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/eth/block"
-	"github.com/regcostajr/go-web3/providers"
-	"github.com/regcostajr/go-web3/utils"
+	tp "github.com/toney-li/go-web3/complex/types"
+	"github.com/toney-li/go-web3/dto"
+	"github.com/toney-li/go-web3/eth/block"
+	"github.com/toney-li/go-web3/providers"
+	"github.com/toney-li/go-web3/utils"
 	"math/big"
 	"strings"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // Eth - The Eth Module
@@ -497,6 +498,22 @@ func (eth *Eth) SignTransaction(transaction *dto.TransactionParameters) (*dto.Si
 	return pointer.ToSignTransactionResponse()
 }
 
+func (eth *Eth) SendRawTransaction(tx string) (hash common.Hash, err error) {
+	var arr = make([]string, 1)
+	arr[0] = tx
+	//var params = make(map[string]interface{})
+	//params["params"] = arr
+	pointer := &dto.RequestResult{}
+
+	err = eth.provider.SendRequest(&pointer, "eth_sendRawTransaction", arr)
+
+	if err != nil {
+		return hash, err
+	}
+
+	return common.BytesToHash([]byte(pointer.Result.(string))), err
+}
+
 // Call - Executes a new message call immediately without creating a transaction on the block chain.
 // Reference: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_call
 // Parameters:
@@ -534,7 +551,7 @@ func (eth *Eth) Call(transaction *dto.TransactionParameters) (*dto.RequestResult
 //    1. String - The source code.
 // Returns:
 //	  - DATA - The compiled source code.
-func (eth *Eth) CompileSolidity(sourceCode string) (types.ComplexString, error) {
+func (eth *Eth) CompileSolidity(sourceCode string) (tp.ComplexString, error) {
 
 	params := make([]string, 1)
 	params[0] = sourceCode
@@ -770,6 +787,54 @@ func (eth *Eth) GetCode(address string, defaultBlockParameter string) (string, e
 	pointer := &dto.RequestResult{}
 
 	err := eth.provider.SendRequest(pointer, "eth_getCode", params)
+
+	if err != nil {
+		return "", err
+	}
+
+	return pointer.ToString()
+}
+
+func (eth *Eth) Sign(txp *dto.TransactionParameters) (raw string, err error) {
+	//var transaction types.Transaction
+	//tx, err := s.sign(txp.From, transaction)
+	//if err != nil {
+	//	return "", err
+	//}
+	//data, err := rlp.EncodeToBytes(tx)
+	//if err != nil {
+	//	return "", err
+	//}
+	return raw, nil
+}
+
+func (eth *Eth) FromWei(num string, unit string) (string, error) {
+
+	params := make([]string, 2)
+	params[0] = num
+	params[1] = unit
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "web3_fromWei", params)
+
+	if err != nil {
+		return "", err
+	}
+
+	return pointer.ToString()
+}
+
+
+func (eth *Eth) ToWei(num string, unit string) (string, error) {
+
+	params := make([]string, 2)
+	params[0] = num
+	params[1] = unit
+
+	pointer := &dto.RequestResult{}
+
+	err := eth.provider.SendRequest(pointer, "web3_toWei", params)
 
 	if err != nil {
 		return "", err

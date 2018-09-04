@@ -1,4 +1,4 @@
-/********************************************************************************
+ /********************************************************************************
    This file is part of go-web3.
    go-web3 is free software: you can redistribute it and/or modify
    it under the terms of the GNU Lesser General Public License as published by
@@ -24,10 +24,10 @@ import (
 	"testing"
 
 	"fmt"
-	"github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/complex/types"
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/providers"
+	"github.com/toney-li/go-web3"
+	"github.com/toney-li/go-web3/complex/types"
+	"github.com/toney-li/go-web3/dto"
+	"github.com/toney-li/go-web3/providers"
 	"math/big"
 )
 

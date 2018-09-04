@@ -30,7 +30,8 @@ import (
 
 	"encoding/json"
 
-	"github.com/regcostajr/go-web3/providers/util"
+	"github.com/toney-li/go-web3/providers/util"
+	"fmt"
 )
 
 type HTTPProvider struct {
@@ -64,7 +65,7 @@ func (provider HTTPProvider) SendRequest(v interface{}, method string, params in
 	if provider.secure {
 		prefix = "https://"
 	}
-
+	fmt.Println(bodyString.AsJsonString())
 	body := strings.NewReader(bodyString.AsJsonString())
 	req, err := http.NewRequest("POST", prefix+provider.address, body)
 	if err != nil {
@@ -93,6 +94,10 @@ func (provider HTTPProvider) SendRequest(v interface{}, method string, params in
 
 	return json.Unmarshal(bodyBytes, v)
 
+}
+
+func GetClient(provider *HTTPProvider) *http.Client {
+	return provider.client
 }
 
 func (provider HTTPProvider) Close() error { return nil }

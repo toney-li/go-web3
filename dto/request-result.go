@@ -26,12 +26,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/regcostajr/go-web3/complex/types"
-	"github.com/regcostajr/go-web3/constants"
+	"github.com/toney-li/go-web3/complex/types"
+	"github.com/toney-li/go-web3/constants"
 
 	"encoding/json"
 	"fmt"
 	"math/big"
+	"github.com/toney-li/go-common/util"
 )
 
 type RequestResult struct {
@@ -62,6 +63,31 @@ func (pointer *RequestResult) ToStringArray() ([]string, error) {
 	}
 
 	return new, nil
+
+}
+
+func (pointer *RequestResult) ToMap() (map[string]interface{}, error) {
+
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
+	}
+
+	result := (pointer).Result.(interface{})
+
+	str := types.ComplexString(result.(string))
+	fmt.Println(str)
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(str), m)
+	if err != nil {
+		fmt.Println(err)
+	}
+	//
+	//new := make([]string, len(result))
+	//for i, v := range result {
+	//	new[i] = v.(string)
+	//}
+
+	return nil, nil
 
 }
 
@@ -183,6 +209,30 @@ func (pointer *RequestResult) ToSignTransactionResponse() (*SignTransactionRespo
 	return signTransactionResponse, err
 }
 
+func (pointer *RequestResult) ToRawTransactionResponse() (*RawTransactionResponse, error) {
+	if err := pointer.checkResponse(); err != nil {
+		return nil, err
+	}
+
+	result := (pointer).Result.(map[string]interface{})
+
+	if len(result) == 0 {
+		return nil, customerror.EMPTYRESPONSE
+	}
+
+	rawTransactionResponse := &RawTransactionResponse{}
+
+	marshal, err := json.Marshal(result)
+
+	if err != nil {
+		return nil, customerror.UNPARSEABLEINTERFACE
+	}
+
+	err = json.Unmarshal([]byte(marshal), rawTransactionResponse)
+
+	return rawTransactionResponse, err
+}
+
 func (pointer *RequestResult) ToTransactionResponse() (*TransactionResponse, error) {
 
 	if err := pointer.checkResponse(); err != nil {
@@ -221,20 +271,74 @@ func (pointer *RequestResult) ToTransactionReceipt() (*TransactionReceipt, error
 		return nil, customerror.EMPTYRESPONSE
 	}
 
-	transactionReceipt := &TransactionReceipt{}
+	transactionReceipt := convertReceipt(result)
 
-	marshal, err := json.Marshal(result)
+	//transactionReceipt.TransactionIndex=result["transactionIndex"].(string)
 
-	if err != nil {
-		return nil, customerror.UNPARSEABLEINTERFACE
-	}
-
-	err = json.Unmarshal([]byte(marshal), transactionReceipt)
-
-	return transactionReceipt, err
+	//marshal, err := json.Marshal(result)
+	//
+	//if err != nil {
+	//	return nil, customerror.UNPARSEABLEINTERFACE
+	//}
+	//fmt.Println(string(marshal))
+	//err = json.Unmarshal([]byte(string(marshal)), transactionReceipt)
+	//json.un
+	return transactionReceipt, nil
 
 }
 
+func convertReceipt(result map[string]interface{}) *TransactionReceipt {
+
+	transactionReceipt := &TransactionReceipt{}
+	transactionReceipt.BlockHash = result["blockHash"].(string)
+	transactionReceipt.TransactionHash = result["transactionHash"].(string)
+
+	if b, r := util.ContainsKey(result, "root"); b {
+		transactionReceipt.Root = r.(string)
+	}
+	if b, v := util.ContainsKey(result, "from"); b {
+		transactionReceipt.From = v.(string)
+	}
+	if b, v := util.ContainsKey(result, "logsBloom"); b {
+		transactionReceipt.LogsBloom = v.(string)
+	}
+	if b, v := util.ContainsKey(result, "to"); b && "string" == typeof(v) {
+		transactionReceipt.To = v.(string)
+	}
+	if b, v := util.ContainsKey(result, "contractAddress"); b && "string" == typeof(v) {
+		transactionReceipt.ContractAddress = v.(string)
+	}
+	if b, v := util.ContainsKey(result, "transactionIndex"); b && "string" == typeof(v) {
+		i, err := strconv.ParseInt(v.(string), 0, 64);
+		if err == nil {
+			transactionReceipt.TransactionIndex = big.NewInt(i)
+		}
+	} else if b, v := util.ContainsKey(result, "transactionIndex"); b && "int" == typeof(v) {
+		transactionReceipt.TransactionIndex = v.(*big.Int)
+	}
+	if b, v := util.ContainsKey(result, "status"); b && "string" == typeof(v) {
+		tmp, _ := strconv.ParseInt(v.(string), 0, 32)
+		transactionReceipt.Status = (tmp == 1)
+	}
+	//result["transactionIndex"].(string)
+	//fmt.Println(reflect.TypeOf(result["transactionIndex"]))
+	//fmt.Println(reflect.TypeOf(result["xxx"]))
+
+	return transactionReceipt
+}
+func typeof(v interface{}) string {
+	switch t := v.(type) {
+	case int:
+		return "int"
+	case float64:
+		return "float64"
+	case string:
+		return "string"
+	default:
+		_ = t
+		return "unkown"
+	}
+}
 func (pointer *RequestResult) ToBlock() (*Block, error) {
 
 	if err := pointer.checkResponse(); err != nil {

@@ -24,9 +24,9 @@ package test
 import (
 	"encoding/json"
 	"fmt"
-	web3 "github.com/regcostajr/go-web3"
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/providers"
+	web3 "github.com/toney-li/go-web3"
+	"github.com/toney-li/go-web3/dto"
+	"github.com/toney-li/go-web3/providers"
 	"io/ioutil"
 	"math/big"
 	"testing"
@@ -45,7 +45,7 @@ func TestEthContract(t *testing.T) {
 
 	json.Unmarshal(content, &unmarshalResponse)
 
-	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8545", 10, false))
+	var connection = web3.NewWeb3(providers.NewHTTPProvider("127.0.0.1:8547", 10, false))
 	bytecode := unmarshalResponse.Bytecode
 	contract, err := connection.Eth.NewContract(unmarshalResponse.Abi)
 

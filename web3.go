@@ -22,12 +22,13 @@
 package web3
 
 import (
-	"github.com/regcostajr/go-web3/dto"
-	"github.com/regcostajr/go-web3/eth"
-	"github.com/regcostajr/go-web3/net"
-	"github.com/regcostajr/go-web3/personal"
-	"github.com/regcostajr/go-web3/providers"
-	"github.com/regcostajr/go-web3/utils"
+	"github.com/toney-li/go-web3/dto"
+	"github.com/toney-li/go-web3/eth"
+	"github.com/toney-li/go-web3/net"
+	"github.com/toney-li/go-web3/personal"
+	"github.com/toney-li/go-web3/providers"
+	"github.com/toney-li/go-web3/utils"
+	"github.com/toney-li/go-web3/admin"
 )
 
 // Coin - Ethereum value unity value
@@ -42,6 +43,7 @@ type Web3 struct {
 	Net      *net.Net
 	Personal *personal.Personal
 	Utils    *utils.Utils
+	Admin    *admin.Admin
 }
 
 // NewWeb3 - Web3 Module constructor to set the default provider, Eth, Net and Personal
@@ -52,6 +54,7 @@ func NewWeb3(provider providers.ProviderInterface) *Web3 {
 	web3.Net = net.NewNet(provider)
 	web3.Personal = personal.NewPersonal(provider)
 	web3.Utils = utils.NewUtils(provider)
+	web3.Admin = admin.NewAdmin(provider)
 	return web3
 }
 

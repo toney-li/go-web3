@@ -25,8 +25,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/regcostajr/go-web3/complex/types"
+	"github.com/toney-li/go-web3/complex/types"
 	"math/big"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // TransactionParameters GO transaction to make more easy controll the parameters
@@ -50,6 +51,8 @@ type RequestTransactionParameters struct {
 	Value    string `json:"value,omitempty"`
 	Data     string `json:"data,omitempty"`
 }
+
+//
 
 // Transform the GO transactions parameters to json style
 func (params *TransactionParameters) Transform() *RequestTransactionParameters {
@@ -79,6 +82,10 @@ func (params *TransactionParameters) Transform() *RequestTransactionParameters {
 type SignTransactionResponse struct {
 	Raw         types.ComplexString     `json:"raw"`
 	Transaction SignedTransactionParams `json:"tx"`
+}
+
+type RawTransactionResponse struct {
+	Hash common.Hash `json:"Hash"`
 }
 
 type SignedTransactionParams struct {
