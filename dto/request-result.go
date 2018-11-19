@@ -31,8 +31,8 @@ import (
 
 	"encoding/json"
 	"fmt"
-	"math/big"
 	"github.com/toney-li/go-common/util"
+	"math/big"
 )
 
 type RequestResult struct {
@@ -338,6 +338,33 @@ func typeof(v interface{}) string {
 		_ = t
 		return "unkown"
 	}
+}
+func convertDataType(result map[string]interface{}) (map[string]interface{}) {
+	//if b, v := util.ContainsKey(result, "nonce"); b {
+	//	result["nonce"], _ = strconv.ParseInt(v.(string), 0, 64)
+	//
+	//}
+	if b, v := util.ContainsKey(result, "totalDifficulty"); b {
+		result["totalDifficulty"], _ = strconv.ParseInt(v.(string), 0, 64)
+
+	}
+	if b, v := util.ContainsKey(result, "gasLimit"); b {
+		result["gasLimit"], _ = strconv.ParseInt(v.(string), 0, 64)
+
+	}
+	if b, v := util.ContainsKey(result, "gasUsed"); b {
+		result["gasUsed"], _ = strconv.ParseInt(v.(string), 0, 64)
+
+	}
+	if b, v := util.ContainsKey(result, "difficulty"); b {
+		result["difficulty"], _ = strconv.ParseInt(v.(string), 0, 64)
+
+	}
+	//if b, v := util.ContainsKey(result, "number"); b {
+	//	result["number"], _ = strconv.ParseInt(v.(string), 0, 64)
+	//
+	//}
+	return result
 }
 func (pointer *RequestResult) ToBlock() (*Block, error) {
 
